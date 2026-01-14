@@ -13,3 +13,7 @@ h5,
 h6 {
   color: var(--color-black);
 }
+
+.form-control:has(input:focus) {
+  border-color: var(--color-green-400);
+}
