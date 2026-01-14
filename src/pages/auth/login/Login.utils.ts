@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import type { LoginInputs } from "./Login.types";
 
 export const loginSchema = yup.object({
   usernameOrEmail: yup
@@ -7,10 +6,9 @@ export const loginSchema = yup.object({
     .required("Username or email field is required")
     .trim(),
   password: yup.string().required("Password field is required").trim(),
-  rememberMe: yup.boolean().default(false),
 });
 
-export async function login(data: LoginInputs): Promise<void> {
+export async function login(data: unknown): Promise<void> {
   const response = await fetch(`${import.meta.env.VITE_BASE_API}/auth/login`, {
     method: "POST",
     body: JSON.stringify(data),
