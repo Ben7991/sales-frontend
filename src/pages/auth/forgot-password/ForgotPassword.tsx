@@ -12,7 +12,7 @@ export function ForgotPassword(): React.JSX.Element {
       description="Please enter your email and password to access your account settings and dashboard."
     >
       <Form>
-        <Form.Group className="mb-4">
+        <Form.Group className="mb-8">
           <Form.Label htmlFor="userName">Username</Form.Label>
           <Form.Control
             type="text"
