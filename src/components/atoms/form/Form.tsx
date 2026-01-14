@@ -55,9 +55,19 @@ function PasswordToggler({
   );
 }
 
+function Error({ children }: { children: React.ReactNode }): React.JSX.Element {
+  return <small className="text-red-600 inline-block">{children}</small>;
+}
+
+function Checkbox(props: ComponentPropsWithRef<"input">): React.JSX.Element {
+  return <input {...props} type="checkbox" id="username" className="w-4 h-4" />;
+}
+
 Form.Group = Group;
 Form.Label = Label;
 Form.Control = Control;
+Form.Checkbox = Checkbox;
 Form.PasswordToggler = PasswordToggler;
+Form.Error = Error;
 
 export { Form };
