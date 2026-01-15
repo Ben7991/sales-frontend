@@ -1,3 +1,4 @@
+import type { ResponseWithDataAndMessage, User } from "@/utils/types.utils";
 import * as yup from "yup";
 
 export const loginSchema = yup.object({
@@ -8,7 +9,9 @@ export const loginSchema = yup.object({
   password: yup.string().required("Password field is required").trim(),
 });
 
-export async function login(data: unknown): Promise<void> {
+export async function login(
+  data: unknown
+): Promise<ResponseWithDataAndMessage<User>> {
   const response = await fetch(`${import.meta.env.VITE_BASE_API}/auth/login`, {
     method: "POST",
     body: JSON.stringify(data),
@@ -19,7 +22,7 @@ export async function login(data: unknown): Promise<void> {
   });
   const result = await response.json();
 
-  if (!response.status) {
+  if (!response.ok) {
     throw new Error(result.message);
   }
 
