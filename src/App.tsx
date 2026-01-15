@@ -21,6 +21,7 @@ import { AvailableStocks } from "./pages/dashboard/inventory/available-stock/Ava
 import { Arrears } from "./pages/dashboard/sales/arrears/Arrears";
 import { AllSales } from "./pages/dashboard/sales/all-sales/AllSales";
 import { CreateOrder } from "./pages/dashboard/sales/create-order/CreateOrder";
+import { ProtectedRoute } from "./components/layouts/protected-route/ProtectedRoute";
 
 export default function App(): React.JSX.Element {
   const appRouter = createBrowserRouter([
@@ -33,7 +34,11 @@ export default function App(): React.JSX.Element {
         { path: "/reset-password", element: <ResetPassword /> },
         {
           path: "/dashboard",
-          element: <Dashboard />,
+          element: (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          ),
           children: [
             { index: true, element: <Overview /> },
             {
