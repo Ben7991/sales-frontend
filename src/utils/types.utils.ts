@@ -3,6 +3,10 @@ export type ResponseWithDataAndMessage<T> = {
   data: T;
 };
 
+export type ResponseWithOnlyData<T> = {
+  data: T;
+};
+
 export type Role = "ADMIN" | "SALES_PERSON" | "PROCUREMENT_MANAGER";
 export type AccountStatus = "ACTIVE" | "SUSPENDED";
 export type User = {
@@ -16,3 +20,13 @@ export type User = {
   status: AccountStatus;
   setPassword: boolean;
 };
+
+export const StatusCodes = {
+  CREATED: 201,
+  SUCCESS: 200,
+  BAD_REQUEST: 400,
+  NOT_FOUND: 404,
+  UN_AUTHORIZED: 401,
+  FORBIDDEN: 403,
+  SERVER_ERROR: 500,
+} as const;
