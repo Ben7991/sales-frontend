@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, NavLink, useLocation } from "react-router";
+import { useState, type FormEvent } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { RxCaretDown, RxCaretUp, RxDashboard } from "react-icons/rx";
 import {
@@ -33,11 +33,14 @@ import type {
 import { Backdrop } from "@/components/atoms/backdrop/Backdrop";
 import {
   isPreferredUrl,
+  logout,
   rootNavLinkClasses,
   subNavLinkClasses,
 } from "./Dashboard.utils";
 import { AppLogo } from "@/components/molecules/app-logo/AppLogo";
 import { LuCircleUserRound } from "react-icons/lu";
+import { useAppDispatch } from "@/store/index.util";
+import { removeAuthUser } from "@/store/slice/auth/auth.slice";
 
 export function SideDrawer({
   show,
@@ -222,15 +225,34 @@ export function SideDrawer({
 }
 
 export function LogoutForm(): React.JSX.Element {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    try {
+      await logout();
+      dispatch(removeAuthUser());
+      navigate("/");
+    } catch (error) {
+      console.error((error as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Form>
+    <Form onSubmit={onSubmit}>
       <p className="mb-4">
         Are you sure you want to sign out of your account? Any unsaved changes
         may be lost.
       </p>
       <Form.Group>
-        <Button type="submit" el="button">
-          Yes, logout
+        <Button type="submit" el="button" disabled={isLoading}>
+          {isLoading ? <Button.Loader /> : "Yes, logout"}
         </Button>
       </Form.Group>
     </Form>

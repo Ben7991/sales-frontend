@@ -1,3 +1,5 @@
+import { getHeaders } from "@/utils/auth.util";
+import { StatusCodes } from "@/utils/types.utils";
 import type { NavLinkRenderProps } from "react-router";
 
 export function rootNavLinkClasses({
@@ -40,4 +42,18 @@ export function isPreferredUrl(
   preferredUrl: string
 ): boolean {
   return currentUrl.includes(preferredUrl);
+}
+
+export async function logout(): Promise<void> {
+  const response = await fetch(`${import.meta.env.VITE_BASE_API}/auth/logout`, {
+    method: "POST",
+    headers: getHeaders(),
+    credentials: "include",
+  });
+
+  if (response.status !== StatusCodes.SUCCESS) {
+    throw new Error("Something went wrong when logging out of the application");
+  }
+
+  return;
 }
