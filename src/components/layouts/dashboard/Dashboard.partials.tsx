@@ -304,6 +304,7 @@ export function PageHeader({
                   <Link
                     to="/dashboard/account-settings"
                     className="flex items-center gap-1 hover:bg-gray-200 px-2 rounded-sm py-1"
+                    onClick={onToggleSettings}
                   >
                     <LiaUserCogSolid className="text-2xl" />
                     <span>Account Settings</span>
