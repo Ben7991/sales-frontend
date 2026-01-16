@@ -17,7 +17,7 @@ function getAccessToken(): string {
   return accessTokenCookie.split("=")[1];
 }
 
-export function getHeaders(withAuth: boolean): Headers {
+export function getHeaders(withAuth?: boolean): Headers {
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
 
@@ -40,7 +40,7 @@ export async function refreshToken(): Promise<boolean> {
     }
   );
 
-  if (!response.status) {
+  if (response.status !== StatusCodes.SUCCESS) {
     return false;
   }
 
