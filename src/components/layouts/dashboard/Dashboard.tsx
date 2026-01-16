@@ -24,16 +24,16 @@ export function Dashboard(): React.JSX.Element {
   };
 
   return (
-    <main className="w-full h-screen overflow-auto lg:overflow-hidden lg:flex">
+    <main className="w-full h-screen overflow-hidden lg:flex">
       <SideDrawer show={showDrawer} onToggle={toggleDrawer} />
-      <article className="lg:grow bg-gray-100 h-full">
+      <article className="lg:grow bg-gray-100 h-full flex flex-col">
         <PageHeader
           showSettings={showSettings}
           onToggleDrawer={toggleDrawer}
           onToggleLogoutModal={toggleLogoutModal}
           onToggleSettings={() => setShowSettings((prevState) => !prevState)}
         />
-        <ContentWrapper className="py-4">
+        <ContentWrapper className="py-4 overflow-x-auto grow">
           <Outlet />
         </ContentWrapper>
       </article>
