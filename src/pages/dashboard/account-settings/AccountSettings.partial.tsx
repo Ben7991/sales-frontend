@@ -1,5 +1,9 @@
-import { MdOutlineSaveAlt } from "react-icons/md";
+import { useState } from "react";
+import { MdOutlineAlternateEmail, MdOutlineSaveAlt } from "react-icons/md";
 import { CgDanger } from "react-icons/cg";
+import { LuLock } from "react-icons/lu";
+import { TiUserOutline } from "react-icons/ti";
+import { RiShieldUserLine } from "react-icons/ri";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Form } from "@/components/atoms/form/Form";
@@ -14,15 +18,27 @@ export function PersonalInformation(): React.JSX.Element {
       <Form>
         <Form.Group className="mb-4">
           <Form.Label htmlFor="name">Name</Form.Label>
-          <Form.Control type="text" id="name" />
+          <Form.Control
+            type="text"
+            id="name"
+            leftIcon={<TiUserOutline className="text-xl" />}
+          />
         </Form.Group>
         <Form.Group className="mb-4">
           <Form.Label htmlFor="username">Username</Form.Label>
-          <Form.Control type="text" id="username" />
+          <Form.Control
+            type="text"
+            id="username"
+            leftIcon={<RiShieldUserLine className="text-xl" />}
+          />
         </Form.Group>
         <Form.Group className="mb-8">
           <Form.Label htmlFor="email">Email</Form.Label>
-          <Form.Control type="email" id="email" />
+          <Form.Control
+            type="email"
+            id="email"
+            leftIcon={<MdOutlineAlternateEmail className="text-xl" />}
+          />
         </Form.Group>
         <Button el="button" type="submit" className="flex! items-center gap-2">
           <MdOutlineSaveAlt className="text-xl" />
@@ -34,6 +50,10 @@ export function PersonalInformation(): React.JSX.Element {
 }
 
 export function ChangePassword(): React.JSX.Element {
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
     <Wrapper>
       <div className="mb-5 p-4 rounded-sm bg-red-100 text-red-600 flex gap-2 items-start">
@@ -49,15 +69,52 @@ export function ChangePassword(): React.JSX.Element {
       <Form>
         <Form.Group className="mb-4">
           <Form.Label htmlFor="current_password">Current Password</Form.Label>
-          <Form.Control type="password" id="current_password" />
+          <Form.Control
+            type={showCurrentPassword ? "text" : "password"}
+            id="current_password"
+            placeholder="Type your current password"
+            leftIcon={<LuLock className="text-xl" />}
+            rightIcon={
+              <Form.PasswordToggler
+                state={showCurrentPassword}
+                onClick={() =>
+                  setShowCurrentPassword((prevState) => !prevState)
+                }
+              />
+            }
+          />
         </Form.Group>
         <Form.Group className="mb-4">
           <Form.Label htmlFor="new_password">New Password</Form.Label>
-          <Form.Control type="password" id="new_password" />
+          <Form.Control
+            type={showNewPassword ? "text" : "password"}
+            id="new_password"
+            placeholder="Type your new password"
+            leftIcon={<LuLock className="text-xl" />}
+            rightIcon={
+              <Form.PasswordToggler
+                state={showNewPassword}
+                onClick={() => setShowNewPassword((prevState) => !prevState)}
+              />
+            }
+          />
         </Form.Group>
         <Form.Group className="mb-8">
           <Form.Label htmlFor="confirm_password">Confirm Password</Form.Label>
-          <Form.Control type="password" id="confirm_password" />
+          <Form.Control
+            type={showConfirmPassword ? "text" : "password"}
+            id="confirm_password"
+            placeholder="Confirm your new password"
+            leftIcon={<LuLock className="text-xl" />}
+            rightIcon={
+              <Form.PasswordToggler
+                state={showConfirmPassword}
+                onClick={() =>
+                  setShowConfirmPassword((prevState) => !prevState)
+                }
+              />
+            }
+          />
         </Form.Group>
         <Button el="button" type="submit" className="flex! items-center gap-1">
           <MdOutlineSaveAlt className="text-xl" />
