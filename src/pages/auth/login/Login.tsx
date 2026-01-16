@@ -9,7 +9,6 @@ import type { LoginInputs } from "./Login.types";
 import { Form } from "@/components/atoms/form/Form";
 import { AuthLayout } from "@/components/layouts/auth/Auth";
 import { Button } from "@/components/atoms/button/Button";
-import { Spinner } from "@/components/atoms/spinner/Spinner";
 import { Alert } from "@/components/molecules/alert/Alert";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { useAppDispatch } from "@/store/index.util";
@@ -121,14 +120,7 @@ export function Login(): React.JSX.Element {
             className="py-2 "
             disabled={!isValid || isLoading}
           >
-            {isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Spinner size="sm" color="white" />
-                <span>Loading...</span>
-              </span>
-            ) : (
-              "Login"
-            )}
+            {isLoading ? <Button.Loader /> : "Login"}
           </Button>
         </Form.Group>
       </Form>

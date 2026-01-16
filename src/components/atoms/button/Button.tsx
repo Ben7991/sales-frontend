@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 
 import type { ButtonProps, LinkProps } from "./Button.types";
+import { Spinner } from "../spinner/Spinner";
 
 export function Button(props: ButtonProps | LinkProps): React.JSX.Element {
   if (props.el === "link") {
@@ -23,3 +24,14 @@ export function Button(props: ButtonProps | LinkProps): React.JSX.Element {
     </button>
   );
 }
+
+function Loader(): React.JSX.Element {
+  return (
+    <span className="flex items-center justify-center gap-2">
+      <Spinner size="sm" color="white" />
+      <span>Loading...</span>
+    </span>
+  );
+}
+
+Button.Loader = Loader;
