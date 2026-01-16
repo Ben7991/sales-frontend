@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,7 +17,6 @@ import { setAuthUser } from "@/store/slice/auth/auth.slice";
 export function Login(): React.JSX.Element {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const rememberMeRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { state, alertDetails, showAlert, hideAlert, setAlertDetails } =
     useAlert();
@@ -41,7 +40,6 @@ export function Login(): React.JSX.Element {
     try {
       const response = await login({
         ...data,
-        rememberMe: rememberMeRef.current?.checked,
       });
       dispatch(
         setAuthUser({
@@ -87,7 +85,7 @@ export function Login(): React.JSX.Element {
             <Form.Error>{errors.usernameOrEmail?.message}</Form.Error>
           )}
         </Form.Group>
-        <Form.Group className="mb-4">
+        <Form.Group className="mb-8">
           <Form.Label htmlFor="password">Password</Form.Label>
           <Form.Control
             type={showPassword ? "text" : "password"}
@@ -106,12 +104,6 @@ export function Login(): React.JSX.Element {
           {Boolean(errors.password) && (
             <Form.Error>{errors.password?.message}</Form.Error>
           )}
-        </Form.Group>
-        <Form.Group className="mb-4">
-          <Form.Label className="flex! items-center gap-2 w-fit">
-            <Form.Checkbox ref={rememberMeRef} />
-            <span>Remember me</span>
-          </Form.Label>
         </Form.Group>
         <Form.Group className="flex flex-col">
           <Button
