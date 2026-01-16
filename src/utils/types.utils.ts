@@ -30,3 +30,5 @@ export const StatusCodes = {
   FORBIDDEN: 403,
   SERVER_ERROR: 500,
 } as const;
+
+export type AuthState = "loading" | "authenticated" | "not-authenticated;";

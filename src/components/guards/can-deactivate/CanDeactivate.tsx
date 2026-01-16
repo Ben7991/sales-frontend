@@ -2,14 +2,18 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router";
 
 import { useAppDispatch, useAppSelector } from "@/store/index.util";
-import { Loader } from "@/components/atoms/loader/Loader";
-import { getAuthUser } from "./ProtectedRoute.utils";
+import type { AuthState } from "@/utils/types.utils";
 import { setAuthUser } from "@/store/slice/auth/auth.slice";
-import type { AuthState, ProtectedRouteProps } from "./ProtectedRoute.types";
+import { getAuthUser } from "@/utils/auth.util";
+import { Loader } from "@/components/atoms/loader/Loader";
 
-export function ProtectedRoute({
+type CanDeactivateProps = {
+  children: React.ReactNode;
+};
+
+export function CanDeactivate({
   children,
-}: ProtectedRouteProps): React.ReactNode {
+}: CanDeactivateProps): React.ReactNode {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const [state, setState] = useState<AuthState>(
@@ -41,8 +45,8 @@ export function ProtectedRoute({
     return <Loader />;
   }
 
-  if (!user) {
-    return <Navigate to="/" />;
+  if (user) {
+    return <Navigate to="/dashboard" />;
   }
 
   return children;

@@ -21,7 +21,8 @@ import { AvailableStocks } from "./pages/dashboard/inventory/available-stock/Ava
 import { Arrears } from "./pages/dashboard/sales/arrears/Arrears";
 import { AllSales } from "./pages/dashboard/sales/all-sales/AllSales";
 import { CreateOrder } from "./pages/dashboard/sales/create-order/CreateOrder";
-import { ProtectedRoute } from "./components/layouts/protected-route/ProtectedRoute";
+import { CanActivate } from "./components/guards/can-activate/CanActivate";
+import { CanDeactivate } from "./components/guards/can-deactivate/CanDeactivate";
 
 export default function App(): React.JSX.Element {
   const appRouter = createBrowserRouter([
@@ -29,15 +30,37 @@ export default function App(): React.JSX.Element {
       path: "/",
       element: <Root />,
       children: [
-        { path: "/", index: true, element: <Login /> },
-        { path: "/forgot-password", element: <ForgotPassword /> },
-        { path: "/reset-password", element: <ResetPassword /> },
+        {
+          path: "/",
+          index: true,
+          element: (
+            <CanDeactivate>
+              <Login />
+            </CanDeactivate>
+          ),
+        },
+        {
+          path: "/forgot-password",
+          element: (
+            <CanDeactivate>
+              <ForgotPassword />
+            </CanDeactivate>
+          ),
+        },
+        {
+          path: "/reset-password",
+          element: (
+            <CanDeactivate>
+              <ResetPassword />
+            </CanDeactivate>
+          ),
+        },
         {
           path: "/dashboard",
           element: (
-            <ProtectedRoute>
+            <CanActivate>
               <Dashboard />
-            </ProtectedRoute>
+            </CanActivate>
           ),
           children: [
             { index: true, element: <Overview /> },
