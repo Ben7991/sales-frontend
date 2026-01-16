@@ -29,9 +29,9 @@ function Control({
   const { className, ...reset } = props;
   return (
     <div
-      className={`form-control flex items-center gap-2 border ${
+      className={`form-control flex items-center gap-2 border bg-white ${
         hasError ? "border-red-600" : "border-gray-200 hover:border-gray-400"
-      } rounded-sm px-3 py-1.5 ${className}`}
+      } rounded-md px-3 py-1.5 ${className}`}
     >
       {leftIcon}
       <input className="grow outline-none" {...reset} />
