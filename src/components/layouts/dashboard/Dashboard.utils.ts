@@ -1,9 +1,9 @@
 import type { NavLinkRenderProps } from "react-router";
 
-export const rootNavLinkClasses = ({
+export function rootNavLinkClasses({
   isActive,
   isPending,
-}: NavLinkRenderProps): string => {
+}: NavLinkRenderProps): string {
   const rootClasses = "flex items-center gap-2 py-1.5 px-3 rounded-md";
 
   if (isPending) {
@@ -15,12 +15,12 @@ export const rootNavLinkClasses = ({
   }
 
   return `${rootClasses} hover:bg-gray-200`;
-};
+}
 
-export const subNavLinkClasses = ({
+export function subNavLinkClasses({
   isActive,
   isPending,
-}: NavLinkRenderProps): string => {
+}: NavLinkRenderProps): string {
   const rootClasses =
     "flex items-center gap-2 py-1.5 px-3 hover:bg-gray-200 rounded-md text-[0.875rem]";
 
@@ -33,11 +33,11 @@ export const subNavLinkClasses = ({
   }
 
   return `${rootClasses}`;
-};
+}
 
-export const isPreferredUrl = (
+export function isPreferredUrl(
   currentUrl: string,
   preferredUrl: string
-): boolean => {
+): boolean {
   return currentUrl.includes(preferredUrl);
-};
+}
