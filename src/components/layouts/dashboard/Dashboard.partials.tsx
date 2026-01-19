@@ -41,6 +41,7 @@ import { AppLogo } from "@/components/molecules/app-logo/AppLogo";
 import { LuCircleUserRound } from "react-icons/lu";
 import { useAppDispatch } from "@/store/index.util";
 import { removeAuthUser } from "@/store/slice/auth/auth.slice";
+import { AUTH_STATE } from "@/utils/constants.utils";
 
 export function SideDrawer({
   show,
@@ -56,8 +57,8 @@ export function SideDrawer({
     <>
       {show && <Backdrop onToggle={onToggle} />}
       <aside
-        className={`fixed top-0 left-0 overflow-x-hidden overflow-y-auto h-screen lg:static lg:basis-75 bg-gray-200 py-5 lg:px-5 lg:py-10 z-10 ${
-          show ? "w-75 px-5 transition-[width]" : "w-0 "
+        className={`fixed top-0 left-0 overflow-x-hidden overflow-y-auto h-screen lg:static lg:basis-75 bg-gray-200 py-5 lg:px-5 lg:py-10 ${
+          show ? "w-75 px-5 transition-[width] z-10" : "w-0 "
         }`}
       >
         <UserProfile className="mb-5 px-3 lg:mb-10" />
@@ -236,6 +237,7 @@ export function LogoutForm(): React.JSX.Element {
     try {
       await logout();
       dispatch(removeAuthUser());
+      localStorage.removeItem(AUTH_STATE);
       navigate("/");
     } catch (error) {
       console.error((error as Error).message);

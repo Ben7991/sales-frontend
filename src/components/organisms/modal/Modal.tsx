@@ -27,7 +27,7 @@ export function Modal({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="absolute top-1/2 left-1/2 -translate-1/2 bg-white rounded-lg overflow-hidden w-[90%] md:w-112.5"
+            className="absolute top-1/2 left-1/2 -translate-1/2 bg-white rounded-lg overflow-hidden w-[90%] md:w-112.5 z-50"
           >
             <div className="flex items-center justify-between border border-gray-300 p-4">
               <Headline tag="h4">{title}</Headline>
@@ -40,6 +40,6 @@ export function Modal({
         )}
       </AnimatePresence>
     </>,
-    document.querySelector("#portal-modal") as HTMLDivElement
+    document.querySelector("#portal-modal") as HTMLDivElement,
   );
 }
