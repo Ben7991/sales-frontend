@@ -67,6 +67,24 @@ export async function getAuthUser(): Promise<ResponseWithOnlyData<User>> {
   return result;
 }
 
+export async function verifyResetPasswordToken(token: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_API}/auth/verify-reset-token?token=${token}`,
+    {
+      method: "GET",
+      headers: getHeaders(true),
+      credentials: "include",
+    },
+  );
+  const result = await response.json();
+
+  if (result.code === "INVALID") {
+    throw new Error(result.code);
+  }
+
+  return result;
+}
+
 export async function checkUsername(username: string): Promise<void> {
   const response = await fetch(
     `${import.meta.env.VITE_BASE_API}/users/check-username`,

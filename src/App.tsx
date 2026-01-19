@@ -23,6 +23,7 @@ import { AllSales } from "./pages/dashboard/sales/all-sales/AllSales";
 import { CreateOrder } from "./pages/dashboard/sales/create-order/CreateOrder";
 import { CanActivate } from "./components/guards/can-activate/CanActivate";
 import { CanDeactivate } from "./components/guards/can-deactivate/CanDeactivate";
+import { ResetPasswordActivate } from "./components/guards/reset-password-activate/ResetPasswordActivate";
 
 export default function App(): React.JSX.Element {
   const appRouter = createBrowserRouter([
@@ -50,9 +51,9 @@ export default function App(): React.JSX.Element {
         {
           path: "/reset-password",
           element: (
-            <CanDeactivate>
+            <ResetPasswordActivate>
               <ResetPassword />
-            </CanDeactivate>
+            </ResetPasswordActivate>
           ),
         },
         {
