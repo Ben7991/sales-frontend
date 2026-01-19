@@ -24,7 +24,7 @@ export function ForgotPassword(): React.JSX.Element {
     reset,
   } = useForm<ForgotPasswordInputs>({
     resolver: yupResolver(forgotPasswordSchema),
-    mode: "onBlur",
+    mode: "onChange",
   });
   const { state, alertDetails, showAlert, hideAlert, setAlertDetails } =
     useAlert();
