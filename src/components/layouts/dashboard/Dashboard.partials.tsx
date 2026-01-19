@@ -56,7 +56,7 @@ export function SideDrawer({
     <>
       {show && <Backdrop onToggle={onToggle} />}
       <aside
-        className={`fixed top-0 left-0 overflow-x-hidden overflow-y-auto h-screen lg:static lg:basis-75 bg-gray-300 py-5 lg:px-5 lg:py-10 z-10 ${
+        className={`fixed top-0 left-0 overflow-x-hidden overflow-y-auto h-screen lg:static lg:basis-75 bg-gray-200 py-5 lg:px-5 lg:py-10 z-10 ${
           show ? "w-75 px-5 transition-[width]" : "w-0 "
         }`}
       >
