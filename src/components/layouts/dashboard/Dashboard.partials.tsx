@@ -290,7 +290,10 @@ export function PageHeader({
             <button
               className="flex items-center gap-1 hover:text-green-600 hover:cursor-pointer"
               type="button"
-              onClick={onToggleSettings}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSettings();
+              }}
             >
               <LuCircleUserRound className="text-2xl" />
               <RxCaretDown />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Outlet } from "react-router";
 
 import {
@@ -13,6 +13,15 @@ export function Dashboard(): React.JSX.Element {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
+  const handleOutsideClick = useCallback((): void => {
+    setShowSettings(false);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("click", handleOutsideClick);
+    return () => window.removeEventListener("click", handleOutsideClick);
+  }, [handleOutsideClick]);
 
   const toggleDrawer = (): void => {
     setShowDrawer((prevState) => !prevState);
