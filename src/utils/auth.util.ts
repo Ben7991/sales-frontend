@@ -3,6 +3,7 @@ import {
   type ResponseWithOnlyData,
   type User,
 } from "@/utils/types.utils";
+import { FAILED_STATUS_CODES } from "./constants.utils";
 
 function getAccessToken(): string {
   const cookies = document.cookie;
@@ -37,7 +38,7 @@ export async function refreshToken(): Promise<boolean> {
         "Content-Type": "application/json",
       },
       credentials: "include",
-    }
+    },
   );
 
   if (response.status !== StatusCodes.SUCCESS) {
@@ -64,4 +65,46 @@ export async function getAuthUser(): Promise<ResponseWithOnlyData<User>> {
   }
 
   return result;
+}
+
+export async function checkUsername(username: string): Promise<void> {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_API}/users/check-username`,
+    {
+      method: "POST",
+      body: JSON.stringify({ username }),
+      headers: getHeaders(true),
+      credentials: "include",
+    },
+  );
+
+  if (response.status === StatusCodes.UN_AUTHORIZED) {
+    const isRefreshed = await refreshToken();
+    if (isRefreshed) {
+      return await checkUsername(username);
+    }
+  } else if (FAILED_STATUS_CODES.includes(response.status)) {
+    throw new Error("Failed");
+  }
+}
+
+export async function checkEmail(email: string): Promise<void> {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_API}/users/check-email`,
+    {
+      method: "POST",
+      body: JSON.stringify({ email }),
+      headers: getHeaders(true),
+      credentials: "include",
+    },
+  );
+
+  if (response.status === StatusCodes.UN_AUTHORIZED) {
+    const isRefreshed = await refreshToken();
+    if (isRefreshed) {
+      return await checkEmail(email);
+    }
+  } else if (FAILED_STATUS_CODES.includes(response.status)) {
+    throw new Error("Failed");
+  }
 }
