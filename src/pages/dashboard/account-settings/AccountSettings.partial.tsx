@@ -24,6 +24,7 @@ import { removeAuthUser, setAuthUser } from "@/store/slice/auth/auth.slice";
 import { Alert } from "@/components/molecules/alert/Alert";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { logout } from "@/components/layouts/dashboard/Dashboard.utils";
+import { AUTH_STATE } from "@/utils/constants.utils";
 
 function Wrapper(props: { children: React.ReactNode }): React.JSX.Element {
   return <div className="w-full md:w-112.5">{props.children}</div>;
@@ -193,6 +194,7 @@ export function ChangePassword(): React.JSX.Element {
       reset();
       await logout();
       dispatch(removeAuthUser());
+      localStorage.removeItem(AUTH_STATE);
       navigate("/");
     } catch (error) {
       setIsLoading(false);

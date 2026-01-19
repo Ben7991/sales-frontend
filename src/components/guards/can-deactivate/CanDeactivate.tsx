@@ -6,6 +6,7 @@ import type { AuthState } from "@/utils/types.utils";
 import { setAuthUser } from "@/store/slice/auth/auth.slice";
 import { getAuthUser } from "@/utils/auth.util";
 import { Loader } from "@/components/atoms/loader/Loader";
+import { AUTH_STATE, AUTH_STATE_VALUE } from "@/utils/constants.utils";
 
 type CanDeactivateProps = {
   children: React.ReactNode;
@@ -17,10 +18,18 @@ export function CanDeactivate({
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const [state, setState] = useState<AuthState>(
-    user ? "authenticated" : "loading"
+    user ? "authenticated" : "loading",
   );
 
   useEffect(() => {
+    if (
+      !localStorage.getItem(AUTH_STATE) ||
+      localStorage.getItem(AUTH_STATE) !== AUTH_STATE_VALUE
+    ) {
+      setState("not-authenticated");
+      return;
+    }
+
     const fetchAuthUser = async (): Promise<void> => {
       try {
         const result = await getAuthUser();
@@ -28,10 +37,10 @@ export function CanDeactivate({
         dispatch(
           setAuthUser({
             user: result.data,
-          })
+          }),
         );
       } catch (error) {
-        setState("not-authenticated;");
+        setState("not-authenticated");
         console.error("Failed to fetch authenticated user", error);
       }
     };

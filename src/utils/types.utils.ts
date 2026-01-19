@@ -32,4 +32,4 @@ export const StatusCodes = {
   SERVER_ERROR: 500,
 } as const;
 
-export type AuthState = "loading" | "authenticated" | "not-authenticated;";
+export type AuthState = "loading" | "authenticated" | "not-authenticated";

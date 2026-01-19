@@ -6,3 +6,6 @@ export const FAILED_STATUS_CODES: Array<number> = [
   StatusCodes.SERVER_ERROR,
   StatusCodes.FORBIDDEN,
 ];
+
+export const AUTH_STATE = "auth_state" as const;
+export const AUTH_STATE_VALUE = "yes" as const;

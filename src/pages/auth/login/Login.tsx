@@ -13,6 +13,7 @@ import { Alert } from "@/components/molecules/alert/Alert";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { useAppDispatch } from "@/store/index.util";
 import { setAuthUser } from "@/store/slice/auth/auth.slice";
+import { AUTH_STATE, AUTH_STATE_VALUE } from "@/utils/constants.utils";
 
 export function Login(): React.JSX.Element {
   const navigate = useNavigate();
@@ -44,8 +45,9 @@ export function Login(): React.JSX.Element {
       dispatch(
         setAuthUser({
           user: response.data,
-        })
+        }),
       );
+      localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUE);
       navigate("/dashboard");
     } catch (error) {
       setAlertDetails({
