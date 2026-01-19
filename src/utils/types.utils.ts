@@ -28,6 +28,7 @@ export const StatusCodes = {
   NOT_FOUND: 404,
   UN_AUTHORIZED: 401,
   FORBIDDEN: 403,
+  VALIDATION_FAILED: 422,
   SERVER_ERROR: 500,
 } as const;
 
