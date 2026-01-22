@@ -32,7 +32,7 @@ export function Alert({
     <motion.div
       initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 10 }}
-      className={`fixed top-10 left-1/2 -translate-x-1/2 flex items-center justify-between w-[90%] md:w-100 py-3 px-4 rounded-md z-50 ${
+      className={`fixed top-10 left-1/2 -translate-x-1/2 flex items-center justify-between w-[90%] md:w-112.5 py-3 px-4 rounded-md z-50 ${
         isSuccess
           ? "bg-green-100 border border-green-300"
           : "bg-red-100 border border-red-300"
