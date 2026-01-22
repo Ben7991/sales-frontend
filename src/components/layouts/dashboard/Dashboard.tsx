@@ -46,7 +46,7 @@ export function Dashboard(): React.JSX.Element {
           <Outlet />
         </ContentWrapper>
       </article>
-      <Modal title="Logout" show={showLogoutModal} onToggle={toggleLogoutModal}>
+      <Modal title="Logout" show={showLogoutModal} onHide={toggleLogoutModal}>
         <LogoutForm />
       </Modal>
     </main>
