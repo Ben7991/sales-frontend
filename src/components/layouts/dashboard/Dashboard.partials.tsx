@@ -1,5 +1,11 @@
-import { useState, type FormEvent } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import {
+  Link,
+  NavLink,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { RxCaretDown, RxCaretUp, RxDashboard } from "react-icons/rx";
 import {
@@ -11,7 +17,6 @@ import {
   PiChartLineUp,
   PiClipboardText,
   PiHamburger,
-  PiMoney,
   PiUsers,
   PiUsersThree,
 } from "react-icons/pi";
@@ -42,6 +47,9 @@ import { LuCircleUserRound } from "react-icons/lu";
 import { useAppDispatch } from "@/store/index.util";
 import { removeAuthUser } from "@/store/slice/auth/auth.slice";
 import { AUTH_STATE } from "@/utils/constants.utils";
+import { IoSearchOutline } from "react-icons/io5";
+import { getPaginatedData } from "@/utils/helpers.utils";
+import { BsDashLg } from "react-icons/bs";
 
 export function SideDrawer({
   show,
@@ -49,177 +57,115 @@ export function SideDrawer({
 }: SideDrawerProps): React.JSX.Element {
   const { pathname } = useLocation();
 
-  const [showSalesLinks, setShowSalesLinks] = useState(false);
-  const [showPurchaseLinks, setShowPurchaseLinks] = useState(false);
   const [showInventoryLinks, setShowInventoryLinks] = useState(false);
 
   return (
     <>
       {show && <Backdrop onToggle={onToggle} />}
       <aside
-        className={`fixed top-0 left-0 overflow-x-hidden overflow-y-auto h-screen lg:static lg:basis-75 bg-gray-200 py-5 lg:px-5 lg:py-10 ${
+        className={`fixed top-0 left-0 overflow-x-hidden overflow-y-auto h-screen lg:static lg:basis-75 bg-gray-200 py-5 lg:px-5 lg:py-10 flex flex-col justify-between ${
           show ? "w-75 px-5 transition-[width] z-10" : "w-0 "
         }`}
       >
-        <UserProfile className="mb-5 px-3 lg:mb-10" />
-        <div className="flex flex-col gap-2">
-          <NavLink to="/dashboard" className={rootNavLinkClasses} end>
-            <RxDashboard className="text-xl" />
-            <span>Dashboard</span>
-          </NavLink>
-          <NavLink to="/dashboard/suppliers" className={rootNavLinkClasses}>
-            <PiUsers className="text-xl" />
-            <span>Suppliers</span>
-          </NavLink>
-          <NavLink to="/dashboard/customers" className={rootNavLinkClasses}>
-            <PiUsersThree className="text-xl" />
-            <span>Customers</span>
-          </NavLink>
-          <button
-            className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
-              isPreferredUrl(pathname, "/dashboard/inventory")
-                ? "bg-green-700 text-white"
-                : "hover:bg-gray-200"
-            }`}
-            onClick={() => setShowInventoryLinks((prevState) => !prevState)}
-          >
-            <span className="flex items-center gap-2">
-              <LiaClipboardCheckSolid className="text-xl" />
-              <span>Inventory</span>
-            </span>
-            {showInventoryLinks ? (
-              <RxCaretUp className="text-xl" />
-            ) : (
-              <RxCaretDown className="text-xl" />
-            )}
-          </button>
-          <AnimatePresence>
-            {showInventoryLinks && (
-              <motion.div
-                className="ps-6 space-y-1 overflow-hidden"
-                initial={{ height: 0 }}
-                animate={{ height: "auto" }}
-                exit={{ height: 0 }}
-              >
-                <NavLink
-                  to="/dashboard/inventory/categories-products"
-                  className={subNavLinkClasses}
+        <div>
+          <AppLogo className="mb-5 px-3 lg:mb-10" />
+          <div className="flex flex-col gap-2">
+            <NavLink to="/dashboard" className={rootNavLinkClasses} end>
+              <RxDashboard className="text-xl" />
+              <span>Dashboard</span>
+            </NavLink>
+
+            <p className="mt-4 ps-3 flex items-center gap-2">
+              <BsDashLg className="text-xl" />
+              <strong className="font-semibold">Sourcing</strong>
+            </p>
+            <NavLink to="/dashboard/suppliers" className={rootNavLinkClasses}>
+              <PiUsers className="text-xl" />
+              <span>Suppliers</span>
+            </NavLink>
+            <NavLink to="/dashboard/purchase" className={rootNavLinkClasses}>
+              <span className="flex items-center gap-2">
+                <PiClipboardText className="text-xl" />
+                <span>Purchase</span>
+              </span>
+            </NavLink>
+
+            <p className="mt-4 ps-3 flex items-center gap-2">
+              <BsDashLg className="text-xl" />
+              <strong className="font-semibold">Sales Management</strong>
+            </p>
+            <NavLink to="/dashboard/customers" className={rootNavLinkClasses}>
+              <PiUsersThree className="text-xl" />
+              <span>Customers</span>
+            </NavLink>
+            <button
+              className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
+                isPreferredUrl(pathname, "/dashboard/inventory")
+                  ? "bg-green-700 text-white"
+                  : "hover:bg-gray-200"
+              }`}
+              onClick={() => setShowInventoryLinks((prevState) => !prevState)}
+            >
+              <span className="flex items-center gap-2">
+                <LiaClipboardCheckSolid className="text-xl" />
+                <span>Inventory</span>
+              </span>
+              {showInventoryLinks ? (
+                <RxCaretUp className="text-xl" />
+              ) : (
+                <RxCaretDown className="text-xl" />
+              )}
+            </button>
+            <AnimatePresence>
+              {showInventoryLinks && (
+                <motion.div
+                  className="ps-6 space-y-1 overflow-hidden"
+                  initial={{ height: 0 }}
+                  animate={{ height: "auto" }}
+                  exit={{ height: 0 }}
                 >
-                  <TbFilePencil className="text-[1.15rem]" />
-                  <span>Categories & Products</span>
-                </NavLink>
-                <NavLink
-                  to="/dashboard/inventory/available-stocks"
-                  className={subNavLinkClasses}
-                >
-                  <TbFileDescription className="text-[1.15rem]" />
-                  <span>Available Stocks</span>
-                </NavLink>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <button
-            className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
-              isPreferredUrl(pathname, "/dashboard/purchase")
-                ? "bg-green-700 text-white"
-                : "hover:bg-gray-200"
-            }`}
-            onClick={() => setShowPurchaseLinks((prevState) => !prevState)}
-          >
-            <span className="flex items-center gap-2">
-              <PiClipboardText className="text-xl" />
-              <span>Purchase</span>
-            </span>
-            {showPurchaseLinks ? (
-              <RxCaretUp className="text-xl" />
-            ) : (
-              <RxCaretDown className="text-xl" />
-            )}
-          </button>
-          <AnimatePresence>
-            {showPurchaseLinks && (
-              <motion.div
-                className="ps-6 space-y-1 overflow-hidden"
-                initial={{ height: 0 }}
-                animate={{ height: "auto" }}
-                exit={{ height: 0 }}
-              >
-                <NavLink
-                  to="/dashboard/purchase/create"
-                  className={subNavLinkClasses}
-                >
-                  <TbFilePencil className="text-[1.15rem]" />
-                  <span>Create New Purchase</span>
-                </NavLink>
-                <NavLink
-                  to="/dashboard/purchase/stocks"
-                  className={subNavLinkClasses}
-                >
-                  <TbFileDescription className="text-[1.15rem]" />
-                  <span>All Purchases</span>
-                </NavLink>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <button
-            className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
-              isPreferredUrl(pathname, "/dashboard/sales")
-                ? "bg-green-700 text-white"
-                : "hover:bg-gray-200"
-            }`}
-            onClick={() => setShowSalesLinks((prevState) => !prevState)}
-          >
-            <span className="flex items-center gap-2">
+                  <NavLink
+                    to="/dashboard/inventory/categories-products"
+                    className={subNavLinkClasses}
+                  >
+                    <TbFilePencil className="text-[1.15rem]" />
+                    <span>Categories & Products</span>
+                  </NavLink>
+                  <NavLink
+                    to="/dashboard/inventory/available-stocks"
+                    className={subNavLinkClasses}
+                  >
+                    <TbFileDescription className="text-[1.15rem]" />
+                    <span>Available Stocks</span>
+                  </NavLink>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <NavLink to="/dashboard/sales" className={rootNavLinkClasses}>
               <PiChartLineUp className="text-xl" />
               <span>Sales</span>
-            </span>
-            {showSalesLinks ? (
-              <RxCaretUp className="text-xl" />
-            ) : (
-              <RxCaretDown className="text-xl" />
-            )}
-          </button>
-          <AnimatePresence>
-            {showSalesLinks && (
-              <motion.div
-                className="ps-6 space-y-1 overflow-hidden"
-                initial={{ height: 0 }}
-                animate={{ height: "auto" }}
-                exit={{ height: 0 }}
-              >
-                <NavLink
-                  to="/dashboard/sales/new"
-                  className={subNavLinkClasses}
-                >
-                  <TbFilePencil className="text-[1.15rem]" />
-                  <span>Create New Order</span>
-                </NavLink>
-                <NavLink
-                  to="/dashboard/sales/sold"
-                  className={subNavLinkClasses}
-                >
-                  <TbFileDescription className="text-[1.15rem]" />
-                  <span>All Sales</span>
-                </NavLink>
-                <NavLink
-                  to="/dashboard/sales/arrears"
-                  className={subNavLinkClasses}
-                >
-                  <PiMoney className="text-[1.15rem]" />
-                  <span>Arrears</span>
-                </NavLink>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <NavLink to="/dashboard/employees" className={rootNavLinkClasses}>
-            <LiaUsersCogSolid className="text-xl" />
-            <span>Employees</span>
-          </NavLink>
-          <NavLink to="/dashboard/report" className={rootNavLinkClasses}>
-            <TbReport className="text-xl" />
-            <span>Report</span>
-          </NavLink>
+            </NavLink>
+
+            <p className="mt-4 ps-3 flex items-center gap-2">
+              <BsDashLg className="text-xl" />
+              <strong className="font-semibold">Employee Usage</strong>
+            </p>
+            <NavLink to="/dashboard/employees" className={rootNavLinkClasses}>
+              <LiaUsersCogSolid className="text-xl" />
+              <span>Employees</span>
+            </NavLink>
+
+            <p className="mt-4 ps-3 flex items-center gap-2">
+              <BsDashLg className="text-xl" />
+              <strong className="font-semibold">Money Sharing</strong>
+            </p>
+            <NavLink to="/dashboard/report" className={rootNavLinkClasses}>
+              <TbReport className="text-xl" />
+              <span>Report</span>
+            </NavLink>
+          </div>
         </div>
+        <UserProfile className="mt-10 md:mt-0" />
       </aside>
     </>
   );
@@ -253,7 +199,12 @@ export function LogoutForm(): React.JSX.Element {
         may be lost.
       </p>
       <Form.Group>
-        <Button type="submit" el="button" disabled={isLoading}>
+        <Button
+          type="submit"
+          el="button"
+          disabled={isLoading}
+          variant="primary"
+        >
           {isLoading ? <Button.Loader /> : "Yes, logout"}
         </Button>
       </Form.Group>
@@ -274,10 +225,43 @@ export function PageHeader({
   onToggleSettings,
   onToggleDrawer,
 }: PageHeaderProps): React.JSX.Element {
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
+
+  const { page, perPage } = getPaginatedData(searchParams);
+
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>): void => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    const query = event.currentTarget.value;
+
+    debounceTimerRef.current = setTimeout(() => {
+      if (query) {
+        navigate(
+          `${pathname}?page=${page}&perPage=${perPage}${query && "&q=" + query}`,
+        );
+      } else {
+        navigate(`${pathname}?page=${page}&perPage=${perPage}`);
+      }
+    }, 500);
+  };
+
   return (
     <header className="py-4 border-b border-b-gray-300">
       <ContentWrapper className="flex items-center justify-between">
-        <AppLogo />
+        <div className="basis-50 md:basis-75">
+          <Form.Control
+            id="search"
+            type="search"
+            placeholder="Search"
+            leftIcon={<IoSearchOutline />}
+            onChange={handleSearch}
+          />
+        </div>
         <div className="flex items-center gap-3">
           <button
             className="inline-block lg:hidden"
