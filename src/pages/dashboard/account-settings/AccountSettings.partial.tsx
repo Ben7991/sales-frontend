@@ -143,6 +143,7 @@ export function PersonalInformation(): React.JSX.Element {
           el="button"
           type="submit"
           className="flex! items-center gap-2"
+          variant="primary"
           disabled={isLoading}
         >
           {isLoading ? (
@@ -296,6 +297,7 @@ export function ChangePassword(): React.JSX.Element {
           el="button"
           type="submit"
           className="flex! items-center gap-1"
+          variant="primary"
           disabled={isLoading}
         >
           {isLoading ? (
