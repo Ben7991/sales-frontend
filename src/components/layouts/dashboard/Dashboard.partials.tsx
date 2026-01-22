@@ -165,7 +165,11 @@ export function SideDrawer({
             </NavLink>
           </div>
         </div>
+<<<<<<< HEAD
         <UserProfile className="mt-10 md:mt-0" />
+=======
+        <UserProfile />
+>>>>>>> 7868c779b1e830639080de98bbc5d7ea23b46069
       </aside>
     </>
   );
