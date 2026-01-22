@@ -1,8 +1,21 @@
 import { describe, it, expect } from "@jest/globals";
 
-import { getPaginatedData } from "./helpers.utils";
+import { getPaginatedData, makeFirstLetterUppercase } from "./helpers.utils";
 
 describe("helpers.utils.ts", () => {
+  describe("makeFirstLetterUppercase()", () => {
+    it("should return an empty string if undefined is passed", () => {
+      const resultWithoutArgument = makeFirstLetterUppercase();
+      const resultwithUndefined = makeFirstLetterUppercase(undefined);
+      expect(resultWithoutArgument).toBe("");
+      expect(resultwithUndefined).toBe("");
+    });
+    it("should return the right string", () => {
+      const result = makeFirstLetterUppercase("testing");
+      expect(result).toMatch("Testing");
+    });
+  });
+
   describe("getPaginatedData()", () => {
     it("should return default pagination data if an empty URLSearchParams is passed", () => {
       const params = new URLSearchParams();
