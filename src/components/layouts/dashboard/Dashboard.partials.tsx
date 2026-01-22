@@ -102,7 +102,7 @@ export function SideDrawer({
               className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
                 isPreferredUrl(pathname, "/dashboard/inventory")
                   ? "bg-green-700 text-white"
-                  : "hover:bg-gray-200"
+                  : "hover:bg-gray-300"
               }`}
               onClick={() => setShowInventoryLinks((prevState) => !prevState)}
             >
