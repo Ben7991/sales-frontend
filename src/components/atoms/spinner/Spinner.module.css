@@ -2,21 +2,25 @@
 .loader {
   aspect-ratio: 1;
   border-radius: 50%;
-  animation: l20-1 0.8s infinite linear alternate, l20-2 1.6s infinite linear;
+  animation:
+    l20-1 0.8s infinite linear alternate,
+    l20-2 1.6s infinite linear;
 }
 
 .sm {
   width: 16px;
+  border: 3px solid transparent;
 }
 .md {
   width: 50px;
+  border: 8px solid transparent;
 }
 
 .white {
-  border: 3px solid var(--color-white);
+  border-color: var(--color-white);
 }
 .black {
-  border: 8px solid var(--color-black);
+  border-color: var(--color-black);
 }
 
 @keyframes l20-1 {
