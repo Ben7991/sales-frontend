@@ -14,6 +14,10 @@ describe("helpers.utils.ts", () => {
       const result = makeFirstLetterUppercase("testing");
       expect(result).toMatch("Testing");
     });
+    it("should return the right string with hyphens replaces with space when hyphenated string is passed", () => {
+      const result = makeFirstLetterUppercase("testing-again");
+      expect(result).toMatch("Testing Again");
+    });
   });
 
   describe("getPaginatedData()", () => {

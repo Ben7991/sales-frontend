@@ -1,6 +1,16 @@
 export function makeFirstLetterUppercase(value?: string): string {
   if (!value) return "";
 
+  if (value.includes("-")) {
+    const splittedValue = value.split("-");
+    return splittedValue
+      .map(
+        (str) =>
+          `${str.substring(0, 1).toUpperCase()}${str.substring(1).toLowerCase()}`,
+      )
+      .join(" ");
+  }
+
   return `
     ${value.substring(0, 1).toUpperCase()}${value.substring(1).toLowerCase()}
   `;
