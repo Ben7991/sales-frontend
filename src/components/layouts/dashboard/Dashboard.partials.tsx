@@ -26,6 +26,9 @@ import {
   TbLogout,
   TbReport,
 } from "react-icons/tb";
+import { LuCircleUserRound } from "react-icons/lu";
+import { IoSearchOutline } from "react-icons/io5";
+import { BsDashLg } from "react-icons/bs";
 
 import { Form } from "@/components/atoms/form/Form";
 import { Button } from "@/components/atoms/button/Button";
@@ -43,13 +46,10 @@ import {
   subNavLinkClasses,
 } from "./Dashboard.utils";
 import { AppLogo } from "@/components/molecules/app-logo/AppLogo";
-import { LuCircleUserRound } from "react-icons/lu";
 import { useAppDispatch } from "@/store/index.util";
 import { removeAuthUser } from "@/store/slice/auth/auth.slice";
 import { AUTH_STATE } from "@/utils/constants.utils";
-import { IoSearchOutline } from "react-icons/io5";
 import { getPaginatedData } from "@/utils/helpers.utils";
-import { BsDashLg } from "react-icons/bs";
 
 export function SideDrawer({
   show,
