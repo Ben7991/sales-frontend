@@ -12,6 +12,8 @@ export type ResponseWithRecord<T> = {
   data: Array<T>;
 };
 
+export type DataWithID = { id: number; data: string };
+
 export type Role = "ADMIN" | "SALES_PERSON" | "PROCUREMENT_MANAGER";
 export type AccountStatus = "ACTIVE" | "SUSPENDED";
 export type AvailabilityStatus = "ACTIVE" | "IN_ACTIVE";

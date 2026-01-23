@@ -1,3 +1,4 @@
+import type { DataWithID } from "@/utils/types.utils";
 import type { ComponentPropsWithRef } from "react";
 
 export type FormControlProps = {
@@ -9,4 +10,10 @@ export type FormControlProps = {
 export type PasswordTogglerProps = {
   state: boolean;
   onClick: VoidFunction;
+};
+
+export type FormControlArrayProps = {
+  list: Array<DataWithID>;
+  onUpdateList: (value: Array<DataWithID>) => void;
+  onRemoveItem: (id: number) => void;
 };

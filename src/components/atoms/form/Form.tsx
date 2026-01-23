@@ -1,6 +1,15 @@
-import type { ComponentPropsWithoutRef, ComponentPropsWithRef } from "react";
-import type { FormControlProps, PasswordTogglerProps } from "./Form.types";
+import type {
+  ChangeEvent,
+  ComponentPropsWithoutRef,
+  ComponentPropsWithRef,
+} from "react";
+import type {
+  FormControlArrayProps,
+  FormControlProps,
+  PasswordTogglerProps,
+} from "./Form.types";
 import { GoEye, GoEyeClosed } from "react-icons/go";
+import { AiOutlineMinusCircle } from "react-icons/ai";
 
 function Form(props: ComponentPropsWithRef<"form">): React.JSX.Element {
   return <form {...props}>{props.children}</form>;
@@ -40,6 +49,49 @@ function Control({
   );
 }
 
+function ControlArray({
+  list,
+  onRemoveItem,
+  onUpdateList,
+}: FormControlArrayProps): React.ReactElement {
+  const handleItemChange = (
+    id: number,
+    event: ChangeEvent<HTMLInputElement>,
+  ): void => {
+    const updatedList = [...list];
+    const existingItem = updatedList.find((item) => item.id === id);
+
+    if (!existingItem) {
+      return;
+    }
+
+    existingItem.data = event.currentTarget.value;
+    onUpdateList(updatedList);
+  };
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {list.map((item, index) => (
+        <div className="flex items-center gap-1" key={item.id}>
+          <div className="w-50" key={item.id}>
+            <Form.Control
+              type="number"
+              value={item.data}
+              onChange={(e) => handleItemChange(item.id, e)}
+              placeholder="0554835290"
+            />
+          </div>
+          {index !== 0 ? (
+            <button type="button" onClick={() => onRemoveItem(item.id)}>
+              <AiOutlineMinusCircle className="text-xl" />
+            </button>
+          ) : null}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function PasswordToggler({
   state,
   onClick,
@@ -66,6 +118,7 @@ function Checkbox(props: ComponentPropsWithRef<"input">): React.JSX.Element {
 Form.Group = Group;
 Form.Label = Label;
 Form.Control = Control;
+Form.ControlArray = ControlArray;
 Form.Checkbox = Checkbox;
 Form.PasswordToggler = PasswordToggler;
 Form.Error = Error;
