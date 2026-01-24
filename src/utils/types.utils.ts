@@ -13,6 +13,7 @@ export type ResponseWithRecord<T> = {
 };
 
 export type DataWithID = { id: number; data: string };
+export type PhoneWithID = { id: number; phone: string };
 
 export type Role = "ADMIN" | "SALES_PERSON" | "PROCUREMENT_MANAGER";
 export type AccountStatus = "ACTIVE" | "SUSPENDED";
@@ -35,7 +36,7 @@ export type Supplier = {
   companyName: string;
   email: string;
   status: AvailabilityStatus;
-  supplierPhones: Array<{ id: number; phone: string }>;
+  supplierPhones: Array<PhoneWithID>;
 };
 
 export const StatusCodes = {
