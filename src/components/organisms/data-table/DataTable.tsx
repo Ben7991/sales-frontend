@@ -22,13 +22,15 @@ export function DataTable({
   count,
 }: DataTableProps): React.JSX.Element {
   return (
-    <div className="bg-white border border-gray-300 rounded-md">
-      <div className="w-full overflow-y-visible overflow-x-auto p-5">
-        <table className="table-collapse table-auto w-full mb-10">
+    <div className="border border-gray-200 rounded-md bg-white">
+      <div className="w-full overflow-y-visible overflow-x-auto">
+        <table className="table-collapse table-auto w-full mb-5">
           <thead className="sticky top-0">
             <tr>
               {columnHeadings.map((item) => (
-                <th key={item}>{item}</th>
+                <th key={item} className="bg-gray-200">
+                  {item}
+                </th>
               ))}
             </tr>
           </thead>
@@ -120,7 +122,7 @@ function Dropdown({ page, perPage, query }: DropdownProps): React.JSX.Element {
   return (
     <div className="relative">
       <button
-        className="flex items-center gap-1 py-1.5 px-4 hover:bg-gray-100 border border-gray-300 rounded-md"
+        className="flex items-center gap-1 py-1 px-2.5 hover:bg-gray-100 border border-gray-300 rounded-md"
         onClick={(e) => {
           e.stopPropagation();
           setShow((prevState) => !prevState);
@@ -135,7 +137,7 @@ function Dropdown({ page, perPage, query }: DropdownProps): React.JSX.Element {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute bottom-0 flex flex-col border border-gray-200 bg-white w-full shadow-md rounded-md"
+            className="absolute bottom-0 flex flex-col border border-gray-200 bg-white w-full shadow-sm rounded-md"
           >
             {list.map((item) => (
               <button
@@ -180,7 +182,7 @@ function Actions({ children }: ActionsProps): React.JSX.Element {
               e.stopPropagation();
               setShow(true);
             }}
-            className="z-1 absolute top-7 right-0 p-2 w-50 rounded-sm bg-white border border-gray-200 shadow-md"
+            className="z-1 absolute top-7 right-0 p-2 w-50 rounded-sm bg-white border border-gray-200 shadow-sm"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -252,7 +254,7 @@ function DataList({
               e.stopPropagation();
               setShow(true);
             }}
-            className="z-1 absolute top-10 right-0 rounded-sm bg-white py-2 px-3 shadow-md border border-gray-200 w-62.5 space-y-1"
+            className="z-1 absolute top-10 right-0 rounded-sm bg-white py-2 px-3 shadow-sm border border-gray-200 w-62.5 space-y-1"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
