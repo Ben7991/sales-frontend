@@ -22,7 +22,7 @@ export function DataTable({
   count,
 }: DataTableProps): React.JSX.Element {
   return (
-    <div className="border border-gray-200 rounded-md bg-white">
+    <div className="rounded-md bg-white pb-5">
       <div className="w-full overflow-y-visible overflow-x-auto">
         <table className="table-collapse table-auto w-full mb-5">
           <thead className="sticky top-0">
@@ -61,7 +61,7 @@ function Paginator({ count }: PaginatorProps): React.JSX.Element {
   };
 
   return (
-    <div className="flex items-center justify-center gap-3 mb-5">
+    <div className="flex items-center justify-center gap-3">
       <p>Rows per page: </p>
       <Dropdown page={page} perPage={perPage} query={query} />
       <p>
