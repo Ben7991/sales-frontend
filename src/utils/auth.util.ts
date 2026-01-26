@@ -5,7 +5,7 @@ import {
 } from "@/utils/types.utils";
 import { FAILED_STATUS_CODES } from "./constants.utils";
 
-function getAccessToken(): string {
+export function getAccessToken(): string {
   const cookies = document.cookie;
   const accessTokenCookie = cookies
     .split(";")
