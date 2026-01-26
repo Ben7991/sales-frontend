@@ -4,10 +4,22 @@ import type { ButtonProps, LinkProps } from "./Button.types";
 import { Spinner } from "../spinner/Spinner";
 
 export function Button(props: ButtonProps | LinkProps): React.JSX.Element {
+  let variantClassnames = "bg-green-700 hover:bg-green-800 text-white py-1.5";
+
+  if (props.variant === "outline") {
+    variantClassnames =
+      "bg-white border border-gray-300 py-[5px] hover:bg-gray-100";
+  } else if (props.variant === "danger") {
+    variantClassnames = "bg-red-700 hover:bg-red-800 text-white py-1.5";
+  }
+
   if (props.el === "link") {
     const { className, ...reset } = props;
     return (
-      <Link className={`${className}`} {...reset}>
+      <Link
+        className={`px-3 inline-block ${variantClassnames} rounded-sm ${className}`}
+        {...reset}
+      >
         {props.children}
       </Link>
     );
@@ -17,7 +29,7 @@ export function Button(props: ButtonProps | LinkProps): React.JSX.Element {
 
   return (
     <button
-      className={`py-2 px-3 inline-block bg-green-700 hover:bg-green-800 text-white rounded-sm disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`px-3 inline-block ${variantClassnames} rounded-sm disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
       {...reset}
     >
       {props.children}

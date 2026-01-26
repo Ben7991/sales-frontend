@@ -17,3 +17,18 @@ h6 {
 .form-control:has(input:focus) {
   border-color: var(--color-green-400);
 }
+
+th {
+  color: var(--color-black);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+}
+
+tr {
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+th,
+td {
+  padding: 10px;
+}

@@ -12,7 +12,7 @@ export function UserProfile({
 
   return (
     <div className={`flex items-center gap-4 ${className}`}>
-      <div className="w-12 h-12 rounded-full border border-gray-400 flex items-center justify-center text-xl">
+      <div className="w-12 h-12 rounded-md border border-gray-400 flex items-center justify-center text-xl">
         BT
       </div>
       <div>

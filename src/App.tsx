@@ -14,16 +14,13 @@ import { Supplier } from "@/pages/dashboard/supplier/Supplier";
 import { Customer } from "@/pages/dashboard/customer/Customer";
 import { Employee } from "@/pages/dashboard/employee/Employee";
 import { Report } from "@/pages/dashboard/report/Report";
-import { CreatePurchase } from "./pages/dashboard/purchase/create-purchase/CreatePurchase";
-import { AllPurchase } from "./pages/dashboard/purchase/all-purchase/AllPurchase";
 import { CategoriesProducts } from "./pages/dashboard/inventory/categories-products/CategoriesProducts";
 import { AvailableStocks } from "./pages/dashboard/inventory/available-stock/AvailableStocks";
-import { Arrears } from "./pages/dashboard/sales/arrears/Arrears";
-import { AllSales } from "./pages/dashboard/sales/all-sales/AllSales";
-import { CreateOrder } from "./pages/dashboard/sales/create-order/CreateOrder";
 import { CanActivate } from "./components/guards/can-activate/CanActivate";
 import { CanDeactivate } from "./components/guards/can-deactivate/CanDeactivate";
 import { ResetPasswordActivate } from "./components/guards/reset-password-activate/ResetPasswordActivate";
+import { Purchase } from "./pages/dashboard/purchase/Purchase";
+import { Sales } from "./pages/dashboard/sales/Sales";
 
 export default function App(): React.JSX.Element {
   const appRouter = createBrowserRouter([
@@ -79,11 +76,8 @@ export default function App(): React.JSX.Element {
               path: "/dashboard/inventory/available-stocks",
               element: <AvailableStocks />,
             },
-            { path: "/dashboard/purchase/create", element: <CreatePurchase /> },
-            { path: "/dashboard/purchase/stocks", element: <AllPurchase /> },
-            { path: "/dashboard/sales/new", element: <CreateOrder /> },
-            { path: "/dashboard/sales/sold", element: <AllSales /> },
-            { path: "/dashboard/sales/arrears", element: <Arrears /> },
+            { path: "/dashboard/purchase", element: <Purchase /> },
+            { path: "/dashboard/sales", element: <Sales /> },
             { path: "/dashboard/employees", element: <Employee /> },
             { path: "/dashboard/report", element: <Report /> },
           ],

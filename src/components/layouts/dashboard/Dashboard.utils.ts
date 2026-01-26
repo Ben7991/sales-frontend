@@ -9,14 +9,14 @@ export function rootNavLinkClasses({
   const rootClasses = "flex items-center gap-2 py-1.5 px-3 rounded-md";
 
   if (isPending) {
-    return `${rootClasses} hover:bg-gray-200`;
+    return `${rootClasses} hover:bg-gray-300`;
   }
 
   if (isActive) {
     return `${rootClasses} bg-green-700 text-white`;
   }
 
-  return `${rootClasses} hover:bg-gray-200`;
+  return `${rootClasses} hover:bg-gray-300`;
 }
 
 export function subNavLinkClasses({
@@ -24,7 +24,7 @@ export function subNavLinkClasses({
   isPending,
 }: NavLinkRenderProps): string {
   const rootClasses =
-    "flex items-center gap-2 py-1.5 px-3 hover:bg-gray-200 rounded-md text-[0.875rem]";
+    "flex items-center gap-2 py-1.5 px-3 hover:bg-gray-300 rounded-md text-[0.875rem]";
 
   if (isPending) {
     return `${rootClasses}`;
@@ -39,7 +39,7 @@ export function subNavLinkClasses({
 
 export function isPreferredUrl(
   currentUrl: string,
-  preferredUrl: string
+  preferredUrl: string,
 ): boolean {
   return currentUrl.includes(preferredUrl);
 }

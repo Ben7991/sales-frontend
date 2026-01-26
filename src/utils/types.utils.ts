@@ -7,8 +7,17 @@ export type ResponseWithOnlyData<T> = {
   data: T;
 };
 
+export type ResponseWithRecord<T> = {
+  count: number;
+  data: Array<T>;
+};
+
+export type DataWithID = { id: number; data: string };
+export type PhoneWithID = { id: number; phone: string };
+
 export type Role = "ADMIN" | "SALES_PERSON" | "PROCUREMENT_MANAGER";
 export type AccountStatus = "ACTIVE" | "SUSPENDED";
+export type AvailabilityStatus = "ACTIVE" | "IN_ACTIVE";
 export type User = {
   id: number;
   createdAt: string;
@@ -19,6 +28,15 @@ export type User = {
   role: Role;
   status: AccountStatus;
   setPassword: boolean;
+};
+export type Supplier = {
+  id: number;
+  createdAt: string;
+  name: string;
+  companyName: string;
+  email: string;
+  status: AvailabilityStatus;
+  supplierPhones: Array<PhoneWithID>;
 };
 
 export const StatusCodes = {

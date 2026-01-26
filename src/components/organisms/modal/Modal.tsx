@@ -9,33 +9,33 @@ type ModalProps = {
   children: React.ReactNode;
   title: string;
   show: boolean;
-  onToggle: VoidFunction;
+  onHide: VoidFunction;
 };
 
 export function Modal({
   title,
   show,
   children,
-  onToggle,
+  onHide: onHide,
 }: ModalProps): React.JSX.Element {
   return createPortal(
     <>
-      {show && <Backdrop onToggle={onToggle} />}
+      {show && <Backdrop onToggle={onHide} />}
       <AnimatePresence>
         {show && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="absolute top-1/2 left-1/2 -translate-1/2 bg-white rounded-lg overflow-hidden w-[90%] md:w-112.5 z-50"
+            className="absolute top-1/2 left-1/2 -translate-1/2 bg-white rounded-lg overflow-hidden w-[90%] md:w-125 z-50"
           >
-            <div className="flex items-center justify-between border border-gray-300 p-4">
+            <div className="flex items-center justify-between border border-gray-300 py-4 px-5">
               <Headline tag="h4">{title}</Headline>
-              <button className="hover:text-red-600" onClick={onToggle}>
+              <button className="hover:text-red-600" onClick={onHide}>
                 <LiaTimesSolid className="text-2xl" />
               </button>
             </div>
-            <div className="p-4">{children}</div>
+            <div className="py-4 px-5">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
