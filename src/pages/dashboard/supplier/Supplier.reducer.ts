@@ -43,7 +43,7 @@ export function supplierReducer(
     if (state.data.length === 10 && action.payload.perPage === 10) {
       const updatedSuppliers = state.data.slice(0, 9);
       updatedSuppliers.unshift(action.payload.data);
-      return { ...state, data: updatedSuppliers };
+      return { ...state, data: updatedSuppliers, count: state.count + 1 };
     }
     return { ...state, data: [action.payload.data, ...state.data] };
   } else if (action.type === "edit") {

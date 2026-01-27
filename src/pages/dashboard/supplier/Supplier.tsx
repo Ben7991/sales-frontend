@@ -27,9 +27,12 @@ import {
 } from "./Supplier.reducer";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
-import type { PhoneWithID, Supplier } from "@/utils/types.utils";
+import type {
+  ActiveTabForPhoneForm,
+  PhoneWithID,
+  Supplier,
+} from "@/utils/types.utils";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
-import type { ActiveTabForSupplierPhoneForm } from "./Supplier.types";
 
 export function Supplier(): React.JSX.Element {
   const { pathname } = useLocation();
@@ -91,7 +94,7 @@ export function Supplier(): React.JSX.Element {
   const handlePhoneSelectionAndEdit = (
     supplierId: number,
     phoneId: number,
-    action: ActiveTabForSupplierPhoneForm,
+    action: ActiveTabForPhoneForm,
   ) => {
     const preferredSupplier = supplierState.data.find(
       (item) => item.id === supplierId,
@@ -241,7 +244,7 @@ export function Supplier(): React.JSX.Element {
             onShowAlert={showAlert}
             onSetAlertDetails={setAlertDetails}
             onHideModal={handleHideModal}
-            activeTab={activeAction as ActiveTabForSupplierPhoneForm}
+            activeTab={activeAction as ActiveTabForPhoneForm}
           />
         ) : activeAction === "import" ? (
           <SupplierImport

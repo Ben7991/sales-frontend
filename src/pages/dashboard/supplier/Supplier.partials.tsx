@@ -371,7 +371,7 @@ export function SupplierPhoneForm({
         </p>
       ) : (
         <Form.Group className="mb-4">
-          <Form.Label htmlFor="phones">Phones</Form.Label>
+          <Form.Label htmlFor="phone">Phone</Form.Label>
           <Form.Control
             type="number"
             id="phone"
@@ -571,7 +571,8 @@ function UploadCSV({
           process could take some time
         </li>
         <li>
-          Incase of failure, upload a new file only with the mentioned rows.
+          Incase of failure, upload a new file containing only the mentioned
+          rows.
         </li>
       </ol>
       <Form ref={formRef}>
