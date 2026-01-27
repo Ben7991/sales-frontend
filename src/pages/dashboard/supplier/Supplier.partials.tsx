@@ -366,8 +366,12 @@ export function SupplierPhoneForm({
     <Form onSubmit={isActiveTabDelete ? handleDelete : handleSubmit(onSubmit)}>
       {isActiveTabDelete ? (
         <p className="mb-4">
-          Are you sure you want to delete this supplier phone? When completed
-          this action can't be reversed only by re-adding it again
+          Are you sure you want to delete{" "}
+          <strong className="font-semibold">
+            {selectedSupplierPhone?.phone}
+          </strong>{" "}
+          for{" "}
+          <strong className="font-semibold">{selectedSupplier?.name}</strong>?
         </p>
       ) : (
         <Form.Group className="mb-4">
