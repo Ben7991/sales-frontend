@@ -7,6 +7,7 @@ import type {
   FormControlArrayProps,
   FormControlProps,
   PasswordTogglerProps,
+  TextareaProps,
 } from "./Form.types";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import { AiOutlineMinusCircle } from "react-icons/ai";
@@ -92,6 +93,19 @@ function ControlArray({
   );
 }
 
+function TextArea({ hasError, ...props }: TextareaProps): React.JSX.Element {
+  const { className, ...rest } = props;
+
+  return (
+    <textarea
+      className={`px-3 py-1.5 block border w-full rounded-md outline-none ${
+        hasError ? "border-red-600" : "border-gray-200 hover:border-gray-400"
+      } ${className}`}
+      {...rest}
+    ></textarea>
+  );
+}
+
 function PasswordToggler({
   state,
   onClick,
@@ -119,6 +133,7 @@ Form.Group = Group;
 Form.Label = Label;
 Form.Control = Control;
 Form.ControlArray = ControlArray;
+Form.TextArea = TextArea;
 Form.Checkbox = Checkbox;
 Form.PasswordToggler = PasswordToggler;
 Form.Error = Error;

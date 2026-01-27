@@ -14,7 +14,8 @@ h6 {
   color: var(--color-black);
 }
 
-.form-control:has(input:focus) {
+.form-control:has(input:focus),
+textarea:focus {
   border-color: var(--color-green-400);
 }
 

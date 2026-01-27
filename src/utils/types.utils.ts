@@ -1,3 +1,7 @@
+import type { Dispatch, SetStateAction } from "react";
+
+import type { AlertProps } from "@/components/molecules/alert/Alert.types";
+
 export type ResponseWithDataAndMessage<T> = {
   message: string;
   data: T;
@@ -11,6 +15,15 @@ export type ResponseWithRecord<T> = {
   count: number;
   data: Array<T>;
 };
+
+export type PreferredAlertPropsForForm = {
+  onShowAlert: VoidFunction;
+  onHideModal: VoidFunction;
+  onSetAlertDetails: Dispatch<
+    SetStateAction<Omit<AlertProps, "onHide" | "state"> | undefined>
+  >;
+};
+export type ActiveTabForPhoneForm = "edit-phone" | "add-phone" | "delete-phone";
 
 export type DataWithID = { id: number; data: string };
 export type PhoneWithID = { id: number; phone: string };
@@ -37,6 +50,13 @@ export type Supplier = {
   email: string;
   status: AvailabilityStatus;
   supplierPhones: Array<PhoneWithID>;
+};
+export type Customer = {
+  id: number;
+  createdAt: string;
+  name: string;
+  address: string;
+  customerPhones: Array<PhoneWithID>;
 };
 
 export const StatusCodes = {

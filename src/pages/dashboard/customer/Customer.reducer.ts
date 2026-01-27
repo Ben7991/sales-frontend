@@ -1,49 +1,49 @@
-import type { PhoneWithID, Supplier } from "@/utils/types.utils";
+import type { Customer, PhoneWithID } from "@/utils/types.utils";
 
-type SupplierState = {
+type CustomerState = {
   isFetched: boolean;
   count: number;
-  data: Array<Supplier>;
+  data: Array<Customer>;
 };
 
-export type SupplierActionType =
-  | { type: "load"; payload: Omit<SupplierState, "isFetched"> }
-  | { type: "add"; payload: { data: Supplier; perPage: number } }
-  | { type: "edit"; payload: { data: Supplier; id: number } }
+export type CustomerActionType =
+  | { type: "load"; payload: Omit<CustomerState, "isFetched"> }
+  | { type: "add"; payload: { data: Customer; perPage: number } }
+  | { type: "edit"; payload: { data: Customer; id: number } }
   | {
       type: "add-phone";
-      payload: { data: PhoneWithID; supplierId: number };
+      payload: { data: PhoneWithID; customerId: number };
     }
   | {
       type: "edit-phone";
-      payload: { data: PhoneWithID; supplierId: number; phoneId: number };
+      payload: { data: PhoneWithID; customerId: number; phoneId: number };
     }
   | {
       type: "delete-phone";
-      payload: { supplierId: number; phoneId: number };
+      payload: { customerId: number; phoneId: number };
     }
   | {
       type: "import";
-      payload: { data: Array<Supplier>; perPage: number };
+      payload: { data: Array<Customer>; perPage: number };
     };
 
-export const initialSupplierReducerState: SupplierState = {
+export const initialCustomerReducerState: CustomerState = {
   isFetched: false,
   count: 0,
   data: [],
 };
 
-export function supplierReducer(
-  state: SupplierState,
-  action: SupplierActionType,
-): SupplierState {
+export function customerReducer(
+  state: CustomerState,
+  action: CustomerActionType,
+): CustomerState {
   if (action.type === "load") {
     return { ...state, ...action.payload, isFetched: true };
   } else if (action.type === "add") {
     if (state.data.length === 10 && action.payload.perPage === 10) {
-      const updatedSuppliers = state.data.slice(0, 9);
-      updatedSuppliers.unshift(action.payload.data);
-      return { ...state, data: updatedSuppliers, count: state.count + 1 };
+      const updatedCustomers = state.data.slice(0, 9);
+      updatedCustomers.unshift(action.payload.data);
+      return { ...state, data: updatedCustomers, count: state.count + 1 };
     }
     return { ...state, data: [action.payload.data, ...state.data] };
   } else if (action.type === "edit") {
@@ -56,40 +56,40 @@ export function supplierReducer(
     return { ...state, data: [...updatedData], count: state.count + 1 };
   } else if (action.type === "add-phone") {
     const updatedData = [...state.data];
-    const existingSupplierIndex = updatedData.findIndex(
-      (item) => item.id === action.payload.supplierId,
+    const existingCustomerIndex = updatedData.findIndex(
+      (item) => item.id === action.payload.customerId,
     );
-    const updatedSupplier = { ...updatedData[existingSupplierIndex] };
-    const updatedSupplierPhones = [...updatedSupplier.supplierPhones];
-    updatedSupplierPhones.push(action.payload.data);
-    updatedSupplier.supplierPhones = updatedSupplierPhones;
-    updatedData[existingSupplierIndex] = updatedSupplier;
+    const updatedCustomer = { ...updatedData[existingCustomerIndex] };
+    const updatedCustomerPhones = [...updatedCustomer.customerPhones];
+    updatedCustomerPhones.push(action.payload.data);
+    updatedCustomer.customerPhones = updatedCustomerPhones;
+    updatedData[existingCustomerIndex] = updatedCustomer;
     return { ...state, data: [...updatedData] };
   } else if (action.type === "edit-phone") {
     const updatedData = [...state.data];
-    const existingSupplierIndex = updatedData.findIndex(
-      (item) => item.id === action.payload.supplierId,
+    const existingCustomerIndex = updatedData.findIndex(
+      (item) => item.id === action.payload.customerId,
     );
-    const updatedSupplier = { ...updatedData[existingSupplierIndex] };
-    const updatedSupplierPhones = [...updatedSupplier.supplierPhones];
-    const preferredSupplierPhoneIndex = updatedSupplierPhones.findIndex(
+    const updatedCustomer = { ...updatedData[existingCustomerIndex] };
+    const updatedCustomerPhones = [...updatedCustomer.customerPhones];
+    const preferredCustomerPhoneIndex = updatedCustomerPhones.findIndex(
       (item) => item.id === action.payload.phoneId,
     );
-    updatedSupplierPhones[preferredSupplierPhoneIndex] = action.payload.data;
-    updatedSupplier.supplierPhones = updatedSupplierPhones;
-    updatedData[existingSupplierIndex] = updatedSupplier;
+    updatedCustomerPhones[preferredCustomerPhoneIndex] = action.payload.data;
+    updatedCustomer.customerPhones = updatedCustomerPhones;
+    updatedData[existingCustomerIndex] = updatedCustomer;
     return { ...state, data: [...updatedData] };
   } else if (action.type === "delete-phone") {
     const updatedData = [...state.data];
-    const existingSupplierIndex = updatedData.findIndex(
-      (item) => item.id === action.payload.supplierId,
+    const existingCustomerIndex = updatedData.findIndex(
+      (item) => item.id === action.payload.customerId,
     );
-    const updatedSupplier = { ...updatedData[existingSupplierIndex] };
-    updatedSupplier.supplierPhones = updatedSupplier.supplierPhones.filter(
+    const updatedCustomer = { ...updatedData[existingCustomerIndex] };
+    updatedCustomer.customerPhones = updatedCustomer.customerPhones.filter(
       (item) => item.id !== action.payload.phoneId,
     );
     const deleteCount = 1;
-    updatedData.splice(existingSupplierIndex, deleteCount, updatedSupplier);
+    updatedData.splice(existingCustomerIndex, deleteCount, updatedCustomer);
     return { ...state, data: [...updatedData] };
   } else if (action.type === "import") {
     const updatedData = [...state.data];
@@ -125,5 +125,5 @@ export function supplierReducer(
     };
   }
 
-  throw new Error("No undefines are allowed");
+  throw new Error("Unrecognized customer action type");
 }
