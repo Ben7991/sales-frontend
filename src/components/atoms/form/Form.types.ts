@@ -17,3 +17,6 @@ export type FormControlArrayProps = {
   onUpdateList: (value: Array<DataWithID>) => void;
   onRemoveItem: (id: number) => void;
 };
+
+export type TextareaProps = Pick<FormControlProps, "hasError"> &
+  ComponentPropsWithRef<"textarea">;
