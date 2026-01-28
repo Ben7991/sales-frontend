@@ -58,6 +58,16 @@ export type Customer = {
   address: string;
   customerPhones: Array<PhoneWithID>;
 };
+export type UserStatus = "ACTIVE" | "FIRED" | "QUIT";
+export type Employee = {
+  id: number;
+  createdAt: string;
+  name: string;
+  username: string;
+  email: string;
+  status: UserStatus;
+  role: Role;
+};
 
 export const StatusCodes = {
   CREATED: 201,
