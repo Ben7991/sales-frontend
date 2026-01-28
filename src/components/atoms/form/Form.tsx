@@ -146,7 +146,7 @@ function Dropdown({
           {list.map((item) => (
             <button
               type="button"
-              className="px-3 py-1.5 block w-full text-left hover:bg-gray-100 cursor-pointer"
+              className={`px-3 py-1.5 block w-full text-left ${selectedItem === item ? "bg-gray-200" : "hover:bg-gray-100"} cursor-pointer`}
               key={item}
               onClick={() => handleItemSelection(item)}
             >
