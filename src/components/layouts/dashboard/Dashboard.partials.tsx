@@ -225,7 +225,7 @@ export function PageHeader({
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
 
-  const { page, perPage } = getPaginatedData(searchParams);
+  const { perPage } = getPaginatedData(searchParams);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>): void => {
     if (debounceTimerRef.current) {
@@ -236,11 +236,9 @@ export function PageHeader({
 
     debounceTimerRef.current = setTimeout(() => {
       if (query) {
-        navigate(
-          `${pathname}?page=${page}&perPage=${perPage}${query && "&q=" + query}`,
-        );
+        navigate(`${pathname}?page=${1}&perPage=${perPage}&q=${query}`);
       } else {
-        navigate(`${pathname}?page=${page}&perPage=${perPage}`);
+        navigate(`${pathname}?page=${1}&perPage=${perPage}`);
       }
     }, 500);
   };
