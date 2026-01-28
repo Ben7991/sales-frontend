@@ -1,9 +1,11 @@
-import type {
-  ChangeEvent,
-  ComponentPropsWithoutRef,
-  ComponentPropsWithRef,
+import {
+  useState,
+  type ChangeEvent,
+  type ComponentPropsWithoutRef,
+  type ComponentPropsWithRef,
 } from "react";
 import type {
+  DropdownProps,
   FormControlArrayProps,
   FormControlProps,
   PasswordTogglerProps,
@@ -11,6 +13,7 @@ import type {
 } from "./Form.types";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import { AiOutlineMinusCircle } from "react-icons/ai";
+import { RxCaretDown, RxCaretUp } from "react-icons/rx";
 
 function Form(props: ComponentPropsWithRef<"form">): React.JSX.Element {
   return <form {...props}>{props.children}</form>;
@@ -106,6 +109,56 @@ function TextArea({ hasError, ...props }: TextareaProps): React.JSX.Element {
   );
 }
 
+function Dropdown({
+  placeholder,
+  list,
+  selectedItem,
+  hasError,
+  onHideError,
+  onSelectItem,
+}: DropdownProps): React.JSX.Element {
+  const [show, setShow] = useState(false);
+
+  const handleItemSelection = (item: string): void => {
+    onSelectItem(item);
+    onHideError();
+    setShow(false);
+  };
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setShow(!show)}
+        className={`w-full flex items-center justify-between border border-gray-200 ${hasError ? "border-red-600" : "hover:border-gray-400"} rounded-md px-3 py-1.5 cursor-pointer`}
+      >
+        <span className={`${!selectedItem ? "text-gray-400" : ""}`}>
+          {selectedItem ?? placeholder}
+        </span>
+        {show ? (
+          <RxCaretUp className="text-xl" />
+        ) : (
+          <RxCaretDown className="text-xl" />
+        )}
+      </button>
+      {show && (
+        <div className="absolute top-10 w-full min-h-20 bg-white border border-gray-200 rounded-md py-2">
+          {list.map((item) => (
+            <button
+              type="button"
+              className="px-3 py-1.5 block w-full text-left hover:bg-gray-100 cursor-pointer"
+              key={item}
+              onClick={() => handleItemSelection(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function PasswordToggler({
   state,
   onClick,
@@ -137,5 +190,6 @@ Form.TextArea = TextArea;
 Form.Checkbox = Checkbox;
 Form.PasswordToggler = PasswordToggler;
 Form.Error = Error;
+Form.Dropdown = Dropdown;
 
 export { Form };
