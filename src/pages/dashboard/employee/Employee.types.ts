@@ -1,7 +1,7 @@
 import type { ActionDispatch } from "react";
 
-import type { Employee, PreferredAlertPropsForForm } from "@/utils/types.utils";
-import type { EmployeeActionType } from "./Employee.reducer";
+import type { User, PreferredAlertPropsForForm } from "@/utils/types.utils";
+import type { UserActionType } from "./Employee.reducer";
 
 export type EmployeeInputs = {
   name: string;
@@ -11,9 +11,9 @@ export type EmployeeInputs = {
 
 export type EmployeeFormProps = {
   perPage: number;
-  selectedEmployee?: Employee;
-  onResetSelectedEmploye: VoidFunction;
-  onEmployeeDispatch: ActionDispatch<[action: EmployeeActionType]>;
+  selectedEmployee?: User;
+  onResetSelectedEmployee: VoidFunction;
+  onEmployeeDispatch: ActionDispatch<[action: UserActionType]>;
 } & PreferredAlertPropsForForm;
 
 export type EmployeeSubHeaderProps = {

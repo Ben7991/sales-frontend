@@ -10,7 +10,7 @@ import { FAILED_STATUS_CODES } from "@/utils/constants.utils";
 import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
 import {
   StatusCodes,
-  type Employee,
+  type User,
   type ResponseWithDataAndMessage,
   type ResponseWithRecord,
 } from "@/utils/types.utils";
@@ -70,7 +70,7 @@ export async function getEmployees(
   query: string,
   page: number,
   perPage: number,
-): Promise<ResponseWithRecord<Employee>> {
+): Promise<ResponseWithRecord<User>> {
   const searchParams = new URLSearchParams();
   searchParams.set("page", (page - 1).toString());
   searchParams.set("perPage", perPage.toString());
@@ -101,7 +101,7 @@ export async function getEmployees(
 
 export async function addEmployee(
   data: unknown,
-): Promise<ResponseWithDataAndMessage<Employee>> {
+): Promise<ResponseWithDataAndMessage<User>> {
   const response = await fetch(`${import.meta.env.VITE_BASE_API}/users`, {
     method: "POST",
     body: JSON.stringify(data),
@@ -126,7 +126,7 @@ export async function addEmployee(
 export async function editEmployee(
   data: unknown,
   employeeId: number,
-): Promise<ResponseWithDataAndMessage<Employee>> {
+): Promise<ResponseWithDataAndMessage<User>> {
   const response = await fetch(
     `${import.meta.env.VITE_BASE_API}/users/${employeeId}`,
     {
@@ -142,6 +142,34 @@ export async function editEmployee(
     const isRefreshed = await refreshToken();
     if (isRefreshed) {
       return await editEmployee(data, employeeId);
+    }
+    throw new Error(result.message);
+  } else if (FAILED_STATUS_CODES.includes(response.status)) {
+    throw new Error(result.message);
+  }
+
+  return result;
+}
+
+export async function changeStatus(
+  data: unknown,
+  employeeId: number,
+): Promise<{ message: string }> {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_API}/users/${employeeId}/change-status`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: getHeaders(true),
+      credentials: "include",
+    },
+  );
+  const result = await response.json();
+
+  if (response.status === StatusCodes.UN_AUTHORIZED) {
+    const isRefreshed = await refreshToken();
+    if (isRefreshed) {
+      return await changeStatus(data, employeeId);
     }
     throw new Error(result.message);
   } else if (FAILED_STATUS_CODES.includes(response.status)) {
