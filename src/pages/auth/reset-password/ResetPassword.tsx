@@ -31,7 +31,7 @@ export function ResetPassword(): React.JSX.Element {
     reset,
   } = useForm<ResetPasswordInputs>({
     resolver: yupResolver(resetPasswwordSchema),
-    mode: "onBlur",
+    mode: "onChange",
   });
 
   const onSubmit: SubmitHandler<ResetPasswordInputs> = async (
@@ -114,6 +114,7 @@ export function ResetPassword(): React.JSX.Element {
         <Form.Group className="flex flex-col">
           <Button
             el="button"
+            variant="primary"
             type="submit"
             className="py-2"
             disabled={isLoading || !isValid}

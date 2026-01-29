@@ -77,7 +77,7 @@ export function SideDrawer({
 
             <p className="mt-4 ps-3 flex items-center gap-2">
               <BsDashLg className="text-xl" />
-              <strong className="font-semibold">Sourcing</strong>
+              <strong className="font-semibold">Product Sourcing</strong>
             </p>
             <NavLink to="/dashboard/suppliers" className={rootNavLinkClasses}>
               <PiUsers className="text-xl" />
@@ -145,23 +145,18 @@ export function SideDrawer({
               <PiChartLineUp className="text-xl" />
               <span>Sales</span>
             </NavLink>
-
-            <p className="mt-4 ps-3 flex items-center gap-2">
-              <BsDashLg className="text-xl" />
-              <strong className="font-semibold">Employee Usage</strong>
-            </p>
-            <NavLink to="/dashboard/employees" className={rootNavLinkClasses}>
-              <LiaUsersCogSolid className="text-xl" />
-              <span>Employees</span>
+            <NavLink to="/dashboard/report" className={rootNavLinkClasses}>
+              <TbReport className="text-xl" />
+              <span>Report</span>
             </NavLink>
 
             <p className="mt-4 ps-3 flex items-center gap-2">
               <BsDashLg className="text-xl" />
-              <strong className="font-semibold">Money Sharing</strong>
+              <strong className="font-semibold">Employee Management</strong>
             </p>
-            <NavLink to="/dashboard/report" className={rootNavLinkClasses}>
-              <TbReport className="text-xl" />
-              <span>Report</span>
+            <NavLink to="/dashboard/employees" className={rootNavLinkClasses}>
+              <LiaUsersCogSolid className="text-xl" />
+              <span>Employees</span>
             </NavLink>
           </div>
         </div>
@@ -230,7 +225,7 @@ export function PageHeader({
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
 
-  const { page, perPage } = getPaginatedData(searchParams);
+  const { perPage } = getPaginatedData(searchParams);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>): void => {
     if (debounceTimerRef.current) {
@@ -241,11 +236,9 @@ export function PageHeader({
 
     debounceTimerRef.current = setTimeout(() => {
       if (query) {
-        navigate(
-          `${pathname}?page=${page}&perPage=${perPage}${query && "&q=" + query}`,
-        );
+        navigate(`${pathname}?page=${1}&perPage=${perPage}&q=${query}`);
       } else {
-        navigate(`${pathname}?page=${page}&perPage=${perPage}`);
+        navigate(`${pathname}?page=${1}&perPage=${perPage}`);
       }
     }, 500);
   };

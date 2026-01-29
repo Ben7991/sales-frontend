@@ -60,7 +60,7 @@ export function Customer(): React.JSX.Element {
   const { page, perPage, query } = getPaginatedData(searchParams);
 
   useEffect(() => {
-    const fetchSuppliers = async (): Promise<void> => {
+    const fetchCustomers = async (): Promise<void> => {
       setIsFetching(true);
       try {
         const result = await getCustomers(query, page, perPage);
@@ -75,7 +75,7 @@ export function Customer(): React.JSX.Element {
       }
     };
 
-    fetchSuppliers();
+    fetchCustomers();
   }, [query, page, perPage]);
 
   const handleHideModal = (): void => {

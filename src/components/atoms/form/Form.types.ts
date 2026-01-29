@@ -20,3 +20,12 @@ export type FormControlArrayProps = {
 
 export type TextareaProps = Pick<FormControlProps, "hasError"> &
   ComponentPropsWithRef<"textarea">;
+
+export type DropdownProps = {
+  placeholder: string;
+  selectedItem?: string;
+  list: Array<string>;
+  hasError?: boolean;
+  onHideError: VoidFunction;
+  onSelectItem: (item?: string) => void;
+};

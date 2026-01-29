@@ -28,9 +28,9 @@ export type ActiveTabForPhoneForm = "edit-phone" | "add-phone" | "delete-phone";
 export type DataWithID = { id: number; data: string };
 export type PhoneWithID = { id: number; phone: string };
 
-export type Role = "ADMIN" | "SALES_PERSON" | "PROCUREMENT_MANAGER";
-export type AccountStatus = "ACTIVE" | "SUSPENDED";
+export type Role = "ADMIN" | "SALES_PERSON" | "PROCUREMENT_OFFICER";
 export type AvailabilityStatus = "ACTIVE" | "IN_ACTIVE";
+export type UserStatus = "ACTIVE" | "FIRED" | "QUIT";
 export type User = {
   id: number;
   createdAt: string;
@@ -39,7 +39,7 @@ export type User = {
   username: string;
   email: string;
   role: Role;
-  status: AccountStatus;
+  status: UserStatus;
   setPassword: boolean;
 };
 export type Supplier = {
