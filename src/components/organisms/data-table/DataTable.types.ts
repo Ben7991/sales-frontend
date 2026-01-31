@@ -2,6 +2,8 @@ export type DataTableProps = {
   columnHeadings: Array<string>;
   children?: React.ReactNode;
   count: number;
+  className?: string;
+  hidePaginator?: boolean;
 };
 
 export type PaginatorProps = {
