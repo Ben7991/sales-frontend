@@ -27,7 +27,7 @@ export function DataTable({
     <div className="rounded-md bg-white pb-5 overflow-hidden">
       <div className={`w-full overflow-y-visible overflow-x-auto ${className}`}>
         <table className="table-collapse table-auto w-full mb-5">
-          <thead className="sticky top-0">
+          <thead className="sticky top-0 z-1">
             <tr>
               {columnHeadings.map((item) => (
                 <th key={item} className="bg-gray-200">
