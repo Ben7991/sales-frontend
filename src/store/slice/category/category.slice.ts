@@ -20,11 +20,11 @@ const categorySlice = createSlice({
     ) => {
       state.data = action.payload.data;
     },
-    addCategory: (state: CategoryState, action: PayloadAction<Category>) => {
+    addNewCategory: (state: CategoryState, action: PayloadAction<Category>) => {
       const categories = [action.payload, ...state.data];
       state.data = categories;
     },
-    editCategory: (state: CategoryState, action: PayloadAction<Category>) => {
+    updateCategory: (state: CategoryState, action: PayloadAction<Category>) => {
       const updatedCategories = [...state.data];
       const existingCategoryIndex = updatedCategories.findIndex(
         (item) => item.id === action.payload.id,
@@ -43,5 +43,5 @@ const categorySlice = createSlice({
 });
 
 export default categorySlice.reducer;
-export const { addCategory, editCategory, loadCategories } =
+export const { addNewCategory, updateCategory, loadCategories } =
   categorySlice.actions;
