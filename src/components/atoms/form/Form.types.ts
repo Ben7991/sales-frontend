@@ -1,5 +1,5 @@
 import type { DataWithID } from "@/utils/types.utils";
-import type { ComponentPropsWithRef } from "react";
+import type { ComponentPropsWithRef, RefObject } from "react";
 
 export type FormControlProps = {
   leftIcon?: React.ReactNode;
@@ -28,4 +28,14 @@ export type DropdownProps = {
   hasError?: boolean;
   onHideError: VoidFunction;
   onSelectItem: (item?: string) => void;
+};
+
+export type ImageUploaderProps = {
+  className?: string;
+  ref: RefObject<ImageUploadHandle>;
+};
+
+export type ImageUploadHandle = {
+  onRemoveFile: VoidFunction;
+  onGetFile: () => File | null;
 };
