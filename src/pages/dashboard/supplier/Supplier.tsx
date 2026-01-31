@@ -33,13 +33,14 @@ import type {
   Supplier,
 } from "@/utils/types.utils";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { useFetch } from "@/utils/hooks.utils";
 
 export function Supplier(): React.JSX.Element {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [isFetching, setIsFetching] = useState(false);
+  const { isFetching, setIsFetching } = useFetch();
   const [supplierState, supplierDispatch] = useReducer(
     supplierReducer,
     initialSupplierReducerState,
@@ -76,7 +77,7 @@ export function Supplier(): React.JSX.Element {
     };
 
     fetchSuppliers();
-  }, [query, page, perPage]);
+  }, [query, page, perPage, setIsFetching]);
 
   const handleHideModal = (): void => {
     navigate(pathname);

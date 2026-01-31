@@ -25,13 +25,14 @@ import {
   employeeReducer,
   initialEmployeeReducerState,
 } from "./Employee.reducer";
+import { useFetch } from "@/utils/hooks.utils";
 
 export function Employee(): React.JSX.Element {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [isFetching, setIsFetching] = useState(false);
+  const { isFetching, setIsFetching } = useFetch();
   const [selectedEmployee, setSelectedEmployee] = useState<User>();
   const [employeeState, employeeDispatch] = useReducer(
     employeeReducer,
@@ -65,7 +66,7 @@ export function Employee(): React.JSX.Element {
     };
 
     fetchEmployees();
-  }, [query, page, perPage]);
+  }, [query, page, perPage, setIsFetching]);
 
   const handleHideModal = (): void => {
     navigate(pathname);

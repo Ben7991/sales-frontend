@@ -33,13 +33,14 @@ import { FaRegEdit } from "react-icons/fa";
 import { BsTrash } from "react-icons/bs";
 import { BiSolidEdit } from "react-icons/bi";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { useFetch } from "@/utils/hooks.utils";
 
 export function Customer(): React.JSX.Element {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [isFetching, setIsFetching] = useState(false);
+  const { isFetching, setIsFetching } = useFetch();
   const [customerState, customerDispatch] = useReducer(
     customerReducer,
     initialCustomerReducerState,
@@ -76,7 +77,7 @@ export function Customer(): React.JSX.Element {
     };
 
     fetchCustomers();
-  }, [query, page, perPage]);
+  }, [query, page, perPage, setIsFetching]);
 
   const handleHideModal = (): void => {
     navigate(pathname);
