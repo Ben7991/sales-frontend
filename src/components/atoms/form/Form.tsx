@@ -296,15 +296,15 @@ function ImageUploader({
 
   return (
     <div
-      className={`border-2 border-gray-200 border-dashed bg-gray-100 rounded-md flex items-center justify-center overflow-hidden ${className}`}
+      className={`cursor-pointer border-2 border-gray-200 border-dashed bg-gray-100 rounded-md flex items-center justify-center overflow-hidden ${className}`}
       onDragOver={(e) => e.preventDefault()}
       onDrop={onDrop}
       onClick={() => fileUploadRef.current?.click()}
     >
       {!imagePath ? (
-        <div className="basis-[80%] flex items-center gap-1">
-          <RiImageAddLine className="text-2xl" />
-          <p>Drag and drop your image preferred image</p>
+        <div className="basis-[80%] flex flex-col items-center gap-1">
+          <RiImageAddLine className="text-4xl" />
+          <p>Click or drag and drop your image preferred image</p>
         </div>
       ) : (
         <img
