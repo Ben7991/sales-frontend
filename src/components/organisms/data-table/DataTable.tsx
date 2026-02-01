@@ -63,7 +63,7 @@ function Paginator({ count }: PaginatorProps): React.JSX.Element {
   };
 
   return (
-    <div className="flex items-center justify-center gap-3">
+    <div className="flex items-center justify-center gap-3 flex-wrap">
       <p>Rows per page: </p>
       <Dropdown page={page} perPage={perPage} query={query} />
       <p>
