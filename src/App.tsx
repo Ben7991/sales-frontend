@@ -20,7 +20,9 @@ import { CanActivate } from "./components/guards/can-activate/CanActivate";
 import { CanDeactivate } from "./components/guards/can-deactivate/CanDeactivate";
 import { ResetPasswordActivate } from "./components/guards/reset-password-activate/ResetPasswordActivate";
 import { Purchase } from "./pages/dashboard/purchase/Purchase";
-import { Sales } from "./pages/dashboard/sales/Sales";
+import { CreateOrder } from "./pages/dashboard/sales/create-order/CreateOrder";
+import { OrderHistory } from "./pages/dashboard/sales/order-history/OrderHistory";
+import { Arrears } from "./pages/dashboard/sales/arrears/Arrears";
 
 export default function App(): React.JSX.Element {
   const appRouter = createBrowserRouter([
@@ -77,7 +79,12 @@ export default function App(): React.JSX.Element {
               element: <AvailableStocks />,
             },
             { path: "/dashboard/purchase", element: <Purchase /> },
-            { path: "/dashboard/sales", element: <Sales /> },
+            { path: "/dashboard/sales/create-order", element: <CreateOrder /> },
+            {
+              path: "/dashboard/sales/order-history",
+              element: <OrderHistory />,
+            },
+            { path: "/dashboard/sales/arrears", element: <Arrears /> },
             { path: "/dashboard/employees", element: <Employee /> },
             { path: "/dashboard/report", element: <Report /> },
           ],

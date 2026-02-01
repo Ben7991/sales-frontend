@@ -29,6 +29,9 @@ import {
 import { LuCircleUserRound } from "react-icons/lu";
 import { IoSearchOutline } from "react-icons/io5";
 import { BsDashLg } from "react-icons/bs";
+import { RiPencilLine } from "react-icons/ri";
+import { MdOutlineFormatListBulleted } from "react-icons/md";
+import { FaRegMoneyBillAlt } from "react-icons/fa";
 
 import { Form } from "@/components/atoms/form/Form";
 import { Button } from "@/components/atoms/button/Button";
@@ -58,6 +61,7 @@ export function SideDrawer({
   const { pathname } = useLocation();
 
   const [showInventoryLinks, setShowInventoryLinks] = useState(false);
+  const [showSalesLinks, setShowSalesLinks] = useState(false);
 
   return (
     <>
@@ -141,10 +145,58 @@ export function SideDrawer({
                 </motion.div>
               )}
             </AnimatePresence>
-            <NavLink to="/dashboard/sales" className={rootNavLinkClasses}>
-              <PiChartLineUp className="text-xl" />
-              <span>Sales</span>
-            </NavLink>
+
+            <button
+              className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
+                isPreferredUrl(pathname, "/dashboard/sales")
+                  ? "bg-green-700 text-white"
+                  : "hover:bg-gray-300"
+              }`}
+              onClick={() => setShowSalesLinks((prevState) => !prevState)}
+            >
+              <span className="flex items-center gap-2">
+                <PiChartLineUp className="text-xl" />
+                <span>Sales</span>
+              </span>
+              {showSalesLinks ? (
+                <RxCaretUp className="text-xl" />
+              ) : (
+                <RxCaretDown className="text-xl" />
+              )}
+            </button>
+            <AnimatePresence>
+              {showSalesLinks && (
+                <motion.div
+                  className="ps-6 space-y-1 overflow-hidden"
+                  initial={{ height: 0 }}
+                  animate={{ height: "auto" }}
+                  exit={{ height: 0 }}
+                >
+                  <NavLink
+                    to="/dashboard/sales/create-order"
+                    className={subNavLinkClasses}
+                  >
+                    <RiPencilLine className="text-[1.15rem]" />
+                    <span>Create Order</span>
+                  </NavLink>
+                  <NavLink
+                    to="/dashboard/sales/order-history"
+                    className={subNavLinkClasses}
+                  >
+                    <MdOutlineFormatListBulleted className="text-[1.15rem]" />
+                    <span>Order History</span>
+                  </NavLink>
+                  <NavLink
+                    to="/dashboard/sales/arrears"
+                    className={subNavLinkClasses}
+                  >
+                    <FaRegMoneyBillAlt className="text-[1.15rem]" />
+                    <span>Arrears</span>
+                  </NavLink>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <NavLink to="/dashboard/report" className={rootNavLinkClasses}>
               <TbReport className="text-xl" />
               <span>Report</span>
