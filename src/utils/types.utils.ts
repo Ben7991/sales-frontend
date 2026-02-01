@@ -70,6 +70,21 @@ export type Product = {
   status: ProductStatus;
   category: Category;
 };
+export type ProductStockStatus = "IN_STOCK" | "OUT_OF_STOCK" | "LOW_STOCK";
+export type ProductStock = {
+  id: number;
+  retailUnitPrice: string;
+  wholesaleUnitPrice: string;
+  specialPrice: string;
+  wholeSalePrice: string;
+  totalPieces: number;
+  numberOfBoxes: number;
+  minimumThreshold: number;
+  description: string;
+  status: ProductStockStatus;
+  product: Product;
+  supplier: Supplier;
+};
 
 export const StatusCodes = {
   CREATED: 201,
