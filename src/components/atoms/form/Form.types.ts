@@ -32,7 +32,7 @@ export type DropdownProps = {
 
 export type ImageUploaderProps = {
   className?: string;
-  ref: RefObject<ImageUploadHandle>;
+  ref: RefObject<ImageUploadHandle | null>;
 };
 
 export type ImageUploadHandle = {

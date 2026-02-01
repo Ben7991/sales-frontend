@@ -19,6 +19,8 @@ import { GoEye, GoEyeClosed } from "react-icons/go";
 import { AiOutlineMinusCircle } from "react-icons/ai";
 import { RxCaretDown, RxCaretUp } from "react-icons/rx";
 import { RiImageAddLine } from "react-icons/ri";
+import { useOutsideClick } from "@/utils/hooks.utils";
+import { IoMdClose } from "react-icons/io";
 
 function Form(props: ComponentPropsWithRef<"form">): React.JSX.Element {
   return <form {...props}>{props.children}</form>;
@@ -122,33 +124,89 @@ function Dropdown({
   onHideError,
   onSelectItem,
 }: DropdownProps): React.JSX.Element {
+  const [value, setValue] = useState("");
   const [show, setShow] = useState(false);
 
+  const handleOutsideClick = (): void => {
+    setShow(false);
+  };
+
+  useOutsideClick(handleOutsideClick);
+
   const handleItemSelection = (item: string): void => {
+    setValue(item);
     onSelectItem(item);
     onHideError();
     setShow(false);
   };
 
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const value = event.currentTarget.value;
+
+    if (!value) {
+      setValue("");
+      setShow(false);
+      return;
+    }
+
+    setValue(value);
+    setShow(true);
+  };
+
+  const handleClear = (): void => {
+    setValue("");
+    onSelectItem("");
+  };
+
+  let filteredList: typeof list = [];
+
+  if (selectedItem) {
+    filteredList = list;
+  } else {
+    filteredList = list.filter((item) => item.includes(value));
+  }
+
   return (
     <div className="relative">
-      <button
-        type="button"
-        onClick={() => setShow(!show)}
-        className={`w-full flex items-center justify-between border border-gray-200 ${hasError ? "border-red-600" : "hover:border-gray-400"} rounded-md px-3 py-1.5 cursor-pointer`}
+      <div
+        className={`flex items-center px-3 gap-3 border border-gray-200 ${hasError ? "border-red-600" : "hover:border-gray-400"} rounded-md`}
       >
-        <span className={`${!selectedItem ? "text-gray-400" : ""}`}>
-          {selectedItem ?? placeholder}
-        </span>
-        {show ? (
-          <RxCaretUp className="text-xl" />
-        ) : (
-          <RxCaretDown className="text-xl" />
-        )}
-      </button>
+        <input
+          type="text"
+          placeholder={placeholder}
+          className="grow py-1.5 outline-none"
+          onChange={handleChange}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShow(true);
+          }}
+          value={value}
+        />
+        <div className="flex items-center gap-2">
+          {value && (
+            <button className="outline-none" onClick={handleClear}>
+              <IoMdClose />
+            </button>
+          )}
+          <button
+            className="outline-none"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShow(true);
+            }}
+          >
+            {show ? (
+              <RxCaretUp className="text-xl" />
+            ) : (
+              <RxCaretDown className="text-xl" />
+            )}
+          </button>
+        </div>
+      </div>
       {show && (
         <div className="absolute top-10 w-full min-h-20 bg-white border border-gray-200 rounded-md py-2">
-          {list.map((item) => (
+          {filteredList.map((item) => (
             <button
               type="button"
               className={`px-3 py-1.5 block w-full text-left ${selectedItem === item ? "bg-gray-200" : "hover:bg-gray-100"} cursor-pointer`}
