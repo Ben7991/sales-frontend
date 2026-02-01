@@ -151,7 +151,7 @@ export function CategoriesProducts(): React.JSX.Element {
           </Button>
         </div>
       </PageDescriptor>
-      <div className="flex justify-between gap-4">
+      <div className="flex flex-col md:flex-row justify-between gap-4">
         <div className="basis-full md:basis-3/7 xl:basis-3/8">
           <Headline tag="h5" className="mb-4">
             Categories
