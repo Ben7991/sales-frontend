@@ -216,7 +216,7 @@ function Dropdown({
         </div>
       </div>
       {show && (
-        <div className="absolute top-10 w-full max-h-50 overflow-auto bg-white border border-gray-200 rounded-md py-2">
+        <div className="absolute top-10 w-full max-h-50 overflow-auto bg-white border border-gray-200 rounded-md py-2 z-1">
           {filteredList.map((item) => (
             <button
               type="button"
