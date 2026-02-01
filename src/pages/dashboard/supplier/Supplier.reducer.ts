@@ -1,7 +1,6 @@
 import type { PhoneWithID, Supplier } from "@/utils/types.utils";
 
 type SupplierState = {
-  isFetched: boolean;
   count: number;
   data: Array<Supplier>;
 };
@@ -28,7 +27,6 @@ export type SupplierActionType =
     };
 
 export const initialSupplierReducerState: SupplierState = {
-  isFetched: false,
   count: 0,
   data: [],
 };
@@ -38,7 +36,7 @@ export function supplierReducer(
   action: SupplierActionType,
 ): SupplierState {
   if (action.type === "load") {
-    return { ...state, ...action.payload, isFetched: true };
+    return { ...state, ...action.payload };
   } else if (action.type === "add") {
     if (state.data.length === 10 && action.payload.perPage === 10) {
       const updatedSuppliers = state.data.slice(0, 9);
