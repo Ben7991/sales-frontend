@@ -215,7 +215,7 @@ export function Supplier(): React.JSX.Element {
                   onClick={() => handleSelectionAndEdit(item.id, "edit")}
                 >
                   <BiSolidEdit className="text-xl" />
-                  <span>Edit</span>
+                  <span>Edit supplier</span>
                 </DataTable.Action>
                 <DataTable.Action
                   className="hover:bg-gray-100"
