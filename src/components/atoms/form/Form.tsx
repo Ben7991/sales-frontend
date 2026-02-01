@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -126,6 +127,14 @@ function Dropdown({
 }: DropdownProps): React.JSX.Element {
   const [value, setValue] = useState("");
   const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (!selectedItem) {
+      setValue("");
+    } else {
+      setValue(selectedItem);
+    }
+  }, [selectedItem]);
 
   const handleOutsideClick = (): void => {
     setShow(false);
