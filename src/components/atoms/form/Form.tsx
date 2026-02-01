@@ -145,7 +145,7 @@ function Dropdown({
 
     if (!value) {
       setValue("");
-      setShow(false);
+      onSelectItem(undefined);
       return;
     }
 
@@ -163,7 +163,9 @@ function Dropdown({
   if (selectedItem) {
     filteredList = list;
   } else {
-    filteredList = list.filter((item) => item.includes(value));
+    filteredList = list.filter((item) =>
+      item.toLowerCase().includes(value.toLowerCase()),
+    );
   }
 
   return (
@@ -205,7 +207,7 @@ function Dropdown({
         </div>
       </div>
       {show && (
-        <div className="absolute top-10 w-full min-h-20 bg-white border border-gray-200 rounded-md py-2">
+        <div className="absolute top-10 w-full max-h-50 overflow-auto bg-white border border-gray-200 rounded-md py-2">
           {filteredList.map((item) => (
             <button
               type="button"
