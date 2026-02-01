@@ -219,7 +219,9 @@ export function SupplierForm({
             ) : (
               <span className="flex items-center gap-2">
                 <IoIosSave />
-                <span>Save New Supplier</span>
+                <span>
+                  {selectedSupplier ? "Save changes" : "Save new supplier"}
+                </span>
               </span>
             )}
           </Button>

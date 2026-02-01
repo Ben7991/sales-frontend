@@ -20,12 +20,14 @@ export function DataTable({
   children,
   columnHeadings,
   count,
+  className,
+  hidePaginator,
 }: DataTableProps): React.JSX.Element {
   return (
     <div className="rounded-md bg-white pb-5 overflow-hidden">
-      <div className="w-full overflow-y-visible overflow-x-auto">
+      <div className={`w-full overflow-y-visible overflow-x-auto ${className}`}>
         <table className="table-collapse table-auto w-full mb-5">
-          <thead className="sticky top-0">
+          <thead className="sticky top-0 z-1">
             <tr>
               {columnHeadings.map((item) => (
                 <th key={item} className="bg-gray-200">
@@ -37,7 +39,7 @@ export function DataTable({
           <tbody>{children}</tbody>
         </table>
       </div>
-      {count >= 10 && <Paginator count={count} />}
+      {count >= 10 && !hidePaginator && <Paginator count={count} />}
     </div>
   );
 }

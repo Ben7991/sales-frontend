@@ -25,13 +25,15 @@ import {
   employeeReducer,
   initialEmployeeReducerState,
 } from "./Employee.reducer";
+import { useFetch } from "@/utils/hooks.utils";
+import { Pill } from "@/components/atoms/pill/Pill";
 
 export function Employee(): React.JSX.Element {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [isFetching, setIsFetching] = useState(false);
+  const { isFetching, setIsFetching } = useFetch();
   const [selectedEmployee, setSelectedEmployee] = useState<User>();
   const [employeeState, employeeDispatch] = useReducer(
     employeeReducer,
@@ -65,7 +67,7 @@ export function Employee(): React.JSX.Element {
     };
 
     fetchEmployees();
-  }, [query, page, perPage]);
+  }, [query, page, perPage, setIsFetching]);
 
   const handleHideModal = (): void => {
     navigate(pathname);
@@ -117,11 +119,16 @@ export function Employee(): React.JSX.Element {
             <td>{item.username}</td>
             <td>{formatRole(item.role)}</td>
             <td>
-              <span
-                className={`py-1 px-2 text-[0.80rem] rounded-full ${item.status === "ACTIVE" ? "text-green-700 bg-green-200" : item.status === "FIRED" ? "text-red-700 bg-red-200" : "text-gray-600 bg-gray-200"}`}
-              >
-                {item.status}
-              </span>
+              <Pill
+                text={item.status}
+                variant={
+                  item.status === "ACTIVE"
+                    ? "success"
+                    : item.status === "FIRED"
+                      ? "danger"
+                      : "secondary"
+                }
+              />
             </td>
             <td>
               <DataTable.Actions>

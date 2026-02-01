@@ -192,7 +192,9 @@ export function EmployeeForm({
           ) : (
             <span className="flex items-center gap-2">
               <IoIosSave />
-              <span>Save new employee</span>
+              <span>
+                {selectedEmployee ? "Save changes" : "Save new employee"}
+              </span>
             </span>
           )}
         </Button>

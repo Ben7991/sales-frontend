@@ -205,7 +205,9 @@ export function CustomerForm({
           ) : (
             <span className="flex items-center gap-2">
               <IoIosSave />
-              <span>Save New Customer</span>
+              <span>
+                {selectedCustomer ? "Save changes" : "Save new customer"}
+              </span>
             </span>
           )}
         </Button>

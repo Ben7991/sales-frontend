@@ -58,6 +58,18 @@ export type Customer = {
   address: string;
   customerPhones: Array<PhoneWithID>;
 };
+export type Category = {
+  id: number;
+  name: string;
+};
+export type ProductStatus = "IN_USE" | "DISCONTINUED";
+export type Product = {
+  id: number;
+  name: string;
+  imagePath?: string;
+  status: ProductStatus;
+  category: Category;
+};
 
 export const StatusCodes = {
   CREATED: 201,
