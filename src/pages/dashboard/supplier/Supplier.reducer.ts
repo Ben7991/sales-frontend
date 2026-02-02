@@ -6,7 +6,7 @@ type SupplierState = {
 };
 
 export type SupplierActionType =
-  | { type: "load"; payload: Omit<SupplierState, "isFetched"> }
+  | { type: "load"; payload: SupplierState }
   | { type: "add"; payload: { data: Supplier; perPage: number } }
   | { type: "edit"; payload: { data: Supplier; id: number } }
   | {
