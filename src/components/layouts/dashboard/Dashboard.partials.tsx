@@ -277,7 +277,7 @@ export function PageHeader({
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
 
-  const { perPage } = getPaginatedData(searchParams);
+  const { perPage, query } = getPaginatedData(searchParams);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>): void => {
     if (debounceTimerRef.current) {
@@ -305,6 +305,7 @@ export function PageHeader({
             placeholder="Search"
             leftIcon={<IoSearchOutline />}
             onChange={handleSearch}
+            defaultValue={query}
           />
         </div>
         <div className="flex items-center gap-3">
