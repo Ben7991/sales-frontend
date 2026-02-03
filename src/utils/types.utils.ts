@@ -85,6 +85,39 @@ export type ProductStock = {
   product: Product;
   supplier: Supplier;
 };
+export type OrderStatus =
+  | "OPEN"
+  | "DEEMED_SATISFIED"
+  | "DELIVERED"
+  | "CANCELLED";
+export type PaidStatus = "PAID" | "OUTSTANDING";
+export type OrderSale = "WHOLESALE" | "RETAIL";
+export type OrderItem = {
+  id: number;
+  name: string;
+  quantity: number;
+  amount: number;
+  amountPaid: number;
+};
+export type PaymentMode = "CASH" | "MOBILE_MONEY" | "BANK_TRANSFER" | "CHEQUE";
+export type OrderPayment = {
+  id: number;
+  createdAt: string;
+  amount: string;
+  paymentMode: PaymentMode;
+};
+export type Order = {
+  id: number;
+  orderDate: string;
+  orderSale: OrderSale;
+  paidStatus: PaidStatus;
+  amountPaid: number;
+  orderTotal: number;
+  comment: string;
+  orderItems: Array<OrderItem>;
+  orderPayments: Array<OrderPayment>;
+  customer: Customer;
+};
 
 export const StatusCodes = {
   CREATED: 201,
