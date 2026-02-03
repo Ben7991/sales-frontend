@@ -284,7 +284,7 @@ export function EmployeeStatusForm({
           hasError={dropdownError}
           onHideError={() => setDropdownError(false)}
         />
-        {dropdownError && <Form.Error>Status</Form.Error>}
+        {dropdownError && <Form.Error>Status is required</Form.Error>}
       </Form.Group>
       <Form.Group>
         <Button
