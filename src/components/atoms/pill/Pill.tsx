@@ -2,9 +2,14 @@ type PillVariant = "success" | "danger" | "secondary" | "warning" | "primary";
 type PillProps = {
   variant: PillVariant;
   text: string;
+  className?: string;
 };
 
-export function Pill({ text, variant }: PillProps): React.JSX.Element {
+export function Pill({
+  text,
+  variant,
+  className,
+}: PillProps): React.JSX.Element {
   let variantClasses = "bg-green-100 text-green-700";
 
   if (variant === "danger") {
@@ -18,7 +23,9 @@ export function Pill({ text, variant }: PillProps): React.JSX.Element {
   }
 
   return (
-    <span className={`py-1 px-2 text-[0.80rem] rounded-full ${variantClasses}`}>
+    <span
+      className={`py-1 px-2 text-[0.80rem] rounded-full ${className} ${variantClasses}`}
+    >
       {text}
     </span>
   );
