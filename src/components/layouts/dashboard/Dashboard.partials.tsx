@@ -177,7 +177,7 @@ export function SideDrawer({
                     className={subNavLinkClasses}
                   >
                     <RiPencilLine className="text-[1.15rem]" />
-                    <span>Create Order</span>
+                    <span>Create or Edit Order</span>
                   </NavLink>
                   <NavLink
                     to="/dashboard/sales/order-history"
