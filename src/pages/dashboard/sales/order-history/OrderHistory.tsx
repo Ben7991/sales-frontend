@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { FiEye } from "react-icons/fi";
 import { GiPayMoney } from "react-icons/gi";
+import { LiaExchangeAltSolid } from "react-icons/lia";
 
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import { useFetch } from "@/utils/hooks.utils";
@@ -13,7 +14,14 @@ import {
 import { getPaginatedData } from "@/utils/helpers.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { Pill } from "@/components/atoms/pill/Pill";
-import { OrderDetails } from "./OrderHistory.partials";
+import {
+  ChangeOrderStatus,
+  OrderDetails,
+  OrderPaymentForm,
+} from "./OrderHistory.partials";
+import { Modal } from "@/components/organisms/modal/Modal";
+import { useAlert } from "@/components/molecules/alert/Alert.hooks";
+import { Alert } from "@/components/molecules/alert/Alert";
 
 export function OrderHistory(): React.JSX.Element {
   const [selectedOrderHistory, setSelectedOrderHistory] =
@@ -28,6 +36,14 @@ export function OrderHistory(): React.JSX.Element {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { page, perPage, query } = getPaginatedData(searchParams);
+
+  const {
+    state: alertState,
+    alertDetails,
+    showAlert,
+    hideAlert,
+    setAlertDetails,
+  } = useAlert();
 
   useEffect(() => {
     const fetchOrders = async (): Promise<void> => {
@@ -45,16 +61,18 @@ export function OrderHistory(): React.JSX.Element {
     fetchOrders();
   }, [page, perPage, query, setIsFetching]);
 
-  const handleSelectedProduct = (id: number): void => {
-    const preferredItem = orderHistory.data.find((item) => item.id === id);
+  const selectPreferredOrder = useCallback(
+    (id: number): void => {
+      const preferredItem = orderHistory.data.find((item) => item.id === id);
 
-    if (!preferredItem) {
-      setSelectedOrderHistory(undefined);
-      return;
-    }
-    setSelectedOrderHistory(preferredItem);
-    navigate(`${pathname}?action=details${query ? `&q=${query}` : ""}`);
-  };
+      if (!preferredItem) {
+        setSelectedOrderHistory(undefined);
+        return;
+      }
+      setSelectedOrderHistory(preferredItem);
+    },
+    [orderHistory],
+  );
 
   const handleHideModal = (): void => {
     navigate(`${pathname}${query ? `?q=${query}` : ""}`);
@@ -68,6 +86,13 @@ export function OrderHistory(): React.JSX.Element {
 
   return (
     <>
+      {alertState ? (
+        <Alert
+          variant={alertDetails?.variant ?? "error"}
+          message={alertDetails?.message ?? ""}
+          onHide={hideAlert}
+        />
+      ) : null}
       <PageDescriptor title="Order History" spinnerState={isFetching} />
       <DataTable
         columnHeadings={orderHistoryColumnHeadings}
@@ -75,7 +100,12 @@ export function OrderHistory(): React.JSX.Element {
         hidePaginator
       >
         {orderHistory.data.map((item) => (
-          <tr key={item.id}>
+          <tr
+            key={item.id}
+            className={
+              item.id === selectedOrderHistory?.id ? "bg-gray-100" : ""
+            }
+          >
             <td>{item.id}</td>
             <td>{new Date(item.createdAt).toLocaleString()}</td>
             <td>{item.customer}</td>
@@ -105,17 +135,38 @@ export function OrderHistory(): React.JSX.Element {
               <DataTable.Actions>
                 <DataTable.Action
                   className="hover:bg-gray-100"
-                  onClick={() => handleSelectedProduct(item.id)}
+                  onClick={() => {
+                    selectPreferredOrder(item.id);
+                    navigate(
+                      `${pathname}?action=details${query ? `&q=${query}` : ""}`,
+                    );
+                  }}
                 >
                   <FiEye className="text-xl" />
                   <span>View details</span>
                 </DataTable.Action>
+                {!["OPEN", "CANCELLED"].includes(item.orderStatus) &&
+                  item.paidStatus === "OUTSTANDING" && (
+                    <DataTable.Action
+                      className="hover:bg-gray-100"
+                      onClick={() => {
+                        selectPreferredOrder(item.id);
+                        navigate(`${pathname}?action=add-payment`);
+                      }}
+                    >
+                      <GiPayMoney className="text-xl" />
+                      <span>Add payment</span>
+                    </DataTable.Action>
+                  )}
                 <DataTable.Action
                   className="hover:bg-gray-100"
-                  onClick={() => handleSelectedProduct(item.id)}
+                  onClick={() => {
+                    selectPreferredOrder(item.id);
+                    navigate(`${pathname}?action=change-status`);
+                  }}
                 >
-                  <GiPayMoney className="text-xl" />
-                  <span>Add payment</span>
+                  <LiaExchangeAltSolid className="text-xl" />
+                  <span>Change status</span>
                 </DataTable.Action>
               </DataTable.Actions>
             </td>
@@ -123,11 +174,41 @@ export function OrderHistory(): React.JSX.Element {
         ))}
       </DataTable>
       {selectedOrderHistory && (
-        <OrderDetails
-          onHideModal={handleHideModal}
-          showOffCanvas={activeAction === "details"}
-          selectedOrderHistory={selectedOrderHistory}
-        />
+        <>
+          <OrderDetails
+            onHideModal={handleHideModal}
+            showOffCanvas={activeAction === "details"}
+            selectedOrderHistory={selectedOrderHistory}
+            onSetAlertDetails={setAlertDetails}
+            onShowAlert={showAlert}
+          />
+          <Modal
+            title={
+              activeAction === "add-payment"
+                ? `New payment for #${selectedOrderHistory.id}`
+                : `Change status for #${selectedOrderHistory.id}`
+            }
+            show={["add-payment", "change-status"].includes(activeAction ?? "")}
+            onHide={handleHideModal}
+          >
+            {activeAction === "add-payment" ? (
+              <OrderPaymentForm
+                selectedOrderHistory={selectedOrderHistory}
+                onSetAlertDetails={setAlertDetails}
+                onShowAlert={showAlert}
+                onSetOrderHistory={setOrderHistory}
+              />
+            ) : (
+              <ChangeOrderStatus
+                onHideModal={handleHideModal}
+                selectedOrderHistory={selectedOrderHistory}
+                onSetAlertDetails={setAlertDetails}
+                onShowAlert={showAlert}
+                onSetOrderHistory={setOrderHistory}
+              />
+            )}
+          </Modal>
+        </>
       )}
     </>
   );

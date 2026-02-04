@@ -1,28 +1,53 @@
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type Dispatch,
+  type FormEvent,
+  type SetStateAction,
+} from "react";
 import { Link } from "react-router";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { BsPrinter } from "react-icons/bs";
 import { MdOutlineFileDownload } from "react-icons/md";
+import { IoIosSave } from "react-icons/io";
+import { CgDanger } from "react-icons/cg";
 
 import { OffCanvas } from "@/components/organisms/offcanvas/OffCanvas";
-import type { OrderDetailsProps } from "./OrderHistory.types";
-import { exportReceiptData, getOrder } from "./OrderHistory.utils";
-import type { Order } from "@/utils/types.utils";
+import type {
+  AddPaymentData,
+  ChangeOrderStatusProps,
+  OrderDetailsProps,
+  OrderPaymentFormProps,
+} from "./OrderHistory.types";
+import {
+  addPayment,
+  changeOrderStatus,
+  exportReceiptData,
+  getOrder,
+  ORDER_STATUSES,
+  orderPaymentSchema,
+} from "./OrderHistory.utils";
+import type { Order, OrderStatus, PaymentMode } from "@/utils/types.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { Spinner } from "@/components/atoms/spinner/Spinner";
 import { Headline } from "@/components/atoms/headline/Headline";
 import { Button } from "@/components/atoms/button/Button";
 import { ReceiptManager } from "@/utils/receipt-manager.util";
+import { Form } from "@/components/atoms/form/Form";
 
 export function OrderDetails({
   showOffCanvas,
   selectedOrderHistory,
   onHideModal,
+  onSetAlertDetails,
+  onShowAlert,
 }: OrderDetailsProps): React.JSX.Element {
   const [isDownloading, setIsDownloading] = useState(false);
   const [startingPrint, setStartingPrint] = useState(false);
 
-  const [fetchError, setFetchError] = useState(false);
   const [orderDetails, setOrderDetails] = useState<Order>();
 
   useEffect(() => {
@@ -31,13 +56,18 @@ export function OrderDetails({
         const result = await getOrder(selectedOrderHistory.id);
         setOrderDetails(result.data);
       } catch (error) {
-        console.error("Failed to get order details", error);
-        setFetchError(true);
+        const message = "Failed to get order details";
+        console.log(message, error);
+        onSetAlertDetails({
+          message,
+          variant: "error",
+        });
+        onShowAlert();
       }
     };
 
     fetchOrder();
-  }, [selectedOrderHistory]);
+  }, [selectedOrderHistory, onSetAlertDetails, onShowAlert]);
 
   const handleReceiptDownload = async (id: number): Promise<void> => {
     setIsDownloading(true);
@@ -47,7 +77,13 @@ export function OrderDetails({
       const receiptManager = ReceiptManager.getInstance();
       receiptManager.downloadReceipt(result.data, id);
     } catch (error) {
-      console.log("Failed to download receipt", error);
+      const message = "Failed to download receipt";
+      console.log(message, error);
+      onSetAlertDetails({
+        message,
+        variant: "error",
+      });
+      onShowAlert();
     } finally {
       setIsDownloading(false);
     }
@@ -60,7 +96,13 @@ export function OrderDetails({
       const receiptManager = ReceiptManager.getInstance();
       receiptManager.printReceipt(result.data);
     } catch (error) {
-      console.error("Failed to print receipt", error);
+      const message = "Failed to print receipt";
+      console.log(message, error);
+      onSetAlertDetails({
+        message,
+        variant: "error",
+      });
+      onShowAlert();
     } finally {
       setStartingPrint(false);
     }
@@ -68,17 +110,6 @@ export function OrderDetails({
 
   return (
     <OffCanvas show={showOffCanvas} onHide={onHideModal} title="Order Details">
-      {fetchError && (
-        <div className="flex gap-2 bg-red-100 text-red-700 rounded-md p-3 mb-4">
-          <div className="w-10 h-10">
-            <HiOutlineExclamationCircle className="text-2xl" />
-          </div>
-          <p>
-            Error fetching order details, please refresh again. If issue persist
-            please contact developer for assistance. Thank you
-          </p>
-        </div>
-      )}
       {!orderDetails ? (
         <div className="flex items-center gap-3">
           <Spinner size="sm" color="black" />
@@ -200,5 +231,262 @@ export function OrderDetails({
         </>
       )}
     </OffCanvas>
+  );
+}
+
+export function OrderPaymentForm({
+  selectedOrderHistory,
+  onSetAlertDetails,
+  onShowAlert,
+  onSetOrderHistory,
+}: OrderPaymentFormProps): React.JSX.Element {
+  const [isLoading, setIsLoading] = useState(false);
+  const [dropdownError, setDropdownError] = useState(false);
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<{ amount: string }>({
+    resolver: yupResolver(orderPaymentSchema),
+    mode: "onChange",
+  });
+
+  const updateOrderHistory = useCallback(
+    (data: AddPaymentData): void => {
+      const updatedSelectedOrderHistory = selectedOrderHistory;
+      updatedSelectedOrderHistory.amountPaid = data.totalAmountPaid;
+      updatedSelectedOrderHistory.paidStatus = data.paidStatus;
+
+      onSetOrderHistory((prevState) => {
+        const updatedData = [...prevState.data];
+        const itemIndex = updatedData.findIndex(
+          (item) => item.id === selectedOrderHistory.id,
+        );
+        const deleteCount = 1;
+        updatedData.splice(itemIndex, deleteCount, updatedSelectedOrderHistory);
+
+        return {
+          count: prevState.count,
+          data: updatedData,
+        };
+      });
+    },
+    [selectedOrderHistory, onSetOrderHistory],
+  );
+
+  const onSubmit: SubmitHandler<{ amount: string }> = async (
+    data,
+  ): Promise<void> => {
+    if (!paymentMode) {
+      setDropdownError(true);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await addPayment(
+        {
+          amount: +data.amount,
+          paymentMode: paymentMode.toUpperCase().split(" ").join("_"),
+        },
+        selectedOrderHistory.id,
+      );
+      onSetAlertDetails({
+        message: result.message,
+        variant: "success",
+      });
+      reset();
+      setPaymentMode(undefined);
+      updateOrderHistory(result.data);
+    } catch (error) {
+      onSetAlertDetails({
+        message: (error as Error).message,
+        variant: "error",
+      });
+      console.error("Failed to record new order payment", error);
+    } finally {
+      onShowAlert();
+      setDropdownError(false);
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="mb-4 bg-red-100 text-red-700 p-3 rounded-sm flex gap-3">
+        <div className="basis-8">
+          <CgDanger className="text-2xl" />
+        </div>
+        <p>
+          The current system design is to ensure payments never exceeds. If it
+          does, the system will reject the payment.{" "}
+        </p>
+      </div>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form.Group className="mb-4">
+          <Form.Label htmlFor="amount">Amount</Form.Label>
+          <Form.Control
+            type="string"
+            id="amount"
+            {...register("amount")}
+            hasError={Boolean(errors.amount)}
+            autoFocus
+          />
+          {Boolean(errors.amount) && (
+            <Form.Error>{errors.amount?.message}</Form.Error>
+          )}
+        </Form.Group>
+        <Form.Group className="mb-4">
+          <Form.Label>Payment Mode</Form.Label>
+          <Form.Dropdown
+            placeholder="Select payment mode"
+            list={["Cash", "Mobile money", "Bank Transfer", "Cheque"]}
+            onSelectItem={
+              setPaymentMode as Dispatch<SetStateAction<string | undefined>>
+            }
+            selectedItem={paymentMode}
+            hasError={dropdownError}
+            onHideError={() => setDropdownError(false)}
+          />
+          {dropdownError && <Form.Error>Payment mode is required</Form.Error>}
+        </Form.Group>
+        <Form.Group>
+          <Button
+            el="button"
+            type="submit"
+            variant={"primary"}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Button.Loader />
+            ) : (
+              <span className="flex items-center gap-2">
+                <IoIosSave />
+                <span>Record amount</span>
+              </span>
+            )}
+          </Button>
+        </Form.Group>
+      </Form>
+    </>
+  );
+}
+
+export function ChangeOrderStatus({
+  selectedOrderHistory,
+  onSetAlertDetails,
+  onSetOrderHistory,
+  onShowAlert,
+  onHideModal,
+}: ChangeOrderStatusProps): React.JSX.Element {
+  const [isLoading, setIsLoading] = useState(false);
+  const [dropdownError, setDropdownError] = useState(false);
+
+  const formattedStatus = useMemo((): string => {
+    return ORDER_STATUSES.find(
+      (item) =>
+        item.toLowerCase() ===
+        selectedOrderHistory.orderStatus.toLowerCase().split("_").join(" "),
+    ) as string;
+  }, [selectedOrderHistory]);
+  const [status, setOrderStatus] = useState<string | undefined>(
+    formattedStatus,
+  );
+
+  const updateOrderHistory = useCallback(
+    (status: OrderStatus): void => {
+      const updatedSelectedOrderHistory = selectedOrderHistory;
+      updatedSelectedOrderHistory.orderStatus = status;
+
+      onSetOrderHistory((prevState) => {
+        const updatedData = [...prevState.data];
+        const itemIndex = updatedData.findIndex(
+          (item) => item.id === selectedOrderHistory.id,
+        );
+        const deleteCount = 1;
+        updatedData.splice(itemIndex, deleteCount, updatedSelectedOrderHistory);
+
+        return {
+          count: prevState.count,
+          data: updatedData,
+        };
+      });
+    },
+    [selectedOrderHistory, onSetOrderHistory],
+  );
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
+
+    if (!status) {
+      setDropdownError(true);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const formattedStatus = status.toUpperCase().split(" ").join("_");
+      const result = await changeOrderStatus(
+        {
+          status: formattedStatus,
+        },
+        selectedOrderHistory.id,
+      );
+      updateOrderHistory(formattedStatus as OrderStatus);
+      setOrderStatus(undefined);
+      onSetAlertDetails({
+        message: result.message,
+        variant: "success",
+      });
+      onHideModal();
+    } catch (error) {
+      console.error("Failed to change order status", error);
+      onSetAlertDetails({
+        message: (error as Error).message,
+        variant: "error",
+      });
+    } finally {
+      setIsLoading(false);
+      onShowAlert();
+    }
+  };
+
+  return (
+    <Form onSubmit={onSubmit}>
+      <Form.Group className="mb-4">
+        <Form.Label>Order status</Form.Label>
+        <Form.Dropdown
+          placeholder="Select order status"
+          list={ORDER_STATUSES}
+          onSelectItem={setOrderStatus}
+          selectedItem={status}
+          hasError={dropdownError}
+          onHideError={() => setDropdownError(false)}
+        />
+        {dropdownError && <Form.Error>Order status is required</Form.Error>}
+      </Form.Group>
+      <Form.Group>
+        <Button
+          el="button"
+          type="submit"
+          variant={"primary"}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <Button.Loader />
+          ) : (
+            <span className="flex items-center gap-2">
+              <IoIosSave />
+              <span>Save changes</span>
+            </span>
+          )}
+        </Button>
+      </Form.Group>
+    </Form>
   );
 }
