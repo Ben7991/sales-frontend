@@ -79,7 +79,7 @@ export default function App(): React.JSX.Element {
               element: <AvailableStocks />,
             },
             { path: "/dashboard/purchase", element: <Purchase /> },
-            { path: "/dashboard/sales/create-order", element: <CreateOrder /> },
+            { path: "/dashboard/sales/order", element: <CreateOrder /> },
             {
               path: "/dashboard/sales/order-history",
               element: <OrderHistory />,

@@ -173,7 +173,7 @@ export function SideDrawer({
                   exit={{ height: 0 }}
                 >
                   <NavLink
-                    to="/dashboard/sales/create-order"
+                    to="/dashboard/sales/order"
                     className={subNavLinkClasses}
                   >
                     <RiPencilLine className="text-[1.15rem]" />
