@@ -98,6 +98,7 @@ export type OrderItem = {
   quantity: number;
   amount: number;
   amountPaid: number;
+  comment: string;
 };
 export type PaymentMode = "CASH" | "MOBILE_MONEY" | "BANK_TRANSFER" | "CHEQUE";
 export type OrderPayment = {
@@ -117,6 +118,7 @@ export type Order = {
   orderItems: Array<OrderItem>;
   orderPayments: Array<OrderPayment>;
   customer: Customer;
+  orderStatus: OrderStatus;
 };
 
 export const StatusCodes = {
