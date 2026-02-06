@@ -76,7 +76,7 @@ export type ProductStock = {
   retailUnitPrice: string;
   wholesaleUnitPrice: string;
   specialPrice: string;
-  wholeSalePrice: string;
+  wholesalePrice: string;
   totalPieces: number;
   numberOfBoxes: number;
   minimumThreshold: number;
