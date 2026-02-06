@@ -76,6 +76,35 @@ export async function getCustomers(
   return result;
 }
 
+export async function getCustomerViaLiveSearch(
+  query: string,
+): Promise<ResponseWithRecord<Customer>> {
+  const searchParams = new URLSearchParams();
+  searchParams.set("q", query.toString());
+
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_API}/customers/live-search?${searchParams.toString()}`,
+    {
+      method: "GET",
+      headers: getHeaders(true),
+      credentials: "include",
+    },
+  );
+  const result = await response.json();
+
+  if (response.status === StatusCodes.UN_AUTHORIZED) {
+    const isRefreshed = await refreshToken();
+    if (isRefreshed) {
+      return await getCustomerViaLiveSearch(query);
+    }
+    throw new Error(result.message);
+  } else if (FAILED_STATUS_CODES.includes(response.status)) {
+    throw new Error(result.message);
+  }
+
+  return result;
+}
+
 export async function addCustomer(
   data: unknown,
 ): Promise<ResponseWithDataAndMessage<Customer>> {
