@@ -38,3 +38,37 @@ export function getPaginatedData(searchParams: URLSearchParams) {
     perPage: parsedPerPage,
   };
 }
+
+export function formatAmount(amount: number): string {
+  let formattedStringAmount = "";
+  let decimals = "00",
+    stringAmountWithoutDecimals = "";
+  const stringAmount = amount.toString();
+
+  if (stringAmount.includes(".")) {
+    [stringAmountWithoutDecimals, decimals] = stringAmount.split(".");
+    if (decimals.length < 2) {
+      decimals += "0";
+    }
+  } else {
+    stringAmountWithoutDecimals = stringAmount;
+  }
+
+  for (let i = stringAmountWithoutDecimals.length; i >= 0; i -= 3) {
+    const value = stringAmountWithoutDecimals.substring(i - 3, i);
+    if (!value) break;
+    formattedStringAmount = `${value},${formattedStringAmount}`;
+  }
+
+  if (
+    formattedStringAmount.lastIndexOf(",") ===
+    formattedStringAmount.length - 1
+  ) {
+    formattedStringAmount = formattedStringAmount.substring(
+      0,
+      formattedStringAmount.length - 1,
+    );
+  }
+
+  return `${formattedStringAmount}.${decimals}`;
+}
