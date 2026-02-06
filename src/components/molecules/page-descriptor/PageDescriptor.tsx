@@ -9,7 +9,7 @@ export function PageDescriptor({
   spinnerState,
 }: PageDescriptorProps): React.JSX.Element {
   return (
-    <div className="w-full mb-4 lg:mb-6 xl:mb-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+    <div className="w-full mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-2">
         <div className="space-y-1">
           <Headline tag="h4">{title}</Headline>
