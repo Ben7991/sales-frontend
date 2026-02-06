@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "motion/react";
+import { LiaTimesSolid } from "react-icons/lia";
 
 import { Backdrop } from "@/components/atoms/backdrop/Backdrop";
 import { Headline } from "@/components/atoms/headline/Headline";
-import { LiaTimesSolid } from "react-icons/lia";
 
 type OffCanvasProps = {
   title: string;
@@ -26,7 +26,7 @@ export function OffCanvas({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed top-0 right-0 w-full h-screen md:w-1/2 lg:w-1/3 xl:w-125 overflow-y-auto bg-white z-50 p-4"
+            className="fixed top-0 right-0 w-full h-screen md:w-1/2 lg:w-1/2 xl:w-2/5 overflow-y-auto bg-white z-50 p-4"
           >
             <div className="flex items-center justify-between mb-4">
               <Headline tag="h4">{title}</Headline>
