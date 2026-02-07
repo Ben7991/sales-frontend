@@ -11,7 +11,7 @@ import {
   availableStockColumnHeadings,
   getProductStock,
 } from "./AvailableStocks.utils";
-import { getPaginatedData } from "@/utils/helpers.utils";
+import { formatAmount, getPaginatedData } from "@/utils/helpers.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { Pill } from "@/components/atoms/pill/Pill";
 
@@ -69,8 +69,8 @@ export function AvailableStocks(): React.JSX.Element {
               </div>
             </td>
             <td>{item.supplier.name}</td>
-            <td>{item.retailUnitPrice}</td>
-            <td>{item.wholesaleUnitPrice}</td>
+            <td>&#8373; {formatAmount(+item.retailUnitPrice)}</td>
+            <td>&#8373; {formatAmount(+item.wholesaleUnitPrice)}</td>
             <td>{item.numberOfBoxes}</td>
             <td>{item.totalPieces}</td>
             <td>

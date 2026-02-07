@@ -37,6 +37,9 @@ import { Headline } from "@/components/atoms/headline/Headline";
 import { Button } from "@/components/atoms/button/Button";
 import { ReceiptManager } from "@/utils/receipt-manager.util";
 import { Form } from "@/components/atoms/form/Form";
+import { Pill } from "@/components/atoms/pill/Pill";
+import { formatAmount } from "@/utils/helpers.utils";
+import { BiSolidEdit } from "react-icons/bi";
 
 export function OrderDetails({
   showOffCanvas,
@@ -57,7 +60,7 @@ export function OrderDetails({
         setOrderDetails(result.data);
       } catch (error) {
         const message = "Failed to get order details";
-        console.log(message, error);
+        console.error(message, error);
         onSetAlertDetails({
           message,
           variant: "error",
@@ -78,7 +81,7 @@ export function OrderDetails({
       receiptManager.downloadReceipt(result.data, id);
     } catch (error) {
       const message = "Failed to download receipt";
-      console.log(message, error);
+      console.error(message, error);
       onSetAlertDetails({
         message,
         variant: "error",
@@ -97,7 +100,7 @@ export function OrderDetails({
       receiptManager.printReceipt(result.data);
     } catch (error) {
       const message = "Failed to print receipt";
-      console.log(message, error);
+      console.error(message, error);
       onSetAlertDetails({
         message,
         variant: "error",
@@ -117,48 +120,97 @@ export function OrderDetails({
         </div>
       ) : (
         <>
-          <p className="mb-2">
-            Order number:{" "}
-            <strong className="font-semibold">
-              #{orderDetails.id.toString()}
-            </strong>
-          </p>
-          <p className="mb-2">
-            Date:{" "}
-            <strong>{new Date(orderDetails.orderDate).toLocaleString()}</strong>
-          </p>
-          <p className="mb-2">
-            Customer:{" "}
-            <strong>
-              <Link
-                to={`/dashboard/customers?q=${orderDetails.customer.id}`}
-                className="text-blue-600 underline"
+          <div className="flex justify-between">
+            <div>
+              <p className="mb-2">
+                Order number:{" "}
+                <strong className="font-semibold">
+                  #{orderDetails.id.toString()}
+                </strong>
+              </p>
+              <p className="mb-2">
+                Date:{" "}
+                <strong>
+                  {new Date(orderDetails.orderDate).toLocaleString()}
+                </strong>
+              </p>
+              <p className="mb-2">
+                Customer:{" "}
+                <strong>
+                  <Link
+                    to={`/dashboard/customers?q=${orderDetails.customer.id}`}
+                    className="text-blue-600 underline"
+                  >
+                    {orderDetails.customer.name}
+                  </Link>
+                </strong>
+              </p>
+              <p>
+                Order status:{" "}
+                <strong>{orderDetails.orderStatus.split("_").join(" ")}</strong>
+              </p>
+            </div>
+            <div>
+              <p className="mb-2">
+                Order type: <strong>{orderDetails.orderSale}</strong>
+              </p>
+              <p className="mb-2">
+                Pending amount:{" "}
+                <strong className="font-semibold">
+                  &#8373;{" "}
+                  {(orderDetails.orderTotal - orderDetails.amountPaid).toFixed(
+                    2,
+                  )}
+                </strong>
+              </p>
+              <p className="mb-2">
+                Paid Status:{" "}
+                <Pill
+                  text={orderDetails.paidStatus}
+                  variant={
+                    orderDetails.paidStatus === "OUTSTANDING"
+                      ? "danger"
+                      : "success"
+                  }
+                />
+              </p>
+            </div>
+          </div>
+
+          <hr className="my-6 border border-gray-300" />
+          <div className="flex items-center justify-between mb-4">
+            <Headline tag="h4">Order Items</Headline>
+            {orderDetails.orderStatus === "OPEN" && (
+              <Button
+                el="link"
+                to={`/dashboard/sales/order?id=${orderDetails.id}`}
+                variant="outline"
+                className="flex! items-center gap-1"
               >
-                {orderDetails.customer.name}
-              </Link>
-            </strong>
-          </p>
-          <p className="mb-2">
-            Order type: <strong>{orderDetails.orderSale}</strong>
-          </p>
-          <p className="mb-4">
-            Pending amount to pay:{" "}
-            <strong className="font-semibold">
-              &#8373;{" "}
-              {(orderDetails.orderTotal - orderDetails.amountPaid).toFixed(2)}
-            </strong>
-          </p>
+                <BiSolidEdit className="text-xl" />
+                <span>Edit Order</span>
+              </Button>
+            )}
+          </div>
+
           <DataTable
-            columnHeadings={["Product", "Qty", "Amount", "Amount Paid"]}
+            columnHeadings={[
+              "Product",
+              "Qty",
+              "Amount",
+              "Amount Paid",
+              "Comment",
+            ]}
             count={orderDetails?.orderItems?.length ?? 0}
             hidePaginator
           >
             {orderDetails?.orderItems.map((item) => (
               <tr key={item.id}>
-                <td>{item.name}</td>
+                <td>{item.productStock.product.name}</td>
                 <td>{item.quantity}</td>
                 <td>&#8373; {item.amount.toFixed(2)}</td>
                 <td>&#8373; {item.amountPaid.toFixed(2)}</td>
+                <td>{item.comment}</td>
               </tr>
             ))}
             <tr>
@@ -167,6 +219,7 @@ export function OrderDetails({
               </td>
               <td>&#8373; {orderDetails.orderTotal.toFixed(2)}</td>
               <td>&#8373; {orderDetails.amountPaid.toFixed(2)}</td>
+              <td></td>
             </tr>
           </DataTable>
           <div className="flex items-center gap-2 -mt-3">
@@ -206,7 +259,7 @@ export function OrderDetails({
             </Button>
           </div>
 
-          <hr className="my-6" />
+          <hr className="my-6 border border-gray-300" />
 
           <Headline tag="h4" className="mb-4">
             Payment details
@@ -224,6 +277,13 @@ export function OrderDetails({
                   <td>{item.paymentMode}</td>
                 </tr>
               ))}
+              <tr>
+                <td className="text-right">
+                  <strong>Total</strong>
+                </td>
+                <td>&#8373; {formatAmount(orderDetails.amountPaid)}</td>
+                <td></td>
+              </tr>
             </DataTable>
           ) : (
             <p>No payments available at the moment</p>

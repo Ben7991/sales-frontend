@@ -44,7 +44,12 @@ export function ArrearsDetail({
         accumulated from.
       </p>
       <DataTable
-        columnHeadings={["Order Total", "Amount Paid", "Outstanding Amount"]}
+        columnHeadings={[
+          "Order ID",
+          "Order Total",
+          "Amount Paid",
+          "Outstanding Amount",
+        ]}
         count={orders.length}
         hidePaginator
       >
@@ -54,6 +59,7 @@ export function ArrearsDetail({
             className="cursor-pointer hover:bg-gray-100"
             onClick={() => navigateToOrder(item.orderId)}
           >
+            <td>{item.orderId}</td>
             <td>&#8373; {item.orderTotal.toFixed(2)}</td>
             <td>&#8373; {item.amountPaid.toFixed(2)}</td>
             <td>&#8373; {item.outstandingAmount.toFixed(2)}</td>
