@@ -94,7 +94,7 @@ export type PaidStatus = "PAID" | "OUTSTANDING";
 export type OrderSale = "WHOLESALE" | "RETAIL";
 export type OrderItem = {
   id: number;
-  name: string;
+  productStock: ProductStock;
   quantity: number;
   amount: number;
   amountPaid: number;

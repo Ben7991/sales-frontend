@@ -5,19 +5,15 @@ import type { Customer, OrderSale, ProductStock } from "@/utils/types.utils";
 export type DropdownWithSearchProps<T> = {
   placeholder: string;
   selectedItem?: T;
+  children?: React.ReactNode;
   onSetSelectedItem: (item?: T) => void;
   onGetValue: (item?: T) => string;
-  onGetItems: (
-    query: string,
-    page: number,
-    perPage: number,
-  ) => Promise<{ count: number; data: Array<T> }>;
-  children?: React.ReactNode;
+  onGetItems: (query: string) => Promise<{ count: number; data: Array<T> }>;
 };
 
 export type OrderItemToCreate = {
   id: number;
-  item: ProductStock;
+  productStock: ProductStock;
   quantity: string;
   price: number;
   total: number;
