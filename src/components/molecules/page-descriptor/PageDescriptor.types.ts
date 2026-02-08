@@ -3,4 +3,5 @@ export type PageDescriptorProps = {
   description?: string;
   children?: React.ReactNode;
   spinnerState?: boolean;
+  className?: string;
 };
