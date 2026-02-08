@@ -86,7 +86,11 @@ export function Arrears(): React.JSX.Element {
             <td>{item.customerName}</td>
             <td>{item.totalOrders}</td>
             <td>&#8373; {item.totalAmountToPay.toFixed(2)}</td>
-            <td>{new Date(item.lastDatePaid).toLocaleString()}</td>
+            <td>
+              {item.lastDatePaid
+                ? new Date(item.lastDatePaid).toLocaleString()
+                : "-"}
+            </td>
           </tr>
         ))}
       </DataTable>
