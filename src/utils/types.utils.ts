@@ -120,6 +120,12 @@ export type Order = {
   customer: Customer;
   orderStatus: OrderStatus;
 };
+export type MoneySharing = {
+  id: number;
+  createdAt: string;
+  amount: number;
+  supplier: Supplier;
+};
 
 export const StatusCodes = {
   CREATED: 201,
