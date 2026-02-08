@@ -79,12 +79,16 @@ export function CreateOrder(): React.JSX.Element {
         );
         setSelectedCustomer(data.customer);
       } catch (error) {
+        setAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
         console.error("Failed to fetch order to edit", error);
       }
     };
 
     getOrderToEdit();
-  }, [orderIdToEdit]);
+  }, [orderIdToEdit, setAlertDetails]);
 
   useEffect(() => {
     if (!orderSale) {
@@ -268,6 +272,7 @@ export function CreateOrder(): React.JSX.Element {
             onSetSelectedItem={setSelectedCustomer}
             onGetValue={getCustomerDetails}
             onGetItems={getCustomerViaLiveSearch}
+            onSetAlertDetails={setAlertDetails}
           >
             <Form.Dropdown
               placeholder="Select the type of order"
@@ -295,6 +300,7 @@ export function CreateOrder(): React.JSX.Element {
           onSetSelectedItem={setSelectedProductStock}
           onGetValue={getProductDetails}
           onGetItems={getStockViaLiveSearch}
+          onSetAlertDetails={setAlertDetails}
         >
           <Button el="button" variant="primary" onClick={addProductStock}>
             Add Product

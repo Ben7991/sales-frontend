@@ -1,6 +1,11 @@
 import type { ChangeEvent } from "react";
 
-import type { Customer, OrderSale, ProductStock } from "@/utils/types.utils";
+import type {
+  Customer,
+  OrderSale,
+  PreferredAlertPropsForForm,
+  ProductStock,
+} from "@/utils/types.utils";
 
 export type DropdownWithSearchProps<T> = {
   placeholder: string;
@@ -9,7 +14,7 @@ export type DropdownWithSearchProps<T> = {
   onSetSelectedItem: (item?: T) => void;
   onGetValue: (item?: T) => string;
   onGetItems: (query: string) => Promise<{ count: number; data: Array<T> }>;
-};
+} & Pick<PreferredAlertPropsForForm, "onSetAlertDetails">;
 
 export type OrderItemToCreate = {
   id: number;

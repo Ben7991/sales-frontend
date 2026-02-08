@@ -11,6 +11,8 @@ import {
 import { getPaginatedData } from "@/utils/helpers.utils";
 import { getArrears } from "./Arrears.utils";
 import { ArrearsDetail } from "./Arrears.partials";
+import { useAlert } from "@/components/molecules/alert/Alert.hooks";
+import { Alert } from "@/components/molecules/alert/Alert";
 
 export function Arrears(): React.JSX.Element {
   const [selectedItem, setSelectedItem] = useState<ArrearsRow>();
@@ -23,6 +25,7 @@ export function Arrears(): React.JSX.Element {
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
   const { page, perPage, query } = getPaginatedData(searchParams);
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   useEffect(() => {
     const fetchOrders = async (): Promise<void> => {
@@ -30,12 +33,16 @@ export function Arrears(): React.JSX.Element {
         const result = await getArrears(query, page, perPage);
         setArrears(result);
       } catch (error) {
+        setAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
         console.error("Failed to fetch arrears", error);
       }
     };
 
     fetchOrders();
-  }, [page, perPage, query]);
+  }, [page, perPage, query, setAlertDetails]);
 
   const handleSelectedItem = (id: number): void => {
     const preferredItem = arrears.data.find((item) => item.customerId === id);
@@ -57,6 +64,13 @@ export function Arrears(): React.JSX.Element {
 
   return (
     <>
+      {alertDetails ? (
+        <Alert
+          variant={alertDetails.variant}
+          message={alertDetails.message}
+          onHide={hideAlert}
+        />
+      ) : null}
       <PageDescriptor title="Arrears" />
       <DataTable
         columnHeadings={arrearsColumnHeadings}
@@ -81,6 +95,7 @@ export function Arrears(): React.JSX.Element {
           onHideModal={handleHideModal}
           showOffCanvas={Boolean(activeAction)}
           selectedItem={selectedItem}
+          onSetAlertDetails={setAlertDetails}
         />
       )}
     </>

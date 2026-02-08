@@ -11,6 +11,7 @@ export function ArrearsDetail({
   showOffCanvas,
   selectedItem,
   onHideModal,
+  onSetAlertDetails,
 }: ArrearsDetailProps): React.JSX.Element {
   const navigate = useNavigate();
 
@@ -22,12 +23,16 @@ export function ArrearsDetail({
         const result = await getArrearItem(selectedItem.customerId);
         setOrders(result.data);
       } catch (error) {
+        onSetAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
         console.error("Failed to get order details", error);
       }
     };
 
     fetchOrder();
-  }, [selectedItem]);
+  }, [selectedItem, onSetAlertDetails]);
 
   const navigateToOrder = (id: string): void => {
     navigate(`/dashboard/sales/order-history?q=${id}`);

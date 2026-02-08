@@ -46,6 +46,10 @@ export function OrderHistory(): React.JSX.Element {
         const result = await getOrderHistories(query, page, perPage);
         setOrderHistory(result);
       } catch (error) {
+        setAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
         console.error("Failed to fetch order history", error);
       } finally {
         setIsFetching(false);
@@ -53,7 +57,7 @@ export function OrderHistory(): React.JSX.Element {
     };
 
     fetchOrders();
-  }, [page, perPage, query, setIsFetching]);
+  }, [page, perPage, query, setIsFetching, setAlertDetails]);
 
   const selectPreferredOrder = useCallback(
     (id: number): void => {

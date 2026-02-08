@@ -64,6 +64,10 @@ export function Supplier(): React.JSX.Element {
           payload: result,
         });
       } catch (error) {
+        setAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
         console.error("Failed to fetch suppliers", error);
       } finally {
         setIsFetching(false);
@@ -71,7 +75,7 @@ export function Supplier(): React.JSX.Element {
     };
 
     fetchSuppliers();
-  }, [query, page, perPage, setIsFetching]);
+  }, [query, page, perPage, setIsFetching, setAlertDetails]);
 
   const handleHideModal = (): void => {
     navigate(pathname);

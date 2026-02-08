@@ -35,6 +35,7 @@ export function DropdownWithSearch<T extends { id: number }>({
   onSetSelectedItem,
   onGetValue,
   onGetItems,
+  onSetAlertDetails,
 }: DropdownWithSearchProps<T>): React.JSX.Element {
   const searchTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -54,11 +55,15 @@ export function DropdownWithSearch<T extends { id: number }>({
           "Failed to fetch item whiles searching to Create or Edit order",
           error,
         );
+        onSetAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
       } finally {
         setIsSearching(false);
       }
     },
-    [onGetItems],
+    [onGetItems, onSetAlertDetails],
   );
 
   useEffect(() => {

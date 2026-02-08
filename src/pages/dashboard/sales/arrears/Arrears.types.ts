@@ -1,3 +1,5 @@
+import type { PreferredAlertPropsForForm } from "@/utils/types.utils";
+
 export const arrearsColumnHeadings = [
   "Customer",
   "Total Orders",
@@ -28,5 +30,4 @@ export type ArrearState = {
 export type ArrearsDetailProps = {
   showOffCanvas: boolean;
   selectedItem: ArrearsRow;
-  onHideModal: VoidFunction;
-};
+} & PreferredAlertPropsForForm;

@@ -14,6 +14,8 @@ import {
 import { formatAmount, getPaginatedData } from "@/utils/helpers.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { Pill } from "@/components/atoms/pill/Pill";
+import { useAlert } from "@/components/molecules/alert/Alert.hooks";
+import { Alert } from "@/components/molecules/alert/Alert";
 
 export function AvailableStocks(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
@@ -24,6 +26,7 @@ export function AvailableStocks(): React.JSX.Element {
 
   const [searchParams] = useSearchParams();
   const { page, perPage, query } = getPaginatedData(searchParams);
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   useEffect(() => {
     const fetchStocks = async (): Promise<void> => {
@@ -35,6 +38,10 @@ export function AvailableStocks(): React.JSX.Element {
           payload: result,
         });
       } catch (error) {
+        setAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
         console.error("Failed to fetch product stocks", error);
       } finally {
         setIsFetching(false);
@@ -42,10 +49,17 @@ export function AvailableStocks(): React.JSX.Element {
     };
 
     fetchStocks();
-  }, [page, perPage, query, setIsFetching]);
+  }, [page, perPage, query, setIsFetching, setAlertDetails]);
 
   return (
     <>
+      {alertDetails ? (
+        <Alert
+          variant={alertDetails.variant}
+          message={alertDetails.message}
+          onHide={hideAlert}
+        />
+      ) : null}
       <PageDescriptor title="Available Stocks" spinnerState={isFetching} />
       <DataTable
         count={availableStockState.count}

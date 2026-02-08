@@ -54,14 +54,18 @@ export function Employee(): React.JSX.Element {
           payload: result,
         });
       } catch (error) {
-        console.error("Failed to fetch suppliers", error);
+        console.error("Failed to fetch employees", error);
+        setAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
       } finally {
         setIsFetching(false);
       }
     };
 
     fetchEmployees();
-  }, [query, page, perPage, setIsFetching]);
+  }, [query, page, perPage, setIsFetching, setAlertDetails]);
 
   const handleHideModal = (): void => {
     navigate(pathname);
