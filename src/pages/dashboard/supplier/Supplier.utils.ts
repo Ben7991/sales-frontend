@@ -17,7 +17,6 @@ export const supplierDataTableColumnHeadings = [
   "Email",
   "Company Name",
   "Phones",
-  "",
 ];
 
 export const supplierSchema = yup.object({

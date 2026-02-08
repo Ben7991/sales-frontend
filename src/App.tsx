@@ -23,6 +23,7 @@ import { Purchase } from "./pages/dashboard/purchase/Purchase";
 import { CreateOrder } from "./pages/dashboard/sales/create-order/CreateOrder";
 import { OrderHistory } from "./pages/dashboard/sales/order-history/OrderHistory";
 import { Arrears } from "./pages/dashboard/sales/arrears/Arrears";
+import { EnsureUserHasRole } from "./components/guards/ensure-user-has-role/EnsureUserHasRole";
 
 export default function App(): React.JSX.Element {
   const appRouter = createBrowserRouter([
@@ -68,25 +69,82 @@ export default function App(): React.JSX.Element {
               path: "/dashboard/account-settings",
               element: <AccountSettings />,
             },
-            { path: "/dashboard/suppliers", element: <Supplier /> },
-            { path: "/dashboard/customers", element: <Customer /> },
+            {
+              path: "/dashboard/suppliers",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
+                  <Supplier />
+                </EnsureUserHasRole>
+              ),
+            },
+            {
+              path: "/dashboard/purchase",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
+                  <Purchase />
+                </EnsureUserHasRole>
+              ),
+            },
+            {
+              path: "/dashboard/customers",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "SALES_PERSON"]}>
+                  <Customer />
+                </EnsureUserHasRole>
+              ),
+            },
             {
               path: "/dashboard/inventory/categories-products",
-              element: <CategoriesProducts />,
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
+                  <CategoriesProducts />
+                </EnsureUserHasRole>
+              ),
             },
             {
               path: "/dashboard/inventory/available-stocks",
               element: <AvailableStocks />,
             },
-            { path: "/dashboard/purchase", element: <Purchase /> },
-            { path: "/dashboard/sales/order", element: <CreateOrder /> },
+            {
+              path: "/dashboard/sales/order",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "SALES_PERSON"]}>
+                  <CreateOrder />
+                </EnsureUserHasRole>
+              ),
+            },
             {
               path: "/dashboard/sales/order-history",
-              element: <OrderHistory />,
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "SALES_PERSON"]}>
+                  <OrderHistory />
+                </EnsureUserHasRole>
+              ),
             },
-            { path: "/dashboard/sales/arrears", element: <Arrears /> },
-            { path: "/dashboard/employees", element: <Employee /> },
-            { path: "/dashboard/report", element: <Report /> },
+            {
+              path: "/dashboard/sales/arrears",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "SALES_PERSON"]}>
+                  <Arrears />
+                </EnsureUserHasRole>
+              ),
+            },
+            {
+              path: "/dashboard/employees",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN"]}>
+                  <Employee />
+                </EnsureUserHasRole>
+              ),
+            },
+            {
+              path: "/dashboard/report",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN"]}>
+                  <Report />
+                </EnsureUserHasRole>
+              ),
+            },
           ],
         },
       ],

@@ -49,7 +49,7 @@ import {
   subNavLinkClasses,
 } from "./Dashboard.utils";
 import { AppLogo } from "@/components/molecules/app-logo/AppLogo";
-import { useAppDispatch } from "@/store/index.util";
+import { useAppDispatch, useAppSelector } from "@/store/index.util";
 import { removeAuthUser } from "@/store/slice/auth/auth.slice";
 import { AUTH_STATE } from "@/utils/constants.utils";
 import { getPaginatedData } from "@/utils/helpers.utils";
@@ -62,6 +62,8 @@ export function SideDrawer({
 
   const [showInventoryLinks, setShowInventoryLinks] = useState(false);
   const [showSalesLinks, setShowSalesLinks] = useState(false);
+
+  const { user } = useAppSelector((state) => state.auth);
 
   return (
     <>
@@ -79,29 +81,41 @@ export function SideDrawer({
               <span>Dashboard</span>
             </NavLink>
 
-            <p className="mt-4 ps-3 flex items-center gap-2">
-              <BsDashLg className="text-xl" />
-              <strong className="font-semibold">Product Sourcing</strong>
-            </p>
-            <NavLink to="/dashboard/suppliers" className={rootNavLinkClasses}>
-              <PiUsers className="text-xl" />
-              <span>Suppliers</span>
-            </NavLink>
-            <NavLink to="/dashboard/purchase" className={rootNavLinkClasses}>
-              <span className="flex items-center gap-2">
-                <PiClipboardText className="text-xl" />
-                <span>Purchase</span>
-              </span>
-            </NavLink>
+            {["ADMIN", "PROCUREMENT_OFFICER"].includes(user?.role ?? "") ? (
+              <>
+                <p className="mt-4 ps-3 flex items-center gap-2">
+                  <BsDashLg className="text-xl" />
+                  <strong className="font-semibold">Product Sourcing</strong>
+                </p>
+                <NavLink
+                  to="/dashboard/suppliers"
+                  className={rootNavLinkClasses}
+                >
+                  <PiUsers className="text-xl" />
+                  <span>Suppliers</span>
+                </NavLink>
+                <NavLink
+                  to="/dashboard/purchase"
+                  className={rootNavLinkClasses}
+                >
+                  <span className="flex items-center gap-2">
+                    <PiClipboardText className="text-xl" />
+                    <span>Purchase</span>
+                  </span>
+                </NavLink>
+              </>
+            ) : null}
 
             <p className="mt-4 ps-3 flex items-center gap-2">
               <BsDashLg className="text-xl" />
               <strong className="font-semibold">Sales Management</strong>
             </p>
-            <NavLink to="/dashboard/customers" className={rootNavLinkClasses}>
-              <PiUsersThree className="text-xl" />
-              <span>Customers</span>
-            </NavLink>
+            {["ADMIN", "SALES_PERSON"].includes(user?.role ?? "") ? (
+              <NavLink to="/dashboard/customers" className={rootNavLinkClasses}>
+                <PiUsersThree className="text-xl" />
+                <span>Customers</span>
+              </NavLink>
+            ) : null}
             <button
               className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
                 isPreferredUrl(pathname, "/dashboard/inventory")
@@ -128,13 +142,19 @@ export function SideDrawer({
                   animate={{ height: "auto" }}
                   exit={{ height: 0 }}
                 >
-                  <NavLink
-                    to="/dashboard/inventory/categories-products"
-                    className={subNavLinkClasses}
-                  >
-                    <TbFilePencil className="text-[1.15rem]" />
-                    <span>Categories & Products</span>
-                  </NavLink>
+                  {["ADMIN", "PROCUREMENT_OFFICER"].includes(
+                    user?.role ?? "",
+                  ) ? (
+                    <>
+                      <NavLink
+                        to="/dashboard/inventory/categories-products"
+                        className={subNavLinkClasses}
+                      >
+                        <TbFilePencil className="text-[1.15rem]" />
+                        <span>Categories & Products</span>
+                      </NavLink>
+                    </>
+                  ) : null}
                   <NavLink
                     to="/dashboard/inventory/available-stocks"
                     className={subNavLinkClasses}
@@ -146,70 +166,83 @@ export function SideDrawer({
               )}
             </AnimatePresence>
 
-            <button
-              className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
-                isPreferredUrl(pathname, "/dashboard/sales")
-                  ? "bg-green-700 text-white"
-                  : "hover:bg-gray-300"
-              }`}
-              onClick={() => setShowSalesLinks((prevState) => !prevState)}
-            >
-              <span className="flex items-center gap-2">
-                <PiChartLineUp className="text-xl" />
-                <span>Sales</span>
-              </span>
-              {showSalesLinks ? (
-                <RxCaretUp className="text-xl" />
-              ) : (
-                <RxCaretDown className="text-xl" />
-              )}
-            </button>
-            <AnimatePresence>
-              {showSalesLinks && (
-                <motion.div
-                  className="ps-6 space-y-1 overflow-hidden"
-                  initial={{ height: 0 }}
-                  animate={{ height: "auto" }}
-                  exit={{ height: 0 }}
+            {["ADMIN", "SALES_PERSON"].includes(user?.role ?? "") ? (
+              <>
+                <button
+                  className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
+                    isPreferredUrl(pathname, "/dashboard/sales")
+                      ? "bg-green-700 text-white"
+                      : "hover:bg-gray-300"
+                  }`}
+                  onClick={() => setShowSalesLinks((prevState) => !prevState)}
                 >
-                  <NavLink
-                    to="/dashboard/sales/order"
-                    className={subNavLinkClasses}
-                  >
-                    <RiPencilLine className="text-[1.15rem]" />
-                    <span>Create or Edit Order</span>
-                  </NavLink>
-                  <NavLink
-                    to="/dashboard/sales/order-history"
-                    className={subNavLinkClasses}
-                  >
-                    <MdOutlineFormatListBulleted className="text-[1.15rem]" />
-                    <span>Order History</span>
-                  </NavLink>
-                  <NavLink
-                    to="/dashboard/sales/arrears"
-                    className={subNavLinkClasses}
-                  >
-                    <FaRegMoneyBillAlt className="text-[1.15rem]" />
-                    <span>Arrears</span>
-                  </NavLink>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  <span className="flex items-center gap-2">
+                    <PiChartLineUp className="text-xl" />
+                    <span>Sales</span>
+                  </span>
+                  {showSalesLinks ? (
+                    <RxCaretUp className="text-xl" />
+                  ) : (
+                    <RxCaretDown className="text-xl" />
+                  )}
+                </button>
+                <AnimatePresence>
+                  {showSalesLinks && (
+                    <motion.div
+                      className="ps-6 space-y-1 overflow-hidden"
+                      initial={{ height: 0 }}
+                      animate={{ height: "auto" }}
+                      exit={{ height: 0 }}
+                    >
+                      <NavLink
+                        to="/dashboard/sales/order"
+                        className={subNavLinkClasses}
+                      >
+                        <RiPencilLine className="text-[1.15rem]" />
+                        <span>Create or Edit Order</span>
+                      </NavLink>
+                      <NavLink
+                        to="/dashboard/sales/order-history"
+                        className={subNavLinkClasses}
+                      >
+                        <MdOutlineFormatListBulleted className="text-[1.15rem]" />
+                        <span>Order History</span>
+                      </NavLink>
+                      <NavLink
+                        to="/dashboard/sales/arrears"
+                        className={subNavLinkClasses}
+                      >
+                        <FaRegMoneyBillAlt className="text-[1.15rem]" />
+                        <span>Arrears</span>
+                      </NavLink>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </>
+            ) : null}
 
-            <NavLink to="/dashboard/report" className={rootNavLinkClasses}>
-              <TbReport className="text-xl" />
-              <span>Report</span>
-            </NavLink>
+            {user?.role === "ADMIN" && (
+              <NavLink to="/dashboard/report" className={rootNavLinkClasses}>
+                <TbReport className="text-xl" />
+                <span>Report</span>
+              </NavLink>
+            )}
 
-            <p className="mt-4 ps-3 flex items-center gap-2">
-              <BsDashLg className="text-xl" />
-              <strong className="font-semibold">Employee Management</strong>
-            </p>
-            <NavLink to="/dashboard/employees" className={rootNavLinkClasses}>
-              <LiaUsersCogSolid className="text-xl" />
-              <span>Employees</span>
-            </NavLink>
+            {user?.role === "ADMIN" && (
+              <>
+                <p className="mt-4 ps-3 flex items-center gap-2">
+                  <BsDashLg className="text-xl" />
+                  <strong className="font-semibold">Employee Management</strong>
+                </p>
+                <NavLink
+                  to="/dashboard/employees"
+                  className={rootNavLinkClasses}
+                >
+                  <LiaUsersCogSolid className="text-xl" />
+                  <span>Employees</span>
+                </NavLink>
+              </>
+            )}
           </div>
         </div>
         <UserProfile className="mt-10 md:mt-0" />
@@ -331,10 +364,10 @@ export function PageHeader({
             <AnimatePresence>
               {showSettings && (
                 <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: "auto" }}
-                  exit={{ height: 0 }}
-                  className="absolute top-10 right-0 overflow-y-hidden flex flex-col bg-white w-50 space-y-2 p-2 shadow-lg border border-gray-200 rounded-md"
+                  initial={{ scale: "0.9" }}
+                  animate={{ scale: "1" }}
+                  exit={{ scale: "0.9" }}
+                  className="absolute top-10 right-0 overflow-y-hidden flex flex-col bg-white w-50 space-y-2 p-2 shadow-lg border border-gray-200 rounded-md z-2"
                 >
                   <Link
                     to="/dashboard/account-settings"
