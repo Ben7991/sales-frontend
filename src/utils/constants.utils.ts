@@ -5,6 +5,7 @@ export const FAILED_STATUS_CODES: Array<number> = [
   StatusCodes.VALIDATION_FAILED,
   StatusCodes.SERVER_ERROR,
   StatusCodes.FORBIDDEN,
+  StatusCodes.NOT_FOUND,
 ];
 
 export const AUTH_STATE = "auth_state" as const;
