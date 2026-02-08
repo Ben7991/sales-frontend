@@ -49,7 +49,6 @@ export function SupplierForm({
   selectedSupplier,
   onResetSelectedSupplier,
   onSupplierDispatch,
-  onShowAlert,
   onHideModal,
   onSetAlertDetails,
 }: SupplierFormProps): React.JSX.Element {
@@ -145,7 +144,6 @@ export function SupplierForm({
       });
       console.error("Failed to add supplier", error);
     } finally {
-      onShowAlert();
       setIsLoading(false);
     }
   };
@@ -235,7 +233,6 @@ export function SupplierPhoneForm({
   activeTab,
   selectedSupplier,
   selectedSupplierPhone,
-  onShowAlert,
   onHideModal,
   onSetAlertDetails,
   onSupplierDispatch,
@@ -318,7 +315,6 @@ export function SupplierPhoneForm({
       });
     } finally {
       setIsLoading(false);
-      onShowAlert();
     }
   };
 
@@ -358,7 +354,6 @@ export function SupplierPhoneForm({
       });
     } finally {
       setIsLoading(false);
-      onShowAlert();
     }
   };
 

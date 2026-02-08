@@ -50,13 +50,7 @@ export function Customer(): React.JSX.Element {
   const [selectedCustomerPhone, setSelectedCustomerPhone] =
     useState<PhoneWithID>();
 
-  const {
-    state: alertState,
-    alertDetails,
-    showAlert,
-    hideAlert,
-    setAlertDetails,
-  } = useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   const { page, perPage, query } = getPaginatedData(searchParams);
 
@@ -126,10 +120,10 @@ export function Customer(): React.JSX.Element {
 
   return (
     <>
-      {alertState ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}
@@ -244,7 +238,6 @@ export function Customer(): React.JSX.Element {
               setSelectedCustomerPhone(undefined)
             }
             onCustomerDispatch={customerDispatch}
-            onShowAlert={showAlert}
             onSetAlertDetails={setAlertDetails}
             onHideModal={handleHideModal}
             activeTab={activeAction as ActiveTabForPhoneForm}
@@ -259,7 +252,6 @@ export function Customer(): React.JSX.Element {
             perPage={perPage}
             selectedCustomer={selectedCustomer}
             onResetSelectedCustomer={() => setSelectedCustomer(undefined)}
-            onShowAlert={showAlert}
             onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
             onCustomerDispatch={customerDispatch}

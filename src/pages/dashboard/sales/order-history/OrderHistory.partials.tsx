@@ -46,7 +46,6 @@ export function OrderDetails({
   selectedOrderHistory,
   onHideModal,
   onSetAlertDetails,
-  onShowAlert,
 }: OrderDetailsProps): React.JSX.Element {
   const [isDownloading, setIsDownloading] = useState(false);
   const [startingPrint, setStartingPrint] = useState(false);
@@ -65,12 +64,11 @@ export function OrderDetails({
           message,
           variant: "error",
         });
-        onShowAlert();
       }
     };
 
     fetchOrder();
-  }, [selectedOrderHistory, onSetAlertDetails, onShowAlert]);
+  }, [selectedOrderHistory, onSetAlertDetails]);
 
   const handleReceiptDownload = async (id: number): Promise<void> => {
     setIsDownloading(true);
@@ -86,7 +84,6 @@ export function OrderDetails({
         message,
         variant: "error",
       });
-      onShowAlert();
     } finally {
       setIsDownloading(false);
     }
@@ -105,7 +102,6 @@ export function OrderDetails({
         message,
         variant: "error",
       });
-      onShowAlert();
     } finally {
       setStartingPrint(false);
     }
@@ -297,7 +293,6 @@ export function OrderDetails({
 export function OrderPaymentForm({
   selectedOrderHistory,
   onSetAlertDetails,
-  onShowAlert,
   onSetOrderHistory,
 }: OrderPaymentFormProps): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -369,7 +364,6 @@ export function OrderPaymentForm({
       });
       console.error("Failed to record new order payment", error);
     } finally {
-      onShowAlert();
       setDropdownError(false);
       setIsLoading(false);
     }
@@ -440,7 +434,6 @@ export function ChangeOrderStatus({
   selectedOrderHistory,
   onSetAlertDetails,
   onSetOrderHistory,
-  onShowAlert,
   onHideModal,
 }: ChangeOrderStatusProps): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -512,7 +505,6 @@ export function ChangeOrderStatus({
       });
     } finally {
       setIsLoading(false);
-      onShowAlert();
     }
   };
 

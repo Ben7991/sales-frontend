@@ -46,13 +46,7 @@ export function Supplier(): React.JSX.Element {
     initialSupplierReducerState,
   );
 
-  const {
-    state: alertState,
-    alertDetails,
-    showAlert,
-    hideAlert,
-    setAlertDetails,
-  } = useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier>();
   const [selectedSupplierPhone, setSelectedSupplierPhone] =
@@ -123,10 +117,10 @@ export function Supplier(): React.JSX.Element {
 
   return (
     <>
-      {alertState ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}
@@ -242,7 +236,6 @@ export function Supplier(): React.JSX.Element {
               setSelectedSupplierPhone(undefined)
             }
             onSupplierDispatch={supplierDispatch}
-            onShowAlert={showAlert}
             onSetAlertDetails={setAlertDetails}
             onHideModal={handleHideModal}
             activeTab={activeAction as ActiveTabForPhoneForm}
@@ -257,7 +250,6 @@ export function Supplier(): React.JSX.Element {
             perPage={perPage}
             selectedSupplier={selectedSupplier}
             onResetSelectedSupplier={() => setSelectedSupplier(undefined)}
-            onShowAlert={showAlert}
             onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
             onSupplierDispatch={supplierDispatch}

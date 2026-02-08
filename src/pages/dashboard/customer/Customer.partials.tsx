@@ -50,7 +50,6 @@ export function CustomerForm({
   onResetSelectedCustomer,
   onHideModal,
   onSetAlertDetails,
-  onShowAlert,
   onCustomerDispatch,
 }: CustomerFormProps): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -128,7 +127,6 @@ export function CustomerForm({
       console.error("Failed to add customer", error);
     } finally {
       setIsLoading(true);
-      onShowAlert();
     }
   };
 
@@ -224,7 +222,6 @@ export function CustomerPhoneForm({
   onHideModal,
   onResetSelectedCustomerPhone,
   onSetAlertDetails,
-  onShowAlert,
 }: CustomerPhoneFormProps): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -303,7 +300,6 @@ export function CustomerPhoneForm({
       });
     } finally {
       setIsLoading(false);
-      onShowAlert();
     }
   };
 
@@ -343,7 +339,6 @@ export function CustomerPhoneForm({
       });
     } finally {
       setIsLoading(false);
-      onShowAlert();
     }
   };
 

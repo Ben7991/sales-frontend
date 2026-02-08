@@ -48,13 +48,7 @@ export function CreateOrder(): React.JSX.Element {
     [],
   );
 
-  const {
-    state: alertState,
-    alertDetails,
-    showAlert,
-    hideAlert,
-    setAlertDetails,
-  } = useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   const [searchParams] = useSearchParams();
   const orderIdToEdit = searchParams.get("id");
@@ -244,16 +238,15 @@ export function CreateOrder(): React.JSX.Element {
       console.error("Failed to create or edit order", error);
     } finally {
       setIsLoading(false);
-      showAlert();
     }
   };
 
   return (
     <>
-      {alertState ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}

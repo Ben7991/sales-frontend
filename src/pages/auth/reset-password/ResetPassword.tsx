@@ -22,8 +22,7 @@ export function ResetPassword(): React.JSX.Element {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const { state, alertDetails, showAlert, hideAlert, setAlertDetails } =
-    useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
   const {
     register,
     handleSubmit,
@@ -58,7 +57,6 @@ export function ResetPassword(): React.JSX.Element {
       console.log("Failed to reset password", error);
     } finally {
       setIsLoading(false);
-      showAlert();
     }
   };
 
@@ -67,10 +65,10 @@ export function ResetPassword(): React.JSX.Element {
       title="Sign-in your account"
       description="Please enter your email and password to access your account settings and dashboard."
     >
-      {state ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}

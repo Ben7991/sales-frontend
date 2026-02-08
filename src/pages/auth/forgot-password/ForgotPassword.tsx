@@ -26,8 +26,7 @@ export function ForgotPassword(): React.JSX.Element {
     resolver: yupResolver(forgotPasswordSchema),
     mode: "onChange",
   });
-  const { state, alertDetails, showAlert, hideAlert, setAlertDetails } =
-    useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   const onSubmit: SubmitHandler<ForgotPasswordInputs> = async (
     data,
@@ -48,7 +47,6 @@ export function ForgotPassword(): React.JSX.Element {
       });
       console.log("Failed to request password reset", error);
     } finally {
-      showAlert();
       setIsLoading(false);
     }
   };
@@ -58,10 +56,10 @@ export function ForgotPassword(): React.JSX.Element {
       title="Forgot Password"
       description="Please enter your email and password to access your account settings and dashboard."
     >
-      {state ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}
@@ -83,6 +81,7 @@ export function ForgotPassword(): React.JSX.Element {
         <Form.Group className="flex flex-col">
           <Button
             el="button"
+            variant="primary"
             type="submit"
             className="py-2"
             disabled={isLoading || !isValid}

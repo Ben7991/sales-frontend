@@ -37,13 +37,7 @@ export function OrderHistory(): React.JSX.Element {
   const [searchParams] = useSearchParams();
   const { page, perPage, query } = getPaginatedData(searchParams);
 
-  const {
-    state: alertState,
-    alertDetails,
-    showAlert,
-    hideAlert,
-    setAlertDetails,
-  } = useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   useEffect(() => {
     const fetchOrders = async (): Promise<void> => {
@@ -86,10 +80,10 @@ export function OrderHistory(): React.JSX.Element {
 
   return (
     <>
-      {alertState ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}
@@ -180,7 +174,6 @@ export function OrderHistory(): React.JSX.Element {
             showOffCanvas={activeAction === "details"}
             selectedOrderHistory={selectedOrderHistory}
             onSetAlertDetails={setAlertDetails}
-            onShowAlert={showAlert}
           />
           <Modal
             title={
@@ -195,7 +188,6 @@ export function OrderHistory(): React.JSX.Element {
               <OrderPaymentForm
                 selectedOrderHistory={selectedOrderHistory}
                 onSetAlertDetails={setAlertDetails}
-                onShowAlert={showAlert}
                 onSetOrderHistory={setOrderHistory}
               />
             ) : (
@@ -203,7 +195,6 @@ export function OrderHistory(): React.JSX.Element {
                 onHideModal={handleHideModal}
                 selectedOrderHistory={selectedOrderHistory}
                 onSetAlertDetails={setAlertDetails}
-                onShowAlert={showAlert}
                 onSetOrderHistory={setOrderHistory}
               />
             )}

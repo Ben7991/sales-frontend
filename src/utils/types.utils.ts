@@ -17,7 +17,6 @@ export type ResponseWithRecord<T> = {
 };
 
 export type PreferredAlertPropsForForm = {
-  onShowAlert: VoidFunction;
   onHideModal: VoidFunction;
   onSetAlertDetails: Dispatch<
     SetStateAction<Omit<AlertProps, "onHide" | "state"> | undefined>

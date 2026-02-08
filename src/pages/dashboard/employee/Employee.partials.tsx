@@ -40,7 +40,6 @@ export function EmployeeForm({
   onResetSelectedEmployee,
   onHideModal,
   onSetAlertDetails,
-  onShowAlert,
   onEmployeeDispatch,
 }: EmployeeFormProps): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -123,7 +122,6 @@ export function EmployeeForm({
       console.error("Failed to add employee", error);
     } finally {
       setIsLoading(false);
-      onShowAlert();
     }
   };
 
@@ -208,7 +206,6 @@ export function EmployeeStatusForm({
   onResetSelectedEmployee,
   onHideModal,
   onSetAlertDetails,
-  onShowAlert,
   onEmployeeDispatch,
 }: Omit<EmployeeFormProps, "perPage">): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -266,7 +263,6 @@ export function EmployeeStatusForm({
       console.error("Failed to change employee status", error);
     } finally {
       setIsLoading(false);
-      onShowAlert();
     }
   };
 

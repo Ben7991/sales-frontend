@@ -50,7 +50,6 @@ export function CategoryForm({
   selectedCategory,
   onHideModal,
   onSetAlertDetails,
-  onShowAlert,
 }: CategoryFormProps): React.JSX.Element {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -106,7 +105,6 @@ export function CategoryForm({
       console.log("Failed to add or edit category", error);
     } finally {
       setIsLoading(true);
-      onShowAlert();
     }
   };
 
@@ -152,7 +150,6 @@ export function ProductForm({
   categories,
   onHideModal,
   onSetAlertDetails,
-  onShowAlert,
 }: ProductFormProps): React.JSX.Element {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -237,7 +234,6 @@ export function ProductForm({
       console.error("Failed to add or edit product", error);
     } finally {
       setIsLoading(false);
-      onShowAlert();
     }
   };
 
@@ -328,7 +324,6 @@ export function ChangeProductImageForm({
   selectedProduct,
   onHideModal,
   onSetAlertDetails,
-  onShowAlert,
 }: ChangeProductImageFormProps): React.JSX.Element {
   const dispatch = useAppDispatch();
   const imageUploaderRef = useRef<ImageUploadHandle>(null);
@@ -371,7 +366,6 @@ export function ChangeProductImageForm({
       console.error("Failed to change product image", error);
     } finally {
       setIsLoading(false);
-      onShowAlert();
     }
   };
 

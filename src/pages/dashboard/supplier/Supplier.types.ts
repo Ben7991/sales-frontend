@@ -34,7 +34,6 @@ export type SupplierPhoneFormProps = {
 } & Pick<
   SupplierFormProps,
   | "selectedSupplier"
-  | "onShowAlert"
   | "onSetAlertDetails"
   | "onHideModal"
   | "onSupplierDispatch"

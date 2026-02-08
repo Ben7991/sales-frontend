@@ -40,13 +40,7 @@ export function Employee(): React.JSX.Element {
     initialEmployeeReducerState,
   );
 
-  const {
-    state: alertState,
-    alertDetails,
-    showAlert,
-    hideAlert,
-    setAlertDetails,
-  } = useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   const { page, perPage, query } = getPaginatedData(searchParams);
 
@@ -93,10 +87,10 @@ export function Employee(): React.JSX.Element {
 
   return (
     <>
-      {alertState ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}
@@ -165,7 +159,6 @@ export function Employee(): React.JSX.Element {
             onResetSelectedEmployee={() => setSelectedEmployee(undefined)}
             onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
-            onShowAlert={showAlert}
             onEmployeeDispatch={employeeDispatch}
           />
         ) : (
@@ -174,7 +167,6 @@ export function Employee(): React.JSX.Element {
             onResetSelectedEmployee={() => setSelectedEmployee(undefined)}
             onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
-            onShowAlert={showAlert}
             onEmployeeDispatch={employeeDispatch}
           />
         )}
