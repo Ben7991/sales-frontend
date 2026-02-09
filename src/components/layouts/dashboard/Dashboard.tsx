@@ -40,7 +40,7 @@ export function Dashboard(): React.JSX.Element {
   return (
     <main className="w-full h-screen overflow-hidden lg:flex">
       <SideDrawer show={showDrawer} onToggle={toggleDrawer} />
-      <article className="lg:grow bg-gray-100 h-full flex flex-col">
+      <article className="lg:basis-[calc(100%-300px)] bg-gray-100 h-full flex flex-col">
         <PageHeader
           key={query}
           showSettings={showSettings}
