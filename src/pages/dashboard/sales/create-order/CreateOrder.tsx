@@ -323,43 +323,45 @@ export function CreateOrder(): React.JSX.Element {
           placeholder="Please add your overall order comment here"
         />
       </div>
-      {productStocks.length && selectedCustomer && orderSale ? (
-        <div className="flex flex-col gap-3 items-center md:justify-between md:flex-row ">
-          <div className="flex items-center gap-2">
-            <Button
-              el="button"
-              type="button"
-              variant="primary"
-              onClick={createOrEditOrder}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <Button.Loader />
-              ) : orderIdToEdit ? (
-                "Edit order"
-              ) : (
-                "Create Order"
-              )}
-            </Button>
-            <Button
-              el="button"
-              type="button"
-              variant="outline"
-              onClick={clearOrderDetails}
-            >
-              Clear Details
-            </Button>
-          </div>
+      <div className="flex flex-col gap-3 items-center md:justify-between md:flex-row ">
+        <div className="flex items-center gap-2">
           <Button
             el="button"
             type="button"
             variant="primary"
-            onClick={saveOrderForLater}
+            onClick={createOrEditOrder}
+            disabled={
+              isLoading ||
+              !(productStocks.length && selectedCustomer && orderSale)
+            }
           >
-            {savedOrderToCreateId ? "Update order" : "Save for later"}
+            {isLoading ? (
+              <Button.Loader />
+            ) : orderIdToEdit ? (
+              "Edit order"
+            ) : (
+              "Create Order"
+            )}
+          </Button>
+          <Button
+            el="button"
+            type="button"
+            variant="outline"
+            onClick={clearOrderDetails}
+          >
+            Clear Details
           </Button>
         </div>
-      ) : null}
+        <Button
+          el="button"
+          type="button"
+          variant="primary"
+          onClick={saveOrderForLater}
+          disabled={!(productStocks.length && selectedCustomer && orderSale)}
+        >
+          {savedOrderToCreateId ? "Update order" : "Save for later"}
+        </Button>
+      </div>
     </>
   );
 }

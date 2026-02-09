@@ -19,7 +19,7 @@ import { AvailableStocks } from "./pages/dashboard/inventory/available-stock/Ava
 import { CanActivate } from "./components/guards/can-activate/CanActivate";
 import { CanDeactivate } from "./components/guards/can-deactivate/CanDeactivate";
 import { ResetPasswordActivate } from "./components/guards/reset-password-activate/ResetPasswordActivate";
-import { Purchase } from "./pages/dashboard/purchase/Purchase";
+// import { Purchase } from "./pages/dashboard/purchase/Purchase";
 import { CreateOrder } from "./pages/dashboard/sales/create-order/CreateOrder";
 import { OrderHistory } from "./pages/dashboard/sales/order-history/OrderHistory";
 import { Arrears } from "./pages/dashboard/sales/arrears/Arrears";
@@ -77,14 +77,14 @@ export default function App(): React.JSX.Element {
                 </EnsureUserHasRole>
               ),
             },
-            {
-              path: "/dashboard/purchase",
-              element: (
-                <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
-                  <Purchase />
-                </EnsureUserHasRole>
-              ),
-            },
+            // {
+            //   path: "/dashboard/purchase",
+            //   element: (
+            //     <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
+            //       <Purchase />
+            //     </EnsureUserHasRole>
+            //   ),
+            // },
             {
               path: "/dashboard/customers",
               element: (

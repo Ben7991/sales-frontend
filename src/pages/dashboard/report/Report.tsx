@@ -67,7 +67,7 @@ export function Report(): React.JSX.Element {
         />
       ) : null}
       <ReportHeader date={date} onSetDate={setDate} />
-      <div className="mb-4 flex items-center gap-3">
+      <div className="mb-4 flex flex-col md:flex-row items-center gap-3">
         <Card
           title="Total amount collected"
           icon={<GiReceiveMoney className="text-3xl" />}

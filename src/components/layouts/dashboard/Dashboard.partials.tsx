@@ -15,7 +15,7 @@ import {
 } from "react-icons/lia";
 import {
   PiChartLineUp,
-  PiClipboardText,
+  // PiClipboardText,
   PiHamburger,
   PiUsers,
   PiUsersThree,
@@ -76,7 +76,12 @@ export function SideDrawer({
         <div>
           <AppLogo className="mb-5 px-3 lg:mb-10" />
           <div className="flex flex-col gap-2">
-            <NavLink to="/dashboard" className={rootNavLinkClasses} end>
+            <NavLink
+              to="/dashboard"
+              className={rootNavLinkClasses}
+              end
+              onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
+            >
               <RxDashboard className="text-xl" />
               <span>Dashboard</span>
             </NavLink>
@@ -90,11 +95,12 @@ export function SideDrawer({
                 <NavLink
                   to="/dashboard/suppliers"
                   className={rootNavLinkClasses}
+                  onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
                 >
                   <PiUsers className="text-xl" />
                   <span>Suppliers</span>
                 </NavLink>
-                <NavLink
+                {/* <NavLink
                   to="/dashboard/purchase"
                   className={rootNavLinkClasses}
                 >
@@ -102,7 +108,7 @@ export function SideDrawer({
                     <PiClipboardText className="text-xl" />
                     <span>Purchase</span>
                   </span>
-                </NavLink>
+                </NavLink> */}
               </>
             ) : null}
 
@@ -111,7 +117,11 @@ export function SideDrawer({
               <strong className="font-semibold">Sales Management</strong>
             </p>
             {["ADMIN", "SALES_PERSON"].includes(user?.role ?? "") ? (
-              <NavLink to="/dashboard/customers" className={rootNavLinkClasses}>
+              <NavLink
+                to="/dashboard/customers"
+                className={rootNavLinkClasses}
+                onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
+              >
                 <PiUsersThree className="text-xl" />
                 <span>Customers</span>
               </NavLink>
@@ -149,6 +159,9 @@ export function SideDrawer({
                       <NavLink
                         to="/dashboard/inventory/categories-products"
                         className={subNavLinkClasses}
+                        onClick={() =>
+                          window.innerWidth < 1024 ? onToggle() : null
+                        }
                       >
                         <TbFilePencil className="text-[1.15rem]" />
                         <span>Categories & Products</span>
@@ -158,6 +171,9 @@ export function SideDrawer({
                   <NavLink
                     to="/dashboard/inventory/available-stocks"
                     className={subNavLinkClasses}
+                    onClick={() =>
+                      window.innerWidth < 1024 ? onToggle() : null
+                    }
                   >
                     <TbFileDescription className="text-[1.15rem]" />
                     <span>Available Stocks</span>
@@ -197,6 +213,9 @@ export function SideDrawer({
                       <NavLink
                         to="/dashboard/sales/order"
                         className={subNavLinkClasses}
+                        onClick={() =>
+                          window.innerWidth < 1024 ? onToggle() : null
+                        }
                       >
                         <RiPencilLine className="text-[1.15rem]" />
                         <span>Create or Edit Order</span>
@@ -204,6 +223,9 @@ export function SideDrawer({
                       <NavLink
                         to="/dashboard/sales/order-history"
                         className={subNavLinkClasses}
+                        onClick={() =>
+                          window.innerWidth < 1024 ? onToggle() : null
+                        }
                       >
                         <MdOutlineFormatListBulleted className="text-[1.15rem]" />
                         <span>Order History</span>
@@ -211,6 +233,9 @@ export function SideDrawer({
                       <NavLink
                         to="/dashboard/sales/arrears"
                         className={subNavLinkClasses}
+                        onClick={() =>
+                          window.innerWidth < 1024 ? onToggle() : null
+                        }
                       >
                         <FaRegMoneyBillAlt className="text-[1.15rem]" />
                         <span>Arrears</span>
@@ -222,7 +247,11 @@ export function SideDrawer({
             ) : null}
 
             {user?.role === "ADMIN" && (
-              <NavLink to="/dashboard/report" className={rootNavLinkClasses}>
+              <NavLink
+                to="/dashboard/report"
+                className={rootNavLinkClasses}
+                onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
+              >
                 <TbReport className="text-xl" />
                 <span>Report</span>
               </NavLink>
@@ -237,6 +266,7 @@ export function SideDrawer({
                 <NavLink
                   to="/dashboard/employees"
                   className={rootNavLinkClasses}
+                  onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
                 >
                   <LiaUsersCogSolid className="text-xl" />
                   <span>Employees</span>
@@ -245,7 +275,7 @@ export function SideDrawer({
             )}
           </div>
         </div>
-        <UserProfile className="mt-10 md:mt-0" />
+        <UserProfile className="mt-10 md:mt-0 lg:mt-10 xl:mt-0" />
       </aside>
     </>
   );
@@ -328,6 +358,12 @@ export function PageHeader({
     }, 500);
   };
 
+  const pathsToHideSearch: Array<string> = [
+    "/dashboard",
+    "/dashboard/sales/order",
+    "/dashboard/account-settings",
+  ];
+
   return (
     <header className="py-4 border-b border-b-gray-300">
       <ContentWrapper className="flex items-center justify-between">
@@ -339,6 +375,7 @@ export function PageHeader({
             leftIcon={<IoSearchOutline />}
             onChange={handleSearch}
             defaultValue={query}
+            disabled={pathsToHideSearch.includes(pathname)}
           />
         </div>
         <div className="flex items-center gap-3">
