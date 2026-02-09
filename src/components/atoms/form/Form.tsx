@@ -204,7 +204,7 @@ function Dropdown({
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              setShow(true);
+              setShow((prevState) => !prevState);
             }}
           >
             {show ? (
