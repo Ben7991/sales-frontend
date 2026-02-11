@@ -17,7 +17,6 @@ export type ResponseWithRecord<T> = {
 };
 
 export type PreferredAlertPropsForForm = {
-  onShowAlert: VoidFunction;
   onHideModal: VoidFunction;
   onSetAlertDetails: Dispatch<
     SetStateAction<Omit<AlertProps, "onHide" | "state"> | undefined>
@@ -76,13 +75,54 @@ export type ProductStock = {
   retailUnitPrice: string;
   wholesaleUnitPrice: string;
   specialPrice: string;
-  wholeSalePrice: string;
+  wholesalePrice: string;
   totalPieces: number;
   numberOfBoxes: number;
   minimumThreshold: number;
   description: string;
   status: ProductStockStatus;
   product: Product;
+  supplier: Supplier;
+};
+export type OrderStatus =
+  | "OPEN"
+  | "DEEMED_SATISFIED"
+  | "DELIVERED"
+  | "CANCELLED";
+export type PaidStatus = "PAID" | "OUTSTANDING";
+export type OrderSale = "WHOLESALE" | "RETAIL";
+export type OrderItem = {
+  id: number;
+  productStock: ProductStock;
+  quantity: number;
+  amount: number;
+  amountPaid: number;
+  comment: string;
+};
+export type PaymentMode = "CASH" | "MOBILE_MONEY" | "BANK_TRANSFER" | "CHEQUE";
+export type OrderPayment = {
+  id: number;
+  createdAt: string;
+  amount: string;
+  paymentMode: PaymentMode;
+};
+export type Order = {
+  id: number;
+  orderDate: string;
+  orderSale: OrderSale;
+  paidStatus: PaidStatus;
+  amountPaid: number;
+  orderTotal: number;
+  comment: string;
+  orderItems: Array<OrderItem>;
+  orderPayments: Array<OrderPayment>;
+  customer: Customer;
+  orderStatus: OrderStatus;
+};
+export type MoneySharing = {
+  id: number;
+  createdAt: string;
+  amount: number;
   supplier: Supplier;
 };
 

@@ -5,6 +5,7 @@ import {
   StatusCodes,
   type Category,
   type Product,
+  type ProductStock,
   type ResponseWithDataAndMessage,
   type ResponseWithRecord,
 } from "@/utils/types.utils";
@@ -139,6 +140,35 @@ export async function getProducts(
     const isRefreshed = await refreshToken();
     if (isRefreshed) {
       return await getProducts(query, page, perPage);
+    }
+    throw new Error(result.message);
+  } else if (FAILED_STATUS_CODES.includes(response.status)) {
+    throw new Error(result.message);
+  }
+
+  return result;
+}
+
+export async function getStockViaLiveSearch(
+  query: string,
+): Promise<ResponseWithRecord<ProductStock>> {
+  const searchParams = new URLSearchParams();
+  searchParams.set("q", query.toString());
+
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_API}/products/stock-live-search?${searchParams.toString()}`,
+    {
+      method: "GET",
+      headers: getHeaders(true),
+      credentials: "include",
+    },
+  );
+  const result = await response.json();
+
+  if (response.status === StatusCodes.UN_AUTHORIZED) {
+    const isRefreshed = await refreshToken();
+    if (isRefreshed) {
+      return await getStockViaLiveSearch(query);
     }
     throw new Error(result.message);
   } else if (FAILED_STATUS_CODES.includes(response.status)) {

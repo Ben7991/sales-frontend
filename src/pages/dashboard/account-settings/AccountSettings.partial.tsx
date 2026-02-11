@@ -33,8 +33,7 @@ function Wrapper(props: { children: React.ReactNode }): React.JSX.Element {
 export function PersonalInformation(): React.JSX.Element {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const { state, alertDetails, showAlert, hideAlert, setAlertDetails } =
-    useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
   const {
     register,
     handleSubmit,
@@ -69,16 +68,15 @@ export function PersonalInformation(): React.JSX.Element {
       console.error("Failed to change personal information", error);
     } finally {
       setIsLoading(false);
-      showAlert();
     }
   };
 
   return (
     <Wrapper>
-      {state ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}
@@ -178,8 +176,7 @@ export function ChangePassword(): React.JSX.Element {
     mode: "onBlur",
     resolver: yupResolver(passwordSchema),
   });
-  const { state, alertDetails, showAlert, hideAlert, setAlertDetails } =
-    useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   const onSubmit: SubmitHandler<ChangePasswordInputs> = async (
     data,
@@ -204,17 +201,15 @@ export function ChangePassword(): React.JSX.Element {
         variant: "error",
       });
       console.error("Failed to change password", error);
-    } finally {
-      showAlert();
     }
   };
 
   return (
     <Wrapper>
-      {state ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}

@@ -39,15 +39,17 @@ export function Alert({
       } shadow-md`}
     >
       <div
-        className={`flex items-center gap-2 basis-3/4 ${
+        className={`flex gap-2 basis-3/4 ${
           isSuccess ? "text-green-600" : "text-red-600"
         }`}
       >
-        {variant === "success" ? (
-          <LiaCheckCircle className="text-2xl" />
-        ) : (
-          <LiaTimesCircle className="text-2xl" />
-        )}
+        <div className="basis-8">
+          {variant === "success" ? (
+            <LiaCheckCircle className="text-2xl" />
+          ) : (
+            <LiaTimesCircle className="text-2xl" />
+          )}
+        </div>
         {message}
       </div>
       <button

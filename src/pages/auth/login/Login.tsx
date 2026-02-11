@@ -19,8 +19,7 @@ export function Login(): React.JSX.Element {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const { state, alertDetails, showAlert, hideAlert, setAlertDetails } =
-    useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -54,7 +53,6 @@ export function Login(): React.JSX.Element {
         message: (error as Error).message,
         variant: "error",
       });
-      showAlert();
       setIsLoading(false);
       console.error(error);
     }
@@ -65,10 +63,10 @@ export function Login(): React.JSX.Element {
       title="Sign-in your account"
       description="Please enter your email and password to access your account settings and dashboard."
     >
-      {state ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}
@@ -110,6 +108,7 @@ export function Login(): React.JSX.Element {
         <Form.Group className="flex flex-col">
           <Button
             el="button"
+            variant="primary"
             type="submit"
             className="py-2 "
             disabled={!isValid || isLoading}

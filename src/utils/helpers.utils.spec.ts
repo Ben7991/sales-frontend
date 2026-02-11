@@ -1,6 +1,10 @@
 import { describe, it, expect } from "@jest/globals";
 
-import { getPaginatedData, makeFirstLetterUppercase } from "./helpers.utils";
+import {
+  formatAmount,
+  getPaginatedData,
+  makeFirstLetterUppercase,
+} from "./helpers.utils";
 
 describe("helpers.utils.ts", () => {
   describe("makeFirstLetterUppercase()", () => {
@@ -60,6 +64,24 @@ describe("helpers.utils.ts", () => {
         perPage: 25,
       };
       expect(result).toEqual(expectedResult);
+    });
+  });
+
+  describe("formatAmount()", () => {
+    it("should not add commas if digit string length is not beyond 4 numbers", () => {
+      expect(formatAmount(200)).toBe("200.00");
+    });
+
+    it("should ensure that the previous decimal number is not lost after formating", () => {
+      expect(formatAmount(200.5)).toBe("200.50");
+      expect(formatAmount(200.55)).toBe("200.55");
+    });
+
+    it("should add commas if digit string length is beyond 4 numbers", () => {
+      expect(formatAmount(2000.5)).toBe("2,000.50");
+      expect(formatAmount(2000.55)).toBe("2,000.55");
+      expect(formatAmount(2000000.42)).toBe("2,000,000.42");
+      expect(formatAmount(20000.55)).toBe("20,000.55");
     });
   });
 });

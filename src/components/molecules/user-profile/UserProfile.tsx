@@ -17,7 +17,7 @@ export function UserProfile({
       </div>
       <div>
         <Headline tag="h5">{user?.name}</Headline>
-        <p className="text-[0.875rem]">{user?.role}</p>
+        <p className="text-[0.875rem]">{user?.role.split("_").join(" ")}</p>
       </div>
     </div>
   );

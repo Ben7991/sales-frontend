@@ -34,8 +34,11 @@ import type {
 } from "@/utils/types.utils";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetch } from "@/utils/hooks.utils";
+import { useAppSelector } from "@/store/index.util";
 
 export function Supplier(): React.JSX.Element {
+  const { user } = useAppSelector((state) => state.auth);
+
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -46,13 +49,7 @@ export function Supplier(): React.JSX.Element {
     initialSupplierReducerState,
   );
 
-  const {
-    state: alertState,
-    alertDetails,
-    showAlert,
-    hideAlert,
-    setAlertDetails,
-  } = useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier>();
   const [selectedSupplierPhone, setSelectedSupplierPhone] =
@@ -70,6 +67,10 @@ export function Supplier(): React.JSX.Element {
           payload: result,
         });
       } catch (error) {
+        setAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
         console.error("Failed to fetch suppliers", error);
       } finally {
         setIsFetching(false);
@@ -77,7 +78,7 @@ export function Supplier(): React.JSX.Element {
     };
 
     fetchSuppliers();
-  }, [query, page, perPage, setIsFetching]);
+  }, [query, page, perPage, setIsFetching, setAlertDetails]);
 
   const handleHideModal = (): void => {
     navigate(pathname);
@@ -123,39 +124,45 @@ export function Supplier(): React.JSX.Element {
 
   return (
     <>
-      {alertState ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}
       <PageDescriptor title="Suppliers" spinnerState={isFetching}>
-        <div className="flex items-center gap-2">
-          <Button
-            el="link"
-            to={`${pathname}?action=add`}
-            variant="primary"
-            className="flex! items-center gap-2"
-            onClick={() => setSelectedSupplier(undefined)}
-          >
-            <LuUserRoundPlus />
-            <span>Add Supplier</span>
-          </Button>
-          <Button
-            el="link"
-            to={`${pathname}?action=import`}
-            variant="outline"
-            className="flex! items-center gap-2"
-          >
-            <IoCloudUploadOutline />
-            <span>Import Suppliers</span>
-          </Button>
-        </div>
+        {user?.role === "ADMIN" ? (
+          <div className="flex items-center gap-2">
+            <Button
+              el="link"
+              to={`${pathname}?action=add`}
+              variant="primary"
+              className="flex! items-center gap-2"
+              onClick={() => setSelectedSupplier(undefined)}
+            >
+              <LuUserRoundPlus />
+              <span>Add Supplier</span>
+            </Button>
+            <Button
+              el="link"
+              to={`${pathname}?action=import`}
+              variant="outline"
+              className="flex! items-center gap-2"
+            >
+              <IoCloudUploadOutline />
+              <span>Import Suppliers</span>
+            </Button>
+          </div>
+        ) : null}
       </PageDescriptor>
       <DataTable
         count={supplierState.count}
-        columnHeadings={supplierDataTableColumnHeadings}
+        columnHeadings={
+          user?.role === "PROCUREMENT_OFFICER"
+            ? supplierDataTableColumnHeadings
+            : [...supplierDataTableColumnHeadings, ""]
+        }
       >
         {supplierState.data.map((item) => (
           <tr key={item.id}>
@@ -176,56 +183,60 @@ export function Supplier(): React.JSX.Element {
                     key={data.id}
                   >
                     <p>{data.phone}</p>
-                    <div className="flex items-center">
-                      <DataTable.Action
-                        className="hover:bg-gray-100 text-gray-500 w-fit! p-2!"
-                        onClick={() =>
-                          handlePhoneSelectionAndEdit(
-                            item.id,
-                            data.id,
-                            "edit-phone",
-                          )
-                        }
-                        title="Edit"
-                      >
-                        <FaRegEdit className="text-xl" />
-                      </DataTable.Action>
-                      <DataTable.Action
-                        className="hover:bg-gray-100 text-red-500 w-fit! p-2!"
-                        onClick={() =>
-                          handlePhoneSelectionAndEdit(
-                            item.id,
-                            data.id,
-                            "delete-phone",
-                          )
-                        }
-                        title="Delete"
-                      >
-                        <BsTrash className="text-xl" />
-                      </DataTable.Action>
-                    </div>
+                    {user?.role === "ADMIN" ? (
+                      <div className="flex items-center">
+                        <DataTable.Action
+                          className="hover:bg-gray-100 text-gray-500 w-fit! p-2!"
+                          onClick={() =>
+                            handlePhoneSelectionAndEdit(
+                              item.id,
+                              data.id,
+                              "edit-phone",
+                            )
+                          }
+                          title="Edit"
+                        >
+                          <FaRegEdit className="text-xl" />
+                        </DataTable.Action>
+                        <DataTable.Action
+                          className="hover:bg-gray-100 text-red-500 w-fit! p-2!"
+                          onClick={() =>
+                            handlePhoneSelectionAndEdit(
+                              item.id,
+                              data.id,
+                              "delete-phone",
+                            )
+                          }
+                          title="Delete"
+                        >
+                          <BsTrash className="text-xl" />
+                        </DataTable.Action>
+                      </div>
+                    ) : null}
                   </div>
                 ))}
               </DataTable.DataList>
             </td>
-            <td>
-              <DataTable.Actions>
-                <DataTable.Action
-                  className="hover:bg-gray-100"
-                  onClick={() => handleSelectionAndEdit(item.id, "edit")}
-                >
-                  <BiSolidEdit className="text-xl" />
-                  <span>Edit supplier</span>
-                </DataTable.Action>
-                <DataTable.Action
-                  className="hover:bg-gray-100"
-                  onClick={() => handleSelectionAndEdit(item.id, "add-phone")}
-                >
-                  <MdOutlineAddCircleOutline className="text-xl" />
-                  <span>Add Phone</span>
-                </DataTable.Action>
-              </DataTable.Actions>
-            </td>
+            {user?.role === "ADMIN" ? (
+              <td>
+                <DataTable.Actions>
+                  <DataTable.Action
+                    className="hover:bg-gray-100"
+                    onClick={() => handleSelectionAndEdit(item.id, "edit")}
+                  >
+                    <BiSolidEdit className="text-xl" />
+                    <span>Edit supplier</span>
+                  </DataTable.Action>
+                  <DataTable.Action
+                    className="hover:bg-gray-100"
+                    onClick={() => handleSelectionAndEdit(item.id, "add-phone")}
+                  >
+                    <MdOutlineAddCircleOutline className="text-xl" />
+                    <span>Add Phone</span>
+                  </DataTable.Action>
+                </DataTable.Actions>
+              </td>
+            ) : null}
           </tr>
         ))}
       </DataTable>
@@ -242,7 +253,6 @@ export function Supplier(): React.JSX.Element {
               setSelectedSupplierPhone(undefined)
             }
             onSupplierDispatch={supplierDispatch}
-            onShowAlert={showAlert}
             onSetAlertDetails={setAlertDetails}
             onHideModal={handleHideModal}
             activeTab={activeAction as ActiveTabForPhoneForm}
@@ -257,7 +267,6 @@ export function Supplier(): React.JSX.Element {
             perPage={perPage}
             selectedSupplier={selectedSupplier}
             onResetSelectedSupplier={() => setSelectedSupplier(undefined)}
-            onShowAlert={showAlert}
             onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
             onSupplierDispatch={supplierDispatch}

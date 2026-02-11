@@ -45,13 +45,7 @@ export function CategoriesProducts(): React.JSX.Element {
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const [selectedProduct, setSelectedProduct] = useState<Product>();
 
-  const {
-    state: alertState,
-    alertDetails,
-    showAlert,
-    hideAlert,
-    setAlertDetails,
-  } = useAlert();
+  const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   useEffect(() => {
     const fetchCategories = async (): Promise<void> => {
@@ -59,12 +53,16 @@ export function CategoriesProducts(): React.JSX.Element {
         const result = await getCategories();
         dispatch(loadCategories(result));
       } catch (error) {
+        setAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
         console.error("Failed to fetch categories", error);
       }
     };
 
     fetchCategories();
-  }, [dispatch]);
+  }, [dispatch, setAlertDetails]);
 
   useEffect(() => {
     const fetchProducts = async (): Promise<void> => {
@@ -73,6 +71,10 @@ export function CategoriesProducts(): React.JSX.Element {
         const result = await getProducts(query, page, perPage);
         dispatch(loadProducts(result));
       } catch (error) {
+        setAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
         console.error("Failed to fetch products", error);
       } finally {
         setIsFetching(false);
@@ -80,7 +82,7 @@ export function CategoriesProducts(): React.JSX.Element {
     };
 
     fetchProducts();
-  }, [dispatch, query, page, perPage, setIsFetching]);
+  }, [dispatch, query, page, perPage, setIsFetching, setAlertDetails]);
 
   const handleHideModal = (): void => {
     navigate(pathname);
@@ -120,10 +122,10 @@ export function CategoriesProducts(): React.JSX.Element {
 
   return (
     <>
-      {alertState ? (
+      {alertDetails ? (
         <Alert
-          variant={alertDetails?.variant ?? "error"}
-          message={alertDetails?.message ?? ""}
+          variant={alertDetails.variant}
+          message={alertDetails.message}
           onHide={hideAlert}
         />
       ) : null}
@@ -245,21 +247,18 @@ export function CategoriesProducts(): React.JSX.Element {
           <CategoryForm
             onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
-            onShowAlert={showAlert}
             selectedCategory={selectedCategory}
           />
         ) : activeAction?.includes("product-image") ? (
           <ChangeProductImageForm
             onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
-            onShowAlert={showAlert}
             selectedProduct={selectedProduct}
           />
         ) : (
           <ProductForm
             onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
-            onShowAlert={showAlert}
             selectedProduct={selectedProduct}
             categories={categories}
           />

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Outlet } from "react-router";
+import { Outlet, useSearchParams } from "react-router";
 
 import {
   ContentWrapper,
@@ -8,11 +8,14 @@ import {
   SideDrawer,
 } from "./Dashboard.partials";
 import { Modal } from "@/components/organisms/modal/Modal";
+import { getPaginatedData } from "@/utils/helpers.utils";
 
 export function Dashboard(): React.JSX.Element {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
+  const [searchParams] = useSearchParams();
 
   const handleOutsideClick = useCallback((): void => {
     setShowSettings(false);
@@ -32,11 +35,14 @@ export function Dashboard(): React.JSX.Element {
     setShowSettings(false);
   };
 
+  const { query } = getPaginatedData(searchParams);
+
   return (
     <main className="w-full h-screen overflow-hidden lg:flex">
       <SideDrawer show={showDrawer} onToggle={toggleDrawer} />
-      <article className="lg:grow bg-gray-100 h-full flex flex-col">
+      <article className="lg:basis-[calc(100%-300px)] bg-gray-100 h-full flex flex-col">
         <PageHeader
+          key={query}
           showSettings={showSettings}
           onToggleDrawer={toggleDrawer}
           onToggleLogoutModal={toggleLogoutModal}
