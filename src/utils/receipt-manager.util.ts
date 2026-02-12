@@ -31,7 +31,9 @@ export class ReceiptManager {
   }
 
   public downloadReceipt(data: TDocumentDefinitions, id: number): void {
-    pdfMake.createPdf(data).download(`order-receipt-${id}.pdf`);
+    pdfMake
+      .createPdf(data)
+      .download(`order-receipt-${id}-${new Date().getTime()}.pdf`);
   }
 
   public printReceipt(data: TDocumentDefinitions): void {
