@@ -15,7 +15,7 @@ import {
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 
-export function ResetPassword(): React.JSX.Element {
+export default function ResetPassword(): React.JSX.Element {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 

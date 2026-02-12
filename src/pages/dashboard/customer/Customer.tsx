@@ -35,7 +35,7 @@ import { BiSolidEdit } from "react-icons/bi";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetch } from "@/utils/hooks.utils";
 
-export function Customer(): React.JSX.Element {
+export default function Customer(): React.JSX.Element {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

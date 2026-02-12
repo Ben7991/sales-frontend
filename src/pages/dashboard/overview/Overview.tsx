@@ -11,7 +11,7 @@ import {
   HighValueCustomerAndOrderPayment,
 } from "./Overview.partials";
 
-export function Overview(): React.JSX.Element {
+export default function Overview(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
   const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 

@@ -28,7 +28,7 @@ import {
 import { useFetch } from "@/utils/hooks.utils";
 import { Pill } from "@/components/atoms/pill/Pill";
 
-export function Employee(): React.JSX.Element {
+export default function Employee(): React.JSX.Element {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

@@ -14,7 +14,7 @@ import { ArrearsDetail } from "./Arrears.partials";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 
-export function Arrears(): React.JSX.Element {
+export default function Arrears(): React.JSX.Element {
   const [selectedItem, setSelectedItem] = useState<ArrearsRow>();
   const [arrears, setArrears] = useState<ArrearState>({
     count: 0,

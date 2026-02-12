@@ -23,7 +23,7 @@ import { Modal } from "@/components/organisms/modal/Modal";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 
-export function OrderHistory(): React.JSX.Element {
+export default function OrderHistory(): React.JSX.Element {
   const [selectedOrderHistory, setSelectedOrderHistory] =
     useState<OrderHistoryItem>();
   const { isFetching, setIsFetching } = useFetch();

@@ -12,7 +12,7 @@ import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 
-export function Report(): React.JSX.Element {
+export default function Report(): React.JSX.Element {
   const [reportData, setReportData] = useState<MoneySharingResponse>();
 
   const currentDate = new Date();

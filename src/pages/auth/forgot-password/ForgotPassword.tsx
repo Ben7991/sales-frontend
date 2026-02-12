@@ -15,7 +15,7 @@ import { useState } from "react";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 
-export function ForgotPassword(): React.JSX.Element {
+export default function ForgotPassword(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,

@@ -36,7 +36,7 @@ import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetch } from "@/utils/hooks.utils";
 import { useAppSelector } from "@/store/index.util";
 
-export function Supplier(): React.JSX.Element {
+export default function Supplier(): React.JSX.Element {
   const { user } = useAppSelector((state) => state.auth);
 
   const { pathname } = useLocation();

@@ -6,7 +6,7 @@ import { ChangePassword, PersonalInformation } from "./AccountSettings.partial";
 
 type AccountSettingsTab = "personal" | "passcode" | null;
 
-export function AccountSettings(): React.JSX.Element {
+export default function AccountSettings(): React.JSX.Element {
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") as AccountSettingsTab;
   const isChangePassword = activeTab === "passcode";

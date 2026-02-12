@@ -30,7 +30,7 @@ import { useFetch } from "@/utils/hooks.utils";
 import { Pill } from "@/components/atoms/pill/Pill";
 import { CgImage } from "react-icons/cg";
 
-export function CategoriesProducts(): React.JSX.Element {
+export default function CategoriesProducts(): React.JSX.Element {
   const dispatch = useAppDispatch();
   const categories = useAppSelector((state) => state.category.data);
   const productState = useAppSelector((state) => state.product);

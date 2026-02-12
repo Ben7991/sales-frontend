@@ -17,7 +17,7 @@ import { Pill } from "@/components/atoms/pill/Pill";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 
-export function AvailableStocks(): React.JSX.Element {
+export default function AvailableStocks(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
   const [availableStockState, availableStockDispatch] = useReducer(
     availableStockReducer,

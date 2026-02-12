@@ -1,29 +1,48 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { Provider } from "react-redux";
+import { lazy } from "react";
 
 import { store } from "@/store";
 import { Root } from "@/components/layouts/root/Root";
 import { Dashboard } from "@/components/layouts/dashboard/Dashboard";
 import { NotFound } from "@/pages/not-found/NotFound";
-import { Login } from "@/pages/auth/login/Login";
-import { ResetPassword } from "@/pages/auth/reset-password/ResetPassword";
-import { Overview } from "@/pages/dashboard/overview/Overview";
-import { AccountSettings } from "@/pages/dashboard/account-settings/AccountSettings";
-import { ForgotPassword } from "@/pages/auth/forgot-password/ForgotPassword";
-import { Supplier } from "@/pages/dashboard/supplier/Supplier";
-import { Customer } from "@/pages/dashboard/customer/Customer";
-import { Employee } from "@/pages/dashboard/employee/Employee";
-import { Report } from "@/pages/dashboard/report/Report";
-import { CategoriesProducts } from "./pages/dashboard/inventory/categories-products/CategoriesProducts";
-import { AvailableStocks } from "./pages/dashboard/inventory/available-stock/AvailableStocks";
 import { CanActivate } from "./components/guards/can-activate/CanActivate";
 import { CanDeactivate } from "./components/guards/can-deactivate/CanDeactivate";
 import { ResetPasswordActivate } from "./components/guards/reset-password-activate/ResetPasswordActivate";
-// import { Purchase } from "./pages/dashboard/purchase/Purchase";
-import { CreateOrder } from "./pages/dashboard/sales/create-order/CreateOrder";
-import { OrderHistory } from "./pages/dashboard/sales/order-history/OrderHistory";
-import { Arrears } from "./pages/dashboard/sales/arrears/Arrears";
 import { EnsureUserHasRole } from "./components/guards/ensure-user-has-role/EnsureUserHasRole";
+
+const Login = lazy(() => import("./pages/auth/login/Login"));
+const ForgotPassword = lazy(
+  () => import("./pages/auth/forgot-password/ForgotPassword"),
+);
+const ResetPassword = lazy(
+  () => import("./pages/auth/reset-password/ResetPassword"),
+);
+
+const Overview = lazy(() => import("./pages/dashboard/overview/Overview"));
+const Supplier = lazy(() => import("./pages/dashboard/supplier/Supplier"));
+const Customer = lazy(() => import("./pages/dashboard/customer/Customer"));
+const Employee = lazy(() => import("./pages/dashboard/employee/Employee"));
+const Report = lazy(() => import("./pages/dashboard/report/Report"));
+const CategoriesProducts = lazy(
+  () =>
+    import("./pages/dashboard/inventory/categories-products/CategoriesProducts"),
+);
+const CreateOrder = lazy(
+  () => import("./pages/dashboard/sales/create-order/CreateOrder"),
+);
+const AvailableStocks = lazy(
+  () => import("./pages/dashboard/inventory/available-stock/AvailableStocks"),
+);
+const OrderHistory = lazy(
+  () => import("./pages/dashboard/sales/order-history/OrderHistory"),
+);
+const Arrears = lazy(() => import("./pages/dashboard/sales/arrears/Arrears"));
+const AccountSettings = lazy(
+  () => import("./pages/dashboard/account-settings/AccountSettings"),
+);
+
+// import { Purchase } from "./pages/dashboard/purchase/Purchase";
 
 export default function App(): React.JSX.Element {
   const appRouter = createBrowserRouter([

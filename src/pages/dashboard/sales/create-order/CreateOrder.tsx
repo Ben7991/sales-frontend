@@ -34,7 +34,7 @@ import { useSearchParams } from "react-router";
 import { getOrder } from "../order-history/OrderHistory.utils";
 import { getStockViaLiveSearch } from "../../inventory/categories-products/CategoriesProducts.utils";
 
-export function CreateOrder(): React.JSX.Element {
+export default function CreateOrder(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer>();
   const [selectedProductStock, setSelectedProductStock] =

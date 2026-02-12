@@ -15,7 +15,7 @@ import { useAppDispatch } from "@/store/index.util";
 import { setAuthUser } from "@/store/slice/auth/auth.slice";
 import { AUTH_STATE, AUTH_STATE_VALUE } from "@/utils/constants.utils";
 
-export function Login(): React.JSX.Element {
+export default function Login(): React.JSX.Element {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
