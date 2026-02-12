@@ -2,13 +2,7 @@ import * as yup from "yup";
 
 import { getAccessToken, getHeaders, refreshToken } from "@/utils/auth.util";
 import { FAILED_STATUS_CODES } from "@/utils/constants.utils";
-import {
-  StatusCodes,
-  type PhoneWithID,
-  type ResponseWithDataAndMessage,
-  type ResponseWithRecord,
-  type Supplier,
-} from "@/utils/types.utils";
+import { StatusCodes, type Supplier } from "@/utils/types.utils";
 import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
 
 export const supplierDataTableColumnHeadings = [
@@ -76,63 +70,6 @@ export const supplierModalHeading: Record<string, string> = {
   import: `${makeFirstLetterUppercase("import")} Suppliers`,
 };
 
-export async function getSuppliers(
-  query: string,
-  page: number,
-  perPage: number,
-): Promise<ResponseWithRecord<Supplier>> {
-  const searchParams = new URLSearchParams();
-  searchParams.set("page", (page - 1).toString());
-  searchParams.set("perPage", perPage.toString());
-  searchParams.set("q", query.toString());
-
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/suppliers?${searchParams.toString()}`,
-    {
-      method: "GET",
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await getSuppliers(query, page, perPage);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function addSupplier(
-  data: unknown,
-): Promise<ResponseWithDataAndMessage<Supplier>> {
-  const response = await fetch(`${import.meta.env.VITE_BASE_API}/suppliers`, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: getHeaders(true),
-    credentials: "include",
-  });
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await addSupplier(data);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
 export async function checkSupplierEmail(email: string): Promise<boolean> {
   const response = await fetch(
     `${import.meta.env.VITE_BASE_API}/suppliers/check-email`,
@@ -155,118 +92,6 @@ export async function checkSupplierEmail(email: string): Promise<boolean> {
   }
 
   return true;
-}
-
-export async function editSupplier(
-  data: unknown,
-  id: number,
-): Promise<ResponseWithDataAndMessage<Supplier>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/suppliers/${id}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await editSupplier(data, id);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function addSupplierPhone(
-  data: unknown,
-  supplierId: number,
-): Promise<ResponseWithDataAndMessage<PhoneWithID>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/suppliers/${supplierId}/phone`,
-    {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await addSupplierPhone(data, supplierId);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function editSupplierPhone(
-  data: unknown,
-  supplierPhoneId: number,
-  supplierId: number,
-): Promise<ResponseWithDataAndMessage<PhoneWithID>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/suppliers/${supplierId}/phone/${supplierPhoneId}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await editSupplierPhone(data, supplierPhoneId, supplierId);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function removeSupplierPhone(
-  phoneId: number,
-  supplierId: number,
-): Promise<ResponseWithDataAndMessage<PhoneWithID>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/suppliers/${supplierId}/phone/${phoneId}`,
-    {
-      method: "DELETE",
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await removeSupplierPhone(phoneId, supplierId);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
 }
 
 export async function importSuppliers(

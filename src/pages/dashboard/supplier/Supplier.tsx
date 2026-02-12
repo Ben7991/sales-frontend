@@ -14,10 +14,12 @@ import {
   SupplierPhoneForm,
 } from "./Supplier.partials";
 import { Button } from "@/components/atoms/button/Button";
-import { getPaginatedData } from "@/utils/helpers.utils";
+import {
+  getPaginatedData,
+  getSearchParamsForPaginator,
+} from "@/utils/helpers.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import {
-  getSuppliers,
   supplierDataTableColumnHeadings,
   supplierModalHeading,
 } from "./Supplier.utils";
@@ -30,11 +32,13 @@ import { Alert } from "@/components/molecules/alert/Alert";
 import type {
   ActiveTabForPhoneForm,
   PhoneWithID,
+  ResponseWithRecord,
   Supplier,
 } from "@/utils/types.utils";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetch } from "@/utils/hooks.utils";
 import { useAppSelector } from "@/store/index.util";
+import { get } from "@/utils/http.utils";
 
 export default function Supplier(): React.JSX.Element {
   const { user } = useAppSelector((state) => state.auth);
@@ -61,7 +65,10 @@ export default function Supplier(): React.JSX.Element {
     const fetchSuppliers = async (): Promise<void> => {
       setIsFetching(true);
       try {
-        const result = await getSuppliers(query, page, perPage);
+        const searchParams = getSearchParamsForPaginator(query, page, perPage);
+        const result = await get<ResponseWithRecord<Supplier>>(
+          `suppliers?${searchParams.toString()}`,
+        );
         supplierDispatch({
           type: "load",
           payload: result,

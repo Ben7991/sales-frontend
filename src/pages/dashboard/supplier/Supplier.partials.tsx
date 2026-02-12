@@ -15,11 +15,6 @@ import { LuDownload } from "react-icons/lu";
 import { Button } from "@/components/atoms/button/Button";
 import { Form } from "@/components/atoms/form/Form";
 import {
-  addSupplier,
-  editSupplier,
-  addSupplierPhone,
-  editSupplierPhone,
-  removeSupplierPhone,
   supplierPhoneSchema,
   supplierSchema,
   importSuppliers,
@@ -43,6 +38,7 @@ import { RxUpload } from "react-icons/rx";
 import { Spinner } from "@/components/atoms/spinner/Spinner";
 import type { AlertProps } from "@/components/molecules/alert/Alert.types";
 import { LiaTimesSolid } from "react-icons/lia";
+import { destroy, mutate } from "@/utils/http.utils";
 
 export function SupplierForm({
   perPage,
@@ -101,12 +97,16 @@ export function SupplierForm({
 
     try {
       if (!selectedSupplier) {
-        result = await addSupplier({
-          ...data,
-          phones: phones
-            .filter((item) => item.phone !== "")
-            .map((item) => item.phone),
-        });
+        result = await mutate<ResponseWithDataAndMessage<Supplier>>(
+          {
+            ...data,
+            phones: phones
+              .filter((item) => item.phone !== "")
+              .map((item) => item.phone),
+          },
+          "suppliers",
+          "POST",
+        );
         onSupplierDispatch({
           type: "add",
           payload: {
@@ -121,7 +121,11 @@ export function SupplierForm({
         reset();
         setPhones([]);
       } else {
-        result = await editSupplier(data, selectedSupplier.id);
+        result = await mutate<ResponseWithDataAndMessage<Supplier>>(
+          data,
+          `suppliers/${selectedSupplier.id}`,
+          "PATCH",
+        );
         onSupplierDispatch({
           type: "edit",
           payload: {
@@ -272,7 +276,11 @@ export function SupplierPhoneForm({
 
     try {
       if (activeTab === "add-phone") {
-        result = await addSupplierPhone(data, selectedSupplier.id);
+        result = await mutate<ResponseWithDataAndMessage<PhoneWithID>>(
+          data,
+          `suppliers/${selectedSupplier.id}/phone`,
+          "POST",
+        );
         onSetAlertDetails({
           message: result.message,
           variant: "success",
@@ -286,10 +294,10 @@ export function SupplierPhoneForm({
           },
         });
       } else if (activeTab === "edit-phone") {
-        result = await editSupplierPhone(
+        result = await mutate<ResponseWithDataAndMessage<PhoneWithID>>(
           data,
-          selectedSupplierPhone!.id,
-          selectedSupplier.id,
+          `suppliers/${selectedSupplier.id}/phone/${selectedSupplierPhone!.id}`,
+          "PATCH",
         );
         onSetAlertDetails({
           message: result.message,
@@ -329,9 +337,8 @@ export function SupplierPhoneForm({
     }
 
     try {
-      const result = await removeSupplierPhone(
-        selectedSupplierPhone.id,
-        selectedSupplier.id,
+      const result = await destroy(
+        `suppliers/${selectedSupplier.id}/phone/${selectedSupplierPhone.id}`,
       );
       onSetAlertDetails({
         message: result.message,
