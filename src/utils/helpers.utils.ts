@@ -79,3 +79,16 @@ export function formatAmount(amount: number): string {
 
   return `${formattedStringAmount}.${decimals}`;
 }
+
+export function getSearchParamsForPaginator(
+  query: string,
+  page: number,
+  perPage: number,
+): URLSearchParams {
+  const searchParams = new URLSearchParams();
+  searchParams.set("page", (page - 1).toString());
+  searchParams.set("perPage", perPage.toString());
+  searchParams.set("q", query.toString());
+
+  return searchParams;
+}

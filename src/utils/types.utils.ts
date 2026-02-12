@@ -16,6 +16,12 @@ export type ResponseWithRecord<T> = {
   data: Array<T>;
 };
 
+export type Paginator = {
+  query: string;
+  page: number;
+  perPage: number;
+};
+
 export type PreferredAlertPropsForForm = {
   onHideModal: VoidFunction;
   onSetAlertDetails: Dispatch<
