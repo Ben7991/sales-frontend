@@ -9,18 +9,17 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion } from "motion/react";
 import { IoIosSave } from "react-icons/io";
+import { RxUpload } from "react-icons/rx";
+import { LiaTimesSolid } from "react-icons/lia";
+import { LuDownload } from "react-icons/lu";
+import { CgDanger } from "react-icons/cg";
 import { IoAddCircleOutline } from "react-icons/io5";
 
 import { Form } from "@/components/atoms/form/Form";
 import {
-  addCustomer,
-  addCustomerPhone,
   customerPhoneSchema,
   customerSchema,
-  editCustomer,
-  editCustomerPhone,
   importCustomers,
-  removeCustomerPhone,
 } from "./Customer.utils";
 import type {
   CustomerFormProps,
@@ -36,13 +35,10 @@ import type {
   ResponseWithDataAndMessage,
 } from "@/utils/types.utils";
 import { Button } from "@/components/atoms/button/Button";
-import { RxUpload } from "react-icons/rx";
 import { Spinner } from "@/components/atoms/spinner/Spinner";
 import { Headline } from "@/components/atoms/headline/Headline";
-import { LiaTimesSolid } from "react-icons/lia";
 import type { AlertProps } from "@/components/molecules/alert/Alert.types";
-import { LuDownload } from "react-icons/lu";
-import { CgDanger } from "react-icons/cg";
+import { destroy, mutate } from "@/utils/http.utils";
 
 export function CustomerForm({
   selectedCustomer,
@@ -84,12 +80,16 @@ export function CustomerForm({
 
     try {
       if (!selectedCustomer) {
-        result = await addCustomer({
-          ...data,
-          phones: phones
-            .filter((item) => item.phone !== "")
-            .map((item) => item.phone),
-        });
+        result = await mutate<ResponseWithDataAndMessage<Customer>>(
+          {
+            ...data,
+            phones: phones
+              .filter((item) => item.phone !== "")
+              .map((item) => item.phone),
+          },
+          "customers",
+          "POST",
+        );
         onSetAlertDetails({
           message: result.message,
           variant: "success",
@@ -103,7 +103,11 @@ export function CustomerForm({
           },
         });
       } else {
-        result = await editCustomer(data, selectedCustomer.id);
+        result = await mutate<ResponseWithDataAndMessage<Customer>>(
+          data,
+          `customers/${selectedCustomer.id}`,
+          "PATCH",
+        );
         onSetAlertDetails({
           message: result.message,
           variant: "success",
@@ -257,7 +261,11 @@ export function CustomerPhoneForm({
 
     try {
       if (activeTab === "add-phone") {
-        result = await addCustomerPhone(data, selectedCustomer.id);
+        result = await mutate<ResponseWithDataAndMessage<PhoneWithID>>(
+          data,
+          `customers/${selectedCustomer.id}/phone`,
+          "POST",
+        );
         onSetAlertDetails({
           message: result.message,
           variant: "success",
@@ -271,10 +279,10 @@ export function CustomerPhoneForm({
           },
         });
       } else if (activeTab === "edit-phone") {
-        result = await editCustomerPhone(
+        result = await mutate<ResponseWithDataAndMessage<PhoneWithID>>(
           data,
-          selectedCustomerPhone!.id,
-          selectedCustomer.id,
+          `customers/${selectedCustomer.id}/phone/${selectedCustomerPhone!.id}`,
+          "PATCH",
         );
         onSetAlertDetails({
           message: result.message,
@@ -314,9 +322,8 @@ export function CustomerPhoneForm({
     }
 
     try {
-      const result = await removeCustomerPhone(
-        selectedCustomerPhone.id,
-        selectedCustomer.id,
+      const result = await destroy(
+        `customers/${selectedCustomer.id}/phone/${selectedCustomerPhone.id}`,
       );
       onSetAlertDetails({
         message: result.message,

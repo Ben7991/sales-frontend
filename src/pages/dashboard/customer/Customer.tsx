@@ -9,6 +9,7 @@ import type {
   ActiveTabForPhoneForm,
   Customer,
   PhoneWithID,
+  ResponseWithRecord,
 } from "@/utils/types.utils";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
@@ -21,19 +22,22 @@ import {
 import {
   customerDataTableColumnHeadings,
   customerModalHeading,
-  getCustomers,
 } from "./Customer.utils";
 import {
   customerReducer,
   initialCustomerReducerState,
 } from "./Customer.reducer";
-import { getPaginatedData } from "@/utils/helpers.utils";
+import {
+  getPaginatedData,
+  getSearchParamsForPaginator,
+} from "@/utils/helpers.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { FaRegEdit } from "react-icons/fa";
 import { BsTrash } from "react-icons/bs";
 import { BiSolidEdit } from "react-icons/bi";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetch } from "@/utils/hooks.utils";
+import { get } from "@/utils/http.utils";
 
 export default function Customer(): React.JSX.Element {
   const { pathname } = useLocation();
@@ -58,7 +62,10 @@ export default function Customer(): React.JSX.Element {
     const fetchCustomers = async (): Promise<void> => {
       setIsFetching(true);
       try {
-        const result = await getCustomers(query, page, perPage);
+        const searchParams = getSearchParamsForPaginator(query, page, perPage);
+        const result = await get<ResponseWithRecord<Customer>>(
+          `customers?${searchParams.toString()}`,
+        );
         customerDispatch({
           type: "load",
           payload: result,

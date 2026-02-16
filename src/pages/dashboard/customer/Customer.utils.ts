@@ -3,8 +3,6 @@ import * as yup from "yup";
 import {
   StatusCodes,
   type Customer,
-  type PhoneWithID,
-  type ResponseWithDataAndMessage,
   type ResponseWithRecord,
 } from "@/utils/types.utils";
 import { getAccessToken, getHeaders, refreshToken } from "@/utils/auth.util";
@@ -43,39 +41,6 @@ export const customerModalHeading: Record<string, string> = {
   import: `${makeFirstLetterUppercase("import")} Customers`,
 };
 
-export async function getCustomers(
-  query: string,
-  page: number,
-  perPage: number,
-): Promise<ResponseWithRecord<Customer>> {
-  const searchParams = new URLSearchParams();
-  searchParams.set("page", (page - 1).toString());
-  searchParams.set("perPage", perPage.toString());
-  searchParams.set("q", query.toString());
-
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/customers?${searchParams.toString()}`,
-    {
-      method: "GET",
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await getCustomers(query, page, perPage);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
 export async function getCustomerViaLiveSearch(
   query: string,
 ): Promise<ResponseWithRecord<Customer>> {
@@ -96,142 +61,6 @@ export async function getCustomerViaLiveSearch(
     const isRefreshed = await refreshToken();
     if (isRefreshed) {
       return await getCustomerViaLiveSearch(query);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function addCustomer(
-  data: unknown,
-): Promise<ResponseWithDataAndMessage<Customer>> {
-  const response = await fetch(`${import.meta.env.VITE_BASE_API}/customers`, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: getHeaders(true),
-    credentials: "include",
-  });
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await addCustomer(data);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function editCustomer(
-  data: unknown,
-  id: number,
-): Promise<ResponseWithDataAndMessage<Customer>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/customers/${id}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await editCustomer(data, id);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function addCustomerPhone(
-  data: unknown,
-  customerId: number,
-): Promise<ResponseWithDataAndMessage<PhoneWithID>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/customers/${customerId}/phone`,
-    {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await addCustomerPhone(data, customerId);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function editCustomerPhone(
-  data: unknown,
-  phoneId: number,
-  customerId: number,
-): Promise<ResponseWithDataAndMessage<PhoneWithID>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/customers/${customerId}/phone/${phoneId}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await editCustomerPhone(data, phoneId, customerId);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function removeCustomerPhone(
-  phoneId: number,
-  customerId: number,
-): Promise<ResponseWithDataAndMessage<PhoneWithID>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/customers/${customerId}/phone/${phoneId}`,
-    {
-      method: "DELETE",
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await removeCustomerPhone(phoneId, customerId);
     }
     throw new Error(result.message);
   } else if (FAILED_STATUS_CODES.includes(response.status)) {
