@@ -38,6 +38,7 @@ export async function mutate<T>(
 
   return result;
 }
+
 /**
  * This function is desired to be make http request with methods for
  * DELETE only. Again, this function is only to be used for
