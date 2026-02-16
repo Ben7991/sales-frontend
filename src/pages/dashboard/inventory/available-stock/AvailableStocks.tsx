@@ -8,14 +8,16 @@ import {
   initialAvailableStockState,
 } from "./AvailableStocks.reducer";
 import {
-  availableStockColumnHeadings,
-  getProductStock,
-} from "./AvailableStocks.utils";
-import { formatAmount, getPaginatedData } from "@/utils/helpers.utils";
+  formatAmount,
+  getPaginatedData,
+  getSearchParamsForPaginator,
+} from "@/utils/helpers.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { Pill } from "@/components/atoms/pill/Pill";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
+import { get } from "@/utils/http.utils";
+import type { ProductStock, ResponseWithRecord } from "@/utils/types.utils";
 
 export default function AvailableStocks(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
@@ -32,7 +34,10 @@ export default function AvailableStocks(): React.JSX.Element {
     const fetchStocks = async (): Promise<void> => {
       setIsFetching(true);
       try {
-        const result = await getProductStock(query, page, perPage);
+        const searchParams = getSearchParamsForPaginator(query, page, perPage);
+        const result = await get<ResponseWithRecord<ProductStock>>(
+          `products/stocks?${searchParams.toString()}`,
+        );
         availableStockDispatch({
           type: "load",
           payload: result,
@@ -63,7 +68,15 @@ export default function AvailableStocks(): React.JSX.Element {
       <PageDescriptor title="Available Stocks" spinnerState={isFetching} />
       <DataTable
         count={availableStockState.count}
-        columnHeadings={availableStockColumnHeadings}
+        columnHeadings={[
+          "Product",
+          "Supplier",
+          "Unit Price(retail)",
+          "Unit Price(wholesale)",
+          "Box No.",
+          "Total Pieces",
+          "Status",
+        ]}
       >
         {availableStockState.data.map((item) => (
           <tr key={item.id}>
