@@ -4,29 +4,28 @@ import { BiSolidEdit } from "react-icons/bi";
 
 import { Alert } from "@/components/molecules/alert/Alert";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
-import type { User } from "@/utils/types.utils";
+import type { ResponseWithRecord, User } from "@/utils/types.utils";
 import { Modal } from "@/components/organisms/modal/Modal";
 import {
-  EmployeeForm,
+  AddEmployeeForm,
   EmployeeStatusForm,
   EmployeeSubHeader,
+  UpdateEmployeeForm,
 } from "./Employee.partials";
 import {
   getPaginatedData,
+  getSearchParamsForPaginator,
   makeFirstLetterUppercase,
 } from "@/utils/helpers.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
-import {
-  employeeDataTableColumnHeadings,
-  formatRole,
-  getEmployees,
-} from "./Employee.utils";
+import { employeeDataTableColumnHeadings, formatRole } from "./Employee.utils";
 import {
   employeeReducer,
   initialEmployeeReducerState,
 } from "./Employee.reducer";
 import { useFetch } from "@/utils/hooks.utils";
 import { Pill } from "@/components/atoms/pill/Pill";
+import { get } from "@/utils/http.utils";
 
 export default function Employee(): React.JSX.Element {
   const { pathname } = useLocation();
@@ -48,7 +47,10 @@ export default function Employee(): React.JSX.Element {
     const fetchEmployees = async (): Promise<void> => {
       setIsFetching(true);
       try {
-        const result = await getEmployees(query, page, perPage);
+        const searchParams = getSearchParamsForPaginator(query, page, perPage);
+        const result = await get<ResponseWithRecord<User>>(
+          `users?${searchParams.toString()}`,
+        );
         employeeDispatch({
           type: "load",
           payload: result,
@@ -156,14 +158,19 @@ export default function Employee(): React.JSX.Element {
         show={Boolean(activeAction)}
         onHide={handleHideModal}
       >
-        {["add", "edit"].includes(activeAction as string) ? (
-          <EmployeeForm
+        {"add" === activeAction ? (
+          <AddEmployeeForm
             perPage={perPage}
+            onSetAlertDetails={setAlertDetails}
+            onEmployeeDispatch={employeeDispatch}
+          />
+        ) : activeAction === "edit" ? (
+          <UpdateEmployeeForm
             selectedEmployee={selectedEmployee}
+            onEmployeeDispatch={employeeDispatch}
             onResetSelectedEmployee={() => setSelectedEmployee(undefined)}
             onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
-            onEmployeeDispatch={employeeDispatch}
           />
         ) : (
           <EmployeeStatusForm

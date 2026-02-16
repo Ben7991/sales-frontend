@@ -1,19 +1,8 @@
 import * as yup from "yup";
 
-import {
-  checkEmail,
-  checkUsername,
-  getHeaders,
-  refreshToken,
-} from "@/utils/auth.util";
-import { FAILED_STATUS_CODES } from "@/utils/constants.utils";
+import { checkEmail, checkUsername } from "@/utils/auth.util";
 import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
-import {
-  StatusCodes,
-  type User,
-  type ResponseWithDataAndMessage,
-  type ResponseWithRecord,
-} from "@/utils/types.utils";
+import type { Role } from "@/utils/types.utils";
 
 export const employeeDataTableColumnHeadings = [
   "Date Added",
@@ -25,8 +14,13 @@ export const employeeDataTableColumnHeadings = [
   "",
 ];
 
-export const employeeSchema = yup.object({
+const nameValidation = {
   name: yup.string().required("Name is required").trim(),
+};
+
+export const updateEmployeeSchema = yup.object(nameValidation);
+export const createEmployeeSchema = yup.object({
+  ...nameValidation,
   email: yup
     .string()
     .required("Email is required")
@@ -35,6 +29,10 @@ export const employeeSchema = yup.object({
     })
     .test({
       test: async (value): Promise<boolean> => {
+        if (!value) {
+          return Promise.resolve(true);
+        }
+
         try {
           await checkEmail(value);
           return true;
@@ -54,6 +52,10 @@ export const employeeSchema = yup.object({
     })
     .test({
       test: async (value): Promise<boolean> => {
+        if (!value) {
+          return Promise.resolve(true);
+        }
+
         try {
           await checkUsername(value);
           return true;
@@ -66,123 +68,29 @@ export const employeeSchema = yup.object({
     .trim(),
 });
 
-export async function getEmployees(
-  query: string,
-  page: number,
-  perPage: number,
-): Promise<ResponseWithRecord<User>> {
-  const searchParams = new URLSearchParams();
-  searchParams.set("page", (page - 1).toString());
-  searchParams.set("perPage", perPage.toString());
-  searchParams.set("q", query.toString());
-
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/users?${searchParams.toString()}`,
-    {
-      method: "GET",
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await getEmployees(query, page, perPage);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function addEmployee(
-  data: unknown,
-): Promise<ResponseWithDataAndMessage<User>> {
-  const response = await fetch(`${import.meta.env.VITE_BASE_API}/users`, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: getHeaders(true),
-    credentials: "include",
-  });
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await addEmployee(data);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function editEmployee(
-  data: unknown,
-  employeeId: number,
-): Promise<ResponseWithDataAndMessage<User>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/users/${employeeId}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await editEmployee(data, employeeId);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function changeStatus(
-  data: unknown,
-  employeeId: number,
-): Promise<{ message: string }> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/users/${employeeId}/change-status`,
-    {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await changeStatus(data, employeeId);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export function formatRole(role: string): string {
+/**
+ * This function properly formats roles to ensure that
+ * all underscores are removed before being displayed to the user
+ * @param role
+ * @returns {string}
+ */
+export function formatRole(role: Role): string {
   return role
     .toLowerCase()
     .split("_")
     .map((item) => makeFirstLetterUppercase(item))
     .join(" ");
+}
+
+/**
+ * In-order to suit the backend required payload for the role field
+ * when either creating an employee or editing, this function ensures the right
+ * role string is returned.
+ * @param role The role displayed in the user interface
+ * @returns {Role}
+ */
+export function getUserRole(role: string): Role {
+  return role.startsWith("Procurement")
+    ? "PROCUREMENT_OFFICER"
+    : "SALES_PERSON";
 }

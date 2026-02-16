@@ -1,5 +1,5 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import {
+import React, {
   useCallback,
   useEffect,
   useState,
@@ -11,16 +11,18 @@ import {
 import { Link } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IoIosSave } from "react-icons/io";
+import { LuUserRoundPlus } from "react-icons/lu";
+import { MdFilterList } from "react-icons/md";
+import { RxCaretDown, RxCaretUp } from "react-icons/rx";
 import { AnimatePresence, motion } from "motion/react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Form } from "@/components/atoms/form/Form";
 import type { ResponseWithDataAndMessage, User } from "@/utils/types.utils";
 import {
-  addEmployee,
-  changeStatus,
-  editEmployee,
-  employeeSchema,
+  createEmployeeSchema,
+  getUserRole,
+  updateEmployeeSchema,
 } from "./Employee.utils";
 import type {
   EmployeeFormProps,
@@ -28,20 +30,18 @@ import type {
   EmployeeSubHeaderProps,
 } from "./Employee.types";
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
-import { LuUserRoundPlus } from "react-icons/lu";
-import { MdFilterList } from "react-icons/md";
-import { RxCaretDown, RxCaretUp } from "react-icons/rx";
 import { useOutsideClick } from "@/utils/hooks.utils";
 import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
+import { mutate } from "@/utils/http.utils";
 
-export function EmployeeForm({
+export function AddEmployeeForm({
   perPage,
-  selectedEmployee,
-  onResetSelectedEmployee,
-  onHideModal,
   onSetAlertDetails,
   onEmployeeDispatch,
-}: EmployeeFormProps): React.JSX.Element {
+}: Omit<
+  EmployeeFormProps,
+  "onResetSelectedEmployee" | "onHideModal" | "selectedEmployee"
+>): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
   const [dropdownError, setDropdownError] = useState(false);
   const [userRole, setUserRole] = useState<string>();
@@ -50,24 +50,11 @@ export function EmployeeForm({
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
+    reset,
   } = useForm<EmployeeInputs>({
-    resolver: yupResolver(employeeSchema),
-    mode: "onChange",
+    resolver: yupResolver(createEmployeeSchema),
+    mode: "onBlur",
   });
-
-  useEffect(() => {
-    if (selectedEmployee) {
-      setValue("name", selectedEmployee.name);
-      setValue("email", selectedEmployee.email);
-      setValue("username", selectedEmployee.username);
-      setUserRole(
-        selectedEmployee.role === "PROCUREMENT_OFFICER"
-          ? "Procurement Officer"
-          : "Sales Person",
-      );
-    }
-  }, [selectedEmployee, setValue]);
 
   const onSubmit: SubmitHandler<EmployeeInputs> = async (
     data,
@@ -79,41 +66,26 @@ export function EmployeeForm({
 
     setIsLoading(true);
 
-    let result: ResponseWithDataAndMessage<User>;
-    const role = userRole.startsWith("Procurement")
-      ? "PROCUREMENT_OFFICER"
-      : "SALES_PERSON";
+    const role = getUserRole(userRole);
 
     try {
-      if (selectedEmployee) {
-        result = await editEmployee({ ...data, role }, selectedEmployee.id);
-        onSetAlertDetails({
-          message: result.message,
-          variant: "success",
-        });
-        onEmployeeDispatch({
-          type: "edit",
-          payload: {
-            id: selectedEmployee.id,
-            data: result.data,
-          },
-        });
-        onResetSelectedEmployee();
-        onHideModal();
-      } else {
-        result = await addEmployee({ ...data, role });
-        onSetAlertDetails({
-          message: result.message,
-          variant: "success",
-        });
-        onEmployeeDispatch({
-          type: "add",
-          payload: {
-            data: result.data,
-            perPage,
-          },
-        });
-      }
+      const result = await mutate<ResponseWithDataAndMessage<User>>(
+        { ...data, role },
+        "users",
+        "POST",
+      );
+      reset();
+      onSetAlertDetails({
+        message: result.message,
+        variant: "success",
+      });
+      onEmployeeDispatch({
+        type: "add",
+        payload: {
+          data: result.data,
+          perPage,
+        },
+      });
     } catch (error) {
       onSetAlertDetails({
         message: (error as Error).message,
@@ -190,9 +162,130 @@ export function EmployeeForm({
           ) : (
             <span className="flex items-center gap-2">
               <IoIosSave />
-              <span>
-                {selectedEmployee ? "Save changes" : "Save new employee"}
-              </span>
+              <span>Save new employee</span>
+            </span>
+          )}
+        </Button>
+      </Form.Group>
+    </Form>
+  );
+}
+
+export function UpdateEmployeeForm({
+  selectedEmployee,
+  onSetAlertDetails,
+  onEmployeeDispatch,
+  onResetSelectedEmployee,
+  onHideModal,
+}: Omit<EmployeeFormProps, "perPage">): React.JSX.Element {
+  const [isLoading, setIsLoading] = useState(false);
+  const [dropdownError, setDropdownError] = useState(false);
+  const [userRole, setUserRole] = useState<string>();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    reset,
+  } = useForm<Pick<EmployeeInputs, "name">>({
+    resolver: yupResolver(updateEmployeeSchema),
+    mode: "onBlur",
+  });
+
+  useEffect(() => {
+    if (selectedEmployee) {
+      setValue("name", selectedEmployee.name);
+      setUserRole(
+        selectedEmployee.role === "PROCUREMENT_OFFICER"
+          ? "Procurement Officer"
+          : "Sales Person",
+      );
+    }
+  }, [selectedEmployee, setValue]);
+
+  const onSubmit: SubmitHandler<Pick<EmployeeInputs, "name">> = async (
+    data,
+  ): Promise<void> => {
+    if (!selectedEmployee || !userRole) {
+      return Promise.resolve();
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await mutate<ResponseWithDataAndMessage<User>>(
+        { name: data.name, role: getUserRole(userRole) },
+        `users/${selectedEmployee.id}`,
+        "PATCH",
+      );
+      reset();
+      onSetAlertDetails({
+        message: result.message,
+        variant: "success",
+      });
+      onEmployeeDispatch({
+        type: "edit",
+        payload: {
+          id: selectedEmployee.id,
+          data: result.data,
+        },
+      });
+      onResetSelectedEmployee();
+      onHideModal();
+    } catch (error) {
+      onSetAlertDetails({
+        message: (error as Error).message,
+        variant: "error",
+      });
+      console.error("Failed to add employee", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form.Group className="mb-4">
+        <Form.Label htmlFor="name">Name</Form.Label>
+        <Form.Control
+          type="text"
+          id="name"
+          {...register("name")}
+          hasError={Boolean(errors.name)}
+          autoFocus
+        />
+        {Boolean(errors.name) && (
+          <Form.Error>{errors.name?.message}</Form.Error>
+        )}
+      </Form.Group>
+      <Form.Group className="mb-4">
+        <Form.Label htmlFor="name">Role</Form.Label>
+        <Form.Dropdown
+          placeholder="Select an employee role"
+          list={["Procurement Officer", "Sales Person"]}
+          onSelectItem={
+            setUserRole as Dispatch<SetStateAction<string | undefined>>
+          }
+          selectedItem={userRole}
+          hasError={dropdownError}
+          onHideError={() => setDropdownError(false)}
+        />
+        {dropdownError && <Form.Error>Role is required</Form.Error>}
+      </Form.Group>
+      <Form.Group>
+        <Button
+          el="button"
+          type="submit"
+          variant="primary"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <Button.Loader />
+          ) : (
+            <span className="flex items-center gap-2">
+              <IoIosSave />
+              <span>Save changes</span>
             </span>
           )}
         </Button>
@@ -238,9 +331,10 @@ export function EmployeeStatusForm({
       status === "Active" ? "ACTIVE" : status === "Fired" ? "FIRED" : "QUIT";
 
     try {
-      const result = await changeStatus(
+      const result = await mutate<{ message: string }>(
         { status: formattedStatus },
-        selectedEmployee.id,
+        `users/${selectedEmployee.id}/change-status`,
+        "PATCH",
       );
       onSetAlertDetails({
         message: result.message,
