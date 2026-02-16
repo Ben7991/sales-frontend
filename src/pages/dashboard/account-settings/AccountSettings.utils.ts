@@ -1,15 +1,4 @@
-import {
-  checkEmail,
-  checkUsername,
-  getHeaders,
-  refreshToken,
-} from "@/utils/auth.util";
-import { FAILED_STATUS_CODES } from "@/utils/constants.utils";
-import {
-  StatusCodes,
-  type ResponseWithDataAndMessage,
-  type User,
-} from "@/utils/types.utils";
+import { checkEmail, checkUsername } from "@/utils/auth.util";
 import * as yup from "yup";
 
 export const personalInformationSchema = yup.object({
@@ -32,6 +21,10 @@ export const personalInformationSchema = yup.object({
     })
     .test({
       test: async (value): Promise<boolean> => {
+        if (!value) {
+          return true;
+        }
+
         try {
           await checkUsername(value);
           return true;
@@ -50,6 +43,10 @@ export const personalInformationSchema = yup.object({
     })
     .test({
       test: async (value): Promise<boolean> => {
+        if (!value) {
+          return true;
+        }
+
         try {
           await checkEmail(value);
           return true;
@@ -78,61 +75,7 @@ export const passwordSchema = yup.object({
       test: (value, ctx) => {
         return value === ctx.parent.newPassword;
       },
-      message: "Both Confirm Password and New Password do not match each other",
+      message: "Passwords do not match each other",
     })
     .trim(),
 });
-
-export async function changePersonalInformation(
-  data: unknown,
-): Promise<ResponseWithDataAndMessage<User>> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/users/change-personal-info`,
-    {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await changePersonalInformation(data);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function changePassword(
-  data: unknown,
-): Promise<{ message: string }> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/users/change-password`,
-    {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: getHeaders(true),
-      credentials: "include",
-    },
-  );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await changePassword(data);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}

@@ -11,9 +11,7 @@ import { Button } from "@/components/atoms/button/Button";
 import { Form } from "@/components/atoms/form/Form";
 import {
   personalInformationSchema,
-  changePersonalInformation,
   passwordSchema,
-  changePassword,
 } from "./AccountSettings.utils";
 import type {
   ChangePasswordInputs,
@@ -25,6 +23,8 @@ import { Alert } from "@/components/molecules/alert/Alert";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { logout } from "@/components/layouts/dashboard/Dashboard.utils";
 import { AUTH_STATE } from "@/utils/constants.utils";
+import { mutate } from "@/utils/http.utils";
+import type { ResponseWithDataAndMessage, User } from "@/utils/types.utils";
 
 function Wrapper(props: { children: React.ReactNode }): React.JSX.Element {
   return <div className="w-full md:w-112.5">{props.children}</div>;
@@ -49,11 +49,15 @@ export function PersonalInformation(): React.JSX.Element {
   ): Promise<void> => {
     setIsLoading(true);
     try {
-      const result = await changePersonalInformation({
-        username: data.username,
-        email: data.email,
-        name: `${data.firstName} ${data.lastName}`,
-      });
+      const result = await mutate<ResponseWithDataAndMessage<User>>(
+        {
+          username: data.username,
+          email: data.email,
+          name: `${data.firstName} ${data.lastName}`,
+        },
+        "users/change-personal-info",
+        "POST",
+      );
       dispatch(setAuthUser({ user: result.data }));
       setAlertDetails({
         message: result.message,
@@ -184,7 +188,11 @@ export function ChangePassword(): React.JSX.Element {
     setIsLoading(true);
 
     try {
-      const result = await changePassword(data);
+      const result = await mutate<{ message: string }>(
+        data,
+        "users/change-password",
+        "POST",
+      );
       setAlertDetails({
         message: result.message,
         variant: "success",
