@@ -22,15 +22,14 @@ import type {
   OrderDetailsProps,
   OrderPaymentFormProps,
 } from "./OrderHistory.types";
-import {
-  addPayment,
-  changeOrderStatus,
-  exportReceiptData,
-  getOrder,
-  ORDER_STATUSES,
-  orderPaymentSchema,
-} from "./OrderHistory.utils";
-import type { Order, OrderStatus, PaymentMode } from "@/utils/types.utils";
+import { ORDER_STATUSES, orderPaymentSchema } from "./OrderHistory.utils";
+import type {
+  Order,
+  OrderStatus,
+  PaymentMode,
+  ResponseWithDataAndMessage,
+  ResponseWithOnlyData,
+} from "@/utils/types.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { Spinner } from "@/components/atoms/spinner/Spinner";
 import { Headline } from "@/components/atoms/headline/Headline";
@@ -40,6 +39,8 @@ import { Form } from "@/components/atoms/form/Form";
 import { Pill } from "@/components/atoms/pill/Pill";
 import { formatAmount } from "@/utils/helpers.utils";
 import { BiSolidEdit } from "react-icons/bi";
+import { get, mutate } from "@/utils/http.utils";
+import type { TDocumentDefinitions } from "pdfmake/interfaces";
 
 export function OrderDetails({
   showOffCanvas,
@@ -55,7 +56,9 @@ export function OrderDetails({
   useEffect(() => {
     const fetchOrder = async (): Promise<void> => {
       try {
-        const result = await getOrder(selectedOrderHistory.id);
+        const result = await get<ResponseWithOnlyData<Order>>(
+          `sales/${selectedOrderHistory.id}`,
+        );
         setOrderDetails(result.data);
       } catch (error) {
         const message = "Failed to get order details";
@@ -74,7 +77,9 @@ export function OrderDetails({
     setIsDownloading(true);
 
     try {
-      const result = await exportReceiptData(id);
+      const result = await get<ResponseWithOnlyData<TDocumentDefinitions>>(
+        `sales/${id}/export-receipt-data`,
+      );
       const receiptManager = ReceiptManager.getInstance();
       receiptManager.downloadReceipt(result.data, id);
     } catch (error) {
@@ -92,7 +97,9 @@ export function OrderDetails({
   const handlePrintReceipt = async (id: number): Promise<void> => {
     setStartingPrint(true);
     try {
-      const result = await exportReceiptData(id);
+      const result = await get<ResponseWithOnlyData<TDocumentDefinitions>>(
+        `sales/${id}/export-receipt-data`,
+      );
       const receiptManager = ReceiptManager.getInstance();
       receiptManager.printReceipt(result.data);
     } catch (error) {
@@ -343,12 +350,13 @@ export function OrderPaymentForm({
     setIsLoading(true);
 
     try {
-      const result = await addPayment(
+      const result = await mutate<ResponseWithDataAndMessage<AddPaymentData>>(
         {
           amount: +data.amount,
           paymentMode: paymentMode.toUpperCase().split(" ").join("_"),
         },
-        selectedOrderHistory.id,
+        `sales/${selectedOrderHistory.id}/add-payment`,
+        "POST",
       );
       onSetAlertDetails({
         message: result.message,
@@ -484,11 +492,12 @@ export function ChangeOrderStatus({
 
     try {
       const formattedStatus = status.toUpperCase().split(" ").join("_");
-      const result = await changeOrderStatus(
+      const result = await mutate<{ message: string }>(
         {
           status: formattedStatus,
         },
-        selectedOrderHistory.id,
+        `sales/${selectedOrderHistory.id}/change-status`,
+        "PATCH",
       );
       updateOrderHistory(formattedStatus as OrderStatus);
       setOrderStatus(undefined);

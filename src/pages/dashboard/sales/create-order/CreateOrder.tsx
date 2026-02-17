@@ -8,7 +8,13 @@ import {
 
 import { Headline } from "@/components/atoms/headline/Headline";
 import { getCustomerViaLiveSearch } from "../../customer/Customer.utils";
-import type { ProductStock, Customer, OrderSale } from "@/utils/types.utils";
+import type {
+  ProductStock,
+  Customer,
+  OrderSale,
+  ResponseWithOnlyData,
+  Order,
+} from "@/utils/types.utils";
 import {
   getCustomerDetails,
   getIdForNextOrderToCreate,
@@ -29,9 +35,8 @@ import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Form } from "@/components/atoms/form/Form";
 import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
 import { useSearchParams } from "react-router";
-import { getOrder } from "../order-history/OrderHistory.utils";
 import { getStockViaLiveSearch } from "../../inventory/categories-products/CategoriesProducts.utils";
-import { mutate } from "@/utils/http.utils";
+import { get, mutate } from "@/utils/http.utils";
 
 export default function CreateOrder(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +63,9 @@ export default function CreateOrder(): React.JSX.Element {
 
     const getOrderToEdit = async (): Promise<void> => {
       try {
-        const { data } = await getOrder(parseInt(orderIdToEdit));
+        const { data } = await get<ResponseWithOnlyData<Order>>(
+          `sales/${orderIdToEdit}`,
+        );
 
         if (data.orderStatus !== "OPEN") return;
 

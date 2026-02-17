@@ -7,11 +7,11 @@ import { LiaExchangeAltSolid } from "react-icons/lia";
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import { useFetch } from "@/utils/hooks.utils";
 import type { OrderHistoryItem, OrderHistoryState } from "./OrderHistory.types";
+import { orderHistoryColumnHeadings } from "./OrderHistory.utils";
 import {
-  getOrderHistories,
-  orderHistoryColumnHeadings,
-} from "./OrderHistory.utils";
-import { getPaginatedData } from "@/utils/helpers.utils";
+  getPaginatedData,
+  getSearchParamsForPaginator,
+} from "@/utils/helpers.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { Pill } from "@/components/atoms/pill/Pill";
 import {
@@ -22,6 +22,8 @@ import {
 import { Modal } from "@/components/organisms/modal/Modal";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
+import { get } from "@/utils/http.utils";
+import type { ResponseWithRecord } from "@/utils/types.utils";
 
 export default function OrderHistory(): React.JSX.Element {
   const [selectedOrderHistory, setSelectedOrderHistory] =
@@ -43,7 +45,10 @@ export default function OrderHistory(): React.JSX.Element {
     const fetchOrders = async (): Promise<void> => {
       setIsFetching(true);
       try {
-        const result = await getOrderHistories(query, page, perPage);
+        const searchParams = getSearchParamsForPaginator(query, page, perPage);
+        const result = await get<ResponseWithRecord<OrderHistoryItem>>(
+          `sales?${searchParams.toString()}`,
+        );
         setOrderHistory(result);
       } catch (error) {
         setAlertDetails({
