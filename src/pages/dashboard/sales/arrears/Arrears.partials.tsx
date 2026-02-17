@@ -3,9 +3,10 @@ import { useNavigate } from "react-router";
 
 import { OffCanvas } from "@/components/organisms/offcanvas/OffCanvas";
 import type { ArrearsDetailProps, ArrearsOrder } from "./Arrears.types";
-import { getArrearItem } from "./Arrears.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { Info } from "@/components/atoms/info/Info";
+import { get } from "@/utils/http.utils";
+import type { ResponseWithOnlyData } from "@/utils/types.utils";
 
 export function ArrearsDetail({
   showOffCanvas,
@@ -20,7 +21,9 @@ export function ArrearsDetail({
   useEffect(() => {
     const fetchOrder = async (): Promise<void> => {
       try {
-        const result = await getArrearItem(selectedItem.customerId);
+        const result = await get<ResponseWithOnlyData<Array<ArrearsOrder>>>(
+          `report/arrears/${selectedItem.customerId}`,
+        );
         setOrders(result.data);
       } catch (error) {
         onSetAlertDetails({
