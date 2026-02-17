@@ -13,12 +13,9 @@ import { IoIosSave } from "react-icons/io";
 import { Button } from "@/components/atoms/button/Button";
 import { Form } from "@/components/atoms/form/Form";
 import {
-  addCategory,
   addProduct,
   categorySchema,
   changeImage,
-  editCategory,
-  editProduct,
   productSchema,
 } from "./CategoriesProducts.utils";
 import type {
@@ -45,6 +42,7 @@ import {
   updateProduct,
   updateProductImage,
 } from "@/store/slice/product/product.slice";
+import { mutate } from "@/utils/http.utils";
 
 export function CategoryForm({
   selectedCategory,
@@ -80,7 +78,11 @@ export function CategoryForm({
 
     try {
       if (selectedCategory) {
-        result = await editCategory(data, selectedCategory.id);
+        result = await mutate<ResponseWithDataAndMessage<Category>>(
+          data,
+          `categories/${selectedCategory.id}`,
+          "PATCH",
+        );
         onSetAlertDetails({
           message: result.message,
           variant: "success",
@@ -89,7 +91,11 @@ export function CategoryForm({
         reset();
         onHideModal();
       } else {
-        result = await addCategory(data);
+        result = await mutate<ResponseWithDataAndMessage<Category>>(
+          data,
+          "categories",
+          "POST",
+        );
         onSetAlertDetails({
           message: result.message,
           variant: "success",
@@ -104,7 +110,7 @@ export function CategoryForm({
       });
       console.log("Failed to add or edit category", error);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   };
 
@@ -194,13 +200,14 @@ export function ProductForm({
 
     try {
       if (selectedProduct) {
-        result = await editProduct(
+        result = await mutate<ResponseWithDataAndMessage<Product>>(
           {
             ...data,
             categoryId: selectedCategory.id,
             status,
           },
-          selectedProduct.id,
+          `products/${selectedProduct.id}`,
+          "PATCH",
         );
         dispatch(updateProduct(result.data));
       } else {

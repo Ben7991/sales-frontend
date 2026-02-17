@@ -6,18 +6,17 @@ import { BiSolidEdit } from "react-icons/bi";
 
 import { Button } from "@/components/atoms/button/Button";
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
-import { getPaginatedData } from "@/utils/helpers.utils";
+import {
+  getPaginatedData,
+  getSearchParamsForPaginator,
+} from "@/utils/helpers.utils";
 import { Modal } from "@/components/organisms/modal/Modal";
 import {
   CategoryForm,
   ChangeProductImageForm,
   ProductForm,
 } from "./CategoriesProducts.partials";
-import {
-  categoryProductModalHeading,
-  getCategories,
-  getProducts,
-} from "./CategoriesProducts.utils";
+import { categoryProductModalHeading } from "./CategoriesProducts.utils";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
@@ -25,11 +24,16 @@ import { useAppDispatch, useAppSelector } from "@/store/index.util";
 import { loadCategories } from "@/store/slice/category/category.slice";
 import { Headline } from "@/components/atoms/headline/Headline";
 import { loadProducts } from "@/store/slice/product/product.slice";
-import type { Category, Product } from "@/utils/types.utils";
+import type {
+  Category,
+  Product,
+  ResponseWithRecord,
+} from "@/utils/types.utils";
 import { useFetch } from "@/utils/hooks.utils";
 import { Pill } from "@/components/atoms/pill/Pill";
 import { CgImage } from "react-icons/cg";
 import { ProductCard } from "@/components/molecules/product-card/ProductCard";
+import { get } from "@/utils/http.utils";
 
 export default function CategoriesProducts(): React.JSX.Element {
   const dispatch = useAppDispatch();
@@ -51,7 +55,8 @@ export default function CategoriesProducts(): React.JSX.Element {
   useEffect(() => {
     const fetchCategories = async (): Promise<void> => {
       try {
-        const result = await getCategories();
+        const result =
+          await get<Pick<ResponseWithRecord<Category>, "data">>("categories");
         dispatch(loadCategories(result));
       } catch (error) {
         setAlertDetails({
@@ -69,7 +74,10 @@ export default function CategoriesProducts(): React.JSX.Element {
     const fetchProducts = async (): Promise<void> => {
       setIsFetching(true);
       try {
-        const result = await getProducts(query, page, perPage);
+        const searchParams = getSearchParamsForPaginator(query, page, perPage);
+        const result = await get<ResponseWithRecord<Product>>(
+          `products?${searchParams.toString()}`,
+        );
         dispatch(loadProducts(result));
       } catch (error) {
         setAlertDetails({
