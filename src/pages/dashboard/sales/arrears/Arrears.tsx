@@ -8,11 +8,16 @@ import {
   type ArrearsRow,
   type ArrearState,
 } from "./Arrears.types";
-import { getPaginatedData } from "@/utils/helpers.utils";
-import { getArrears } from "./Arrears.utils";
+import {
+  getPaginatedData,
+  getSearchParamsForPaginator,
+} from "@/utils/helpers.utils";
 import { ArrearsDetail } from "./Arrears.partials";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
+import type { ResponseWithRecord } from "@/utils/types.utils";
+import { get } from "@/utils/http.utils";
+import { Info } from "@/components/atoms/info/Info";
 
 export default function Arrears(): React.JSX.Element {
   const [selectedItem, setSelectedItem] = useState<ArrearsRow>();
@@ -30,7 +35,10 @@ export default function Arrears(): React.JSX.Element {
   useEffect(() => {
     const fetchOrders = async (): Promise<void> => {
       try {
-        const result = await getArrears(query, page, perPage);
+        const searchParams = getSearchParamsForPaginator(query, page, perPage);
+        const result = await get<ResponseWithRecord<ArrearsRow>>(
+          `report/arrears?${searchParams.toString()}`,
+        );
         setArrears(result);
       } catch (error) {
         setAlertDetails({
@@ -94,6 +102,8 @@ export default function Arrears(): React.JSX.Element {
           </tr>
         ))}
       </DataTable>
+      <br />
+      <Info message="To view the arrears details, just click on your preferred row" />
       {selectedItem && (
         <ArrearsDetail
           onHideModal={handleHideModal}

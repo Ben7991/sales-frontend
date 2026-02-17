@@ -5,7 +5,7 @@ import { OffCanvas } from "@/components/organisms/offcanvas/OffCanvas";
 import type { ArrearsDetailProps, ArrearsOrder } from "./Arrears.types";
 import { getArrearItem } from "./Arrears.utils";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Info } from "@/components/atoms/info/Info";
 
 export function ArrearsDetail({
   showOffCanvas,
@@ -71,12 +71,7 @@ export function ArrearsDetail({
           </tr>
         ))}
       </DataTable>
-      <div className="flex gap-2 items-start">
-        <HiOutlineExclamationCircle className="text-2xl" />
-        <p className="m-0">
-          To view the order details, just click on your preferred row
-        </p>
-      </div>
+      <Info message="To view the order details, just click on your preferred row" />
     </OffCanvas>
   );
 }
