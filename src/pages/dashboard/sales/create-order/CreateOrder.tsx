@@ -10,8 +10,6 @@ import { Headline } from "@/components/atoms/headline/Headline";
 import { getCustomerViaLiveSearch } from "../../customer/Customer.utils";
 import type { ProductStock, Customer, OrderSale } from "@/utils/types.utils";
 import {
-  createOrder,
-  editOrder,
   getCustomerDetails,
   getIdForNextOrderToCreate,
   getProductDetails,
@@ -33,6 +31,7 @@ import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
 import { useSearchParams } from "react-router";
 import { getOrder } from "../order-history/OrderHistory.utils";
 import { getStockViaLiveSearch } from "../../inventory/categories-products/CategoriesProducts.utils";
+import { mutate } from "@/utils/http.utils";
 
 export default function CreateOrder(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -201,7 +200,7 @@ export default function CreateOrder(): React.JSX.Element {
 
     try {
       if (orderIdToEdit) {
-        result = await editOrder(
+        result = await mutate<{ message: string }>(
           {
             comment,
             customer: selectedCustomer!.name,
@@ -212,19 +211,24 @@ export default function CreateOrder(): React.JSX.Element {
               comment: item.comment,
             })),
           },
-          orderIdToEdit,
+          `sales/${orderIdToEdit}`,
+          "PUT",
         );
       } else {
-        result = await createOrder({
-          comment,
-          customer: selectedCustomer!.name,
-          orderSale: orderSale!.toUpperCase(),
-          orderItems: productStocks.map((item) => ({
-            stockId: item.id,
-            quantity: +item.quantity,
-            comment: item.comment,
-          })),
-        });
+        result = await mutate<{ message: string }>(
+          {
+            comment,
+            customer: selectedCustomer!.name,
+            orderSale: orderSale!.toUpperCase(),
+            orderItems: productStocks.map((item) => ({
+              stockId: item.id,
+              quantity: +item.quantity,
+              comment: item.comment,
+            })),
+          },
+          "sales",
+          "POST",
+        );
       }
       setAlertDetails({
         message: result.message,

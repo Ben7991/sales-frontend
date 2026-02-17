@@ -1,11 +1,5 @@
-import {
-  StatusCodes,
-  type Customer,
-  type ProductStock,
-} from "@/utils/types.utils";
+import { type Customer, type ProductStock } from "@/utils/types.utils";
 import type { OrderToCreate } from "./CreateOrder.types";
-import { getHeaders, refreshToken } from "@/utils/auth.util";
-import { FAILED_STATUS_CODES } from "@/utils/constants.utils";
 
 export function getCustomerDetails(customer?: Customer): string {
   if (!customer) return "";
@@ -61,53 +55,6 @@ export function removeFromOrdersToCreate(id: number): Array<OrderToCreate> {
   );
   localStorage.setItem(PRODUCT_STOCKS_KEY, JSON.stringify(updatedSavedOrders));
   return updatedSavedOrders;
-}
-
-export async function createOrder(data: unknown): Promise<{ message: string }> {
-  const response = await fetch(`${import.meta.env.VITE_BASE_API}/sales`, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: getHeaders(true),
-    credentials: "include",
-  });
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await createOrder(data);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
-}
-
-export async function editOrder(
-  data: unknown,
-  id: string,
-): Promise<{ message: string }> {
-  const response = await fetch(`${import.meta.env.VITE_BASE_API}/sales/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-    headers: getHeaders(true),
-    credentials: "include",
-  });
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await editOrder(data, id);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
 }
 
 export function getUnitPrice(

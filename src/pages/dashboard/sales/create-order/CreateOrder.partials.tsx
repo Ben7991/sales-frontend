@@ -336,8 +336,8 @@ export function OrderItemList({
       <div className="flex gap-2 items-center">
         <AiOutlineExclamationCircle className="text-xl" />
         <p>
-          When the type of order isn't selected, the default unit price is a{" "}
-          <strong>WHOLESALE</strong> price
+          When the <strong>type of order</strong> isn't selected, the default
+          unit price is a <strong>WHOLESALE</strong> price
         </p>
       </div>
     </div>
