@@ -5,6 +5,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { useSearchParams } from "react-router";
 
 import { Headline } from "@/components/atoms/headline/Headline";
 import { getCustomerViaLiveSearch } from "../../customer/Customer.utils";
@@ -34,7 +35,6 @@ import { Alert } from "@/components/molecules/alert/Alert";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Form } from "@/components/atoms/form/Form";
 import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
-import { useSearchParams } from "react-router";
 import { getStockViaLiveSearch } from "../../inventory/categories-products/CategoriesProducts.utils";
 import { get, mutate } from "@/utils/http.utils";
 

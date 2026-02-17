@@ -8,12 +8,14 @@ import {
   type SetStateAction,
 } from "react";
 import { Link } from "react-router";
+import type { TDocumentDefinitions } from "pdfmake/interfaces";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { BsPrinter } from "react-icons/bs";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { IoIosSave } from "react-icons/io";
 import { CgDanger } from "react-icons/cg";
+import { BiSolidEdit } from "react-icons/bi";
 
 import { OffCanvas } from "@/components/organisms/offcanvas/OffCanvas";
 import type {
@@ -38,9 +40,7 @@ import { ReceiptManager } from "@/utils/receipt-manager.util";
 import { Form } from "@/components/atoms/form/Form";
 import { Pill } from "@/components/atoms/pill/Pill";
 import { formatAmount } from "@/utils/helpers.utils";
-import { BiSolidEdit } from "react-icons/bi";
 import { get, mutate } from "@/utils/http.utils";
-import type { TDocumentDefinitions } from "pdfmake/interfaces";
 
 export function OrderDetails({
   showOffCanvas,
