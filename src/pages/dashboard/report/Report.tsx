@@ -5,12 +5,16 @@ import { lastDayOfMonth } from "date-fns";
 import { GiReceiveMoney } from "react-icons/gi";
 
 import { Card, ReportHeader } from "./Report.partials";
-import { getMoneySharing } from "./Report.util";
-import { formatAmount, getPaginatedData } from "@/utils/helpers.utils";
+import {
+  formatAmount,
+  getPaginatedData,
+  getSearchParamsForPaginator,
+} from "@/utils/helpers.utils";
 import type { MoneySharingResponse } from "./Report.types";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
+import { get } from "@/utils/http.utils";
 
 export default function Report(): React.JSX.Element {
   const [reportData, setReportData] = useState<MoneySharingResponse>();
@@ -28,10 +32,16 @@ export default function Report(): React.JSX.Element {
   useEffect(() => {
     const fetchReport = async () => {
       try {
-        const result = await getMoneySharing(paginatedResult, {
-          startDate: date!.from!.toISOString(),
-          endDate: date!.to!.toISOString(),
-        });
+        const searchParams = getSearchParamsForPaginator(
+          paginatedResult.query,
+          paginatedResult.page,
+          paginatedResult.perPage,
+        );
+        searchParams.set("startDate", date!.from!.toISOString());
+        searchParams.set("endDate", date!.to!.toISOString());
+        const result = await get<MoneySharingResponse>(
+          `report/money-sharing?${searchParams.toString()}`,
+        );
         setReportData(result);
       } catch (error) {
         setAlertDetails({
