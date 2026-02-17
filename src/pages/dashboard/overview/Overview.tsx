@@ -5,11 +5,12 @@ import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import type { EntitySummary, HighValueCustomer } from "./Overview.types";
-import { getEntitySummary, getHighValueCustomers } from "./Overview.utils";
 import {
   EntitySummaryUI,
   HighValueCustomerAndOrderPayment,
 } from "./Overview.partials";
+import type { ResponseWithOnlyData } from "@/utils/types.utils";
+import { get } from "@/utils/http.utils";
 
 export default function Overview(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
@@ -26,7 +27,8 @@ export default function Overview(): React.JSX.Element {
     const fetchSummary = async (): Promise<void> => {
       setIsFetching(true);
       try {
-        const result = await getEntitySummary();
+        const result =
+          await get<ResponseWithOnlyData<EntitySummary>>("dashboard/summary");
         setEntitySummary(result.data);
       } catch (error) {
         console.error("Failed to fetch summary entity data", error);
@@ -46,7 +48,9 @@ export default function Overview(): React.JSX.Element {
     const fetchHighValueCustomers = async (): Promise<void> => {
       setIsFetching(true);
       try {
-        const result = await getHighValueCustomers();
+        const result = await get<
+          ResponseWithOnlyData<Array<HighValueCustomer>>
+        >("dashboard/high-value-customers");
         setHighValueCustomers(result.data);
       } catch (error) {
         console.error("Failed to fetch high values customers", error);
