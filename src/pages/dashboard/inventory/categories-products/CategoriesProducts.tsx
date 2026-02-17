@@ -29,6 +29,7 @@ import type { Category, Product } from "@/utils/types.utils";
 import { useFetch } from "@/utils/hooks.utils";
 import { Pill } from "@/components/atoms/pill/Pill";
 import { CgImage } from "react-icons/cg";
+import { ProductCard } from "@/components/molecules/product-card/ProductCard";
 
 export default function CategoriesProducts(): React.JSX.Element {
   const dispatch = useAppDispatch();
@@ -187,21 +188,15 @@ export default function CategoriesProducts(): React.JSX.Element {
             Products
           </Headline>
           <DataTable
-            columnHeadings={["Image", "Name", "Category", "Status", ""]}
+            columnHeadings={["Name", "Category", "Status", ""]}
             count={productState.count}
             className="max-h-168.75"
           >
             {productState.data.map((item) => (
               <tr key={item.id}>
                 <td>
-                  {item.imagePath && (
-                    <img
-                      src={`${import.meta.env.VITE_BASE_API_URL}/${item.imagePath}`}
-                      className="w-10 h-10 inline-block object-cover"
-                    />
-                  )}
+                  <ProductCard name={item.name} imagePath={item.imagePath} />
                 </td>
-                <td>{item.name}</td>
                 <td>{item.category.name}</td>
                 <td>
                   <Pill

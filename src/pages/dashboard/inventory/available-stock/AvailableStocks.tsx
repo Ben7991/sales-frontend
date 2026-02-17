@@ -18,6 +18,7 @@ import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 import { get } from "@/utils/http.utils";
 import type { ProductStock, ResponseWithRecord } from "@/utils/types.utils";
+import { ProductCard } from "@/components/molecules/product-card/ProductCard";
 
 export default function AvailableStocks(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
@@ -81,19 +82,10 @@ export default function AvailableStocks(): React.JSX.Element {
         {availableStockState.data.map((item) => (
           <tr key={item.id}>
             <td>
-              <div className="flex items-center gap-2">
-                {item.product.imagePath ? (
-                  <img
-                    className="w-10 h-10 rounded-lg border border-gray-200 overflow-hidden"
-                    src={`${import.meta.env.VITE_BASE_API_URL}/${item.product.imagePath}`}
-                  />
-                ) : (
-                  <span className="w-10 h-10 rounded-lg flex items-center justify-center border border-gray-200 overflow-hidden">
-                    ?
-                  </span>
-                )}
-                <span>{item.product.name}</span>
-              </div>
+              <ProductCard
+                name={item.product.name}
+                imagePath={item.product.imagePath}
+              />
             </td>
             <td>{item.supplier.name}</td>
             <td>&#8373; {formatAmount(+item.retailUnitPrice)}</td>
