@@ -15,7 +15,8 @@ import {
 } from "react-icons/lia";
 import {
   PiChartLineUp,
-  // PiClipboardText,
+  PiClipboardText,
+  PiGearFine,
   PiHamburger,
   PiUsers,
   PiUsersThree,
@@ -29,7 +30,7 @@ import {
 import { LuCircleUserRound } from "react-icons/lu";
 import { IoSearchOutline } from "react-icons/io5";
 import { BsDashLg } from "react-icons/bs";
-import { RiPencilLine } from "react-icons/ri";
+import { RiListSettingsLine, RiPencilLine } from "react-icons/ri";
 import { MdOutlineFormatListBulleted } from "react-icons/md";
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 
@@ -62,6 +63,7 @@ export function SideDrawer({
 
   const [showInventoryLinks, setShowInventoryLinks] = useState(false);
   const [showSalesLinks, setShowSalesLinks] = useState(false);
+  const [showPurchaseLinks, setShowPurchaseLinks] = useState(false);
 
   const { user } = useAppSelector((state) => state.auth);
 
@@ -100,15 +102,56 @@ export function SideDrawer({
                   <PiUsers className="text-xl" />
                   <span>Suppliers</span>
                 </NavLink>
-                {/* <NavLink
-                  to="/dashboard/purchase"
-                  className={rootNavLinkClasses}
+
+                <button
+                  className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
+                    isPreferredUrl(pathname, "/dashboard/purchase")
+                      ? "bg-green-700 text-white"
+                      : "hover:bg-gray-300"
+                  }`}
+                  onClick={() =>
+                    setShowPurchaseLinks((prevState) => !prevState)
+                  }
                 >
                   <span className="flex items-center gap-2">
                     <PiClipboardText className="text-xl" />
                     <span>Purchase</span>
                   </span>
-                </NavLink> */}
+                  {showPurchaseLinks ? (
+                    <RxCaretUp className="text-xl" />
+                  ) : (
+                    <RxCaretDown className="text-xl" />
+                  )}
+                </button>
+                <AnimatePresence>
+                  {showPurchaseLinks && (
+                    <motion.div
+                      className="ps-6 space-y-1 overflow-hidden"
+                      initial={{ height: 0 }}
+                      animate={{ height: "auto" }}
+                      exit={{ height: 0 }}
+                    >
+                      <NavLink
+                        to="/dashboard/purchase/add-edit-supplies"
+                        className={subNavLinkClasses}
+                      >
+                        <span className="flex items-center gap-2">
+                          <PiGearFine className="text-xl" />
+                          <span>Add or Edit Supplies</span>
+                        </span>
+                      </NavLink>
+                      <NavLink
+                        to="/dashboard/purchase/supplies"
+                        className={subNavLinkClasses}
+                      >
+                        <span className="flex items-center gap-2">
+                          <RiListSettingsLine className="text-xl" />
+                          <span>Supplies</span>
+                        </span>
+                      </NavLink>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </>
             ) : null}
 

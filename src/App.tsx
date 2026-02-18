@@ -24,6 +24,12 @@ const Supplier = lazy(() => import("./pages/dashboard/supplier/Supplier"));
 const Customer = lazy(() => import("./pages/dashboard/customer/Customer"));
 const Employee = lazy(() => import("./pages/dashboard/employee/Employee"));
 const Report = lazy(() => import("./pages/dashboard/report/Report"));
+const AddEditSupplies = lazy(
+  () => import("./pages/dashboard/purchase/add-edit-supplies/AddEditSupplies"),
+);
+const Supplies = lazy(
+  () => import("./pages/dashboard/purchase/supplies/Supplies"),
+);
 const CategoriesProducts = lazy(
   () =>
     import("./pages/dashboard/inventory/categories-products/CategoriesProducts"),
@@ -41,8 +47,6 @@ const Arrears = lazy(() => import("./pages/dashboard/sales/arrears/Arrears"));
 const AccountSettings = lazy(
   () => import("./pages/dashboard/account-settings/AccountSettings"),
 );
-
-// import { Purchase } from "./pages/dashboard/purchase/Purchase";
 
 export default function App(): React.JSX.Element {
   const appRouter = createBrowserRouter([
@@ -96,14 +100,22 @@ export default function App(): React.JSX.Element {
                 </EnsureUserHasRole>
               ),
             },
-            // {
-            //   path: "/dashboard/purchase",
-            //   element: (
-            //     <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
-            //       <Purchase />
-            //     </EnsureUserHasRole>
-            //   ),
-            // },
+            {
+              path: "/dashboard/purchase/add-edit-supplies",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
+                  <AddEditSupplies />
+                </EnsureUserHasRole>
+              ),
+            },
+            {
+              path: "/dashboard/purchase/supplies",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
+                  <Supplies />
+                </EnsureUserHasRole>
+              ),
+            },
             {
               path: "/dashboard/customers",
               element: (
