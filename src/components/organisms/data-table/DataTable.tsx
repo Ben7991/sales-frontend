@@ -83,7 +83,7 @@ function Paginator({ count }: PaginatorProps): React.JSX.Element {
           className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-200 cursor-pointer disabled:cursor-not-allowed"
           onClick={handleNextPage}
           type="button"
-          disabled={page * perPage > count}
+          disabled={page * perPage >= count}
         >
           <RxCaretRight className="text-2xl" />
         </button>
