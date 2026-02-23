@@ -1,4 +1,6 @@
-import * as React from "react";
+import { type VariantProps } from "class-variance-authority";
+import { Slot } from "radix-ui";
+import { useEffect, useRef } from "react";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -11,7 +13,6 @@ import {
 } from "react-day-picker";
 
 import { cn } from "@/utils/helpers.utils";
-import { Button } from "./Calendar.partials";
 import { buttonVariants } from "./Calendar.utils";
 
 function Calendar({
@@ -178,6 +179,29 @@ function Calendar({
   );
 }
 
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  asChild = false,
+  ...props
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  }) {
+  const Comp = asChild ? Slot.Root : "button";
+
+  return (
+    <Comp
+      data-slot="button"
+      data-variant={variant}
+      data-size={size}
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  );
+}
+
 function CalendarDayButton({
   className,
   day,
@@ -186,8 +210,8 @@ function CalendarDayButton({
 }: React.ComponentProps<typeof DayButton>) {
   const defaultClassNames = getDefaultClassNames();
 
-  const ref = React.useRef<HTMLButtonElement>(null);
-  React.useEffect(() => {
+  const ref = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
 
