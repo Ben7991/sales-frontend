@@ -92,3 +92,9 @@ export function getSearchParamsForPaginator(
 
   return searchParams;
 }
+
+export function getSearchParamsWithQuery(query: string): URLSearchParams {
+  const searchParams = new URLSearchParams();
+  searchParams.set("q", query.toString());
+  return searchParams;
+}
