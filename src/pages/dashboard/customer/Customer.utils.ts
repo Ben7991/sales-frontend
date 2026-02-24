@@ -5,9 +5,13 @@ import {
   type Customer,
   type ResponseWithRecord,
 } from "@/utils/types.utils";
-import { getAccessToken, getHeaders, refreshToken } from "@/utils/auth.util";
+import { getAccessToken, refreshToken } from "@/utils/auth.util";
 import { FAILED_STATUS_CODES } from "@/utils/constants.utils";
-import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
+import {
+  getSearchParamsWithQuery,
+  makeFirstLetterUppercase,
+} from "@/utils/helpers.utils";
+import { get } from "@/utils/http.utils";
 
 export const customerDataTableColumnHeadings = [
   "Date Added",
@@ -44,30 +48,9 @@ export const customerModalHeading: Record<string, string> = {
 export async function getCustomerViaLiveSearch(
   query: string,
 ): Promise<ResponseWithRecord<Customer>> {
-  const searchParams = new URLSearchParams();
-  searchParams.set("q", query.toString());
-
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_API}/customers/live-search?${searchParams.toString()}`,
-    {
-      method: "GET",
-      headers: getHeaders(true),
-      credentials: "include",
-    },
+  return get<ResponseWithRecord<Customer>>(
+    `customer/live-search?${getSearchParamsWithQuery(query).toString()}`,
   );
-  const result = await response.json();
-
-  if (response.status === StatusCodes.UN_AUTHORIZED) {
-    const isRefreshed = await refreshToken();
-    if (isRefreshed) {
-      return await getCustomerViaLiveSearch(query);
-    }
-    throw new Error(result.message);
-  } else if (FAILED_STATUS_CODES.includes(response.status)) {
-    throw new Error(result.message);
-  }
-
-  return result;
 }
 
 export async function importCustomers(
