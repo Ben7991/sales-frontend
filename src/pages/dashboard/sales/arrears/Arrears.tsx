@@ -9,6 +9,7 @@ import {
   type ArrearState,
 } from "./Arrears.types";
 import {
+  formatAmount,
   getPaginatedData,
   getSearchParamsForPaginator,
 } from "@/utils/helpers.utils";
@@ -93,7 +94,7 @@ export default function Arrears(): React.JSX.Element {
           >
             <td>{item.customerName}</td>
             <td>{item.totalOrders}</td>
-            <td>&#8373; {item.totalAmountToPay.toFixed(2)}</td>
+            <td>&#8373; {formatAmount(item.totalAmountToPay)}</td>
             <td>
               {item.lastDatePaid
                 ? new Date(item.lastDatePaid).toLocaleString()
