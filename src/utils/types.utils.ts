@@ -131,6 +131,7 @@ export type MoneySharing = {
   amount: number;
   supplier: Supplier;
 };
+export type PurchaseStatus = "SCHEDULE" | "ARRIVED" | "STOCK";
 
 export const StatusCodes = {
   CREATED: 201,
