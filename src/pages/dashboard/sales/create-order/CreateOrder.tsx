@@ -26,17 +26,15 @@ import {
 } from "./CreateOrder.util";
 import type { OrderItemToCreate, OrderToCreate } from "./CreateOrder.types";
 import { Button } from "@/components/atoms/button/Button";
-import {
-  CreateOrEditHeader,
-  DropdownWithSearch,
-  OrderItemList,
-} from "./CreateOrder.partials";
+import { CreateOrEditOrderHeader, OrderItemList } from "./CreateOrder.partials";
 import { Alert } from "@/components/molecules/alert/Alert";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Form } from "@/components/atoms/form/Form";
 import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
 import { getStockViaLiveSearch } from "../../inventory/categories-products/CategoriesProducts.utils";
 import { get, mutate } from "@/utils/http.utils";
+import { SectionWrapper } from "@/components/molecules/section-wrapper/SectionWrapper";
+import { DropdownWithSearch } from "@/components/molecules/dropdown-with-search/DropdownWithSearch";
 
 export default function CreateOrder(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -265,43 +263,35 @@ export default function CreateOrder(): React.JSX.Element {
           onHide={hideAlert}
         />
       ) : null}
-      <CreateOrEditHeader
+      <CreateOrEditOrderHeader
         key={productStocks.length}
         onSelectOrderToCreate={loadOrderToCreate}
       />
-      <div className="bg-white p-3 xl:p-4 border border-gray-200 rounded-md mb-4">
-        <Headline tag="h5" className="mb-4">
-          Customer and Order Type
-        </Headline>
-        <div className="w-full">
-          <p className="mb-2">
-            Please search and the list will be updated with your search term
-          </p>
-          <DropdownWithSearch
-            placeholder="Search by customer name"
-            selectedItem={selectedCustomer}
-            onSetSelectedItem={setSelectedCustomer}
-            onGetValue={getCustomerDetails}
-            onGetItems={getCustomerViaLiveSearch}
-            onSetAlertDetails={setAlertDetails}
-          >
-            <Form.Dropdown
-              placeholder="Select the type of order"
-              list={["Wholesale", "Retail"]}
-              onSelectItem={
-                setOrderSale as Dispatch<SetStateAction<string | undefined>>
-              }
-              selectedItem={orderSale}
-              hasError={dropdownError}
-              onHideError={() => setDropdownError(false)}
-            />
-          </DropdownWithSearch>
-        </div>
-      </div>
-      <div className="bg-white p-3 xl:p-4 border border-gray-200 rounded-md mb-4">
-        <Headline tag="h5" className="mb-4">
-          Orders Items
-        </Headline>
+      <SectionWrapper heading="Customer and Order Type">
+        <p className="mb-2">
+          Please search and the list will be updated with your search term
+        </p>
+        <DropdownWithSearch
+          placeholder="Search by customer name"
+          selectedItem={selectedCustomer}
+          onSetSelectedItem={setSelectedCustomer}
+          onGetValue={getCustomerDetails}
+          onGetItems={getCustomerViaLiveSearch}
+          onSetAlertDetails={setAlertDetails}
+        >
+          <Form.Dropdown
+            placeholder="Select the type of order"
+            list={["Wholesale", "Retail"]}
+            onSelectItem={
+              setOrderSale as Dispatch<SetStateAction<string | undefined>>
+            }
+            selectedItem={orderSale}
+            hasError={dropdownError}
+            onHideError={() => setDropdownError(false)}
+          />
+        </DropdownWithSearch>
+      </SectionWrapper>
+      <SectionWrapper heading="Orders Items">
         <p className="mb-2">
           Please search and the list will be updated with your search term
         </p>
@@ -323,7 +313,7 @@ export default function CreateOrder(): React.JSX.Element {
           onRemoveItem={removeItem}
           productStocks={productStocks}
         />
-      </div>
+      </SectionWrapper>
       <div className="bg-white p-3 xl:p-4 border border-gray-200 rounded-md mb-4">
         <Headline tag="h5" className="mb-3">
           Overall Order Comment
