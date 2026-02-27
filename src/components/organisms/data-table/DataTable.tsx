@@ -24,9 +24,13 @@ export function DataTable({
   hidePaginator,
 }: DataTableProps): React.JSX.Element {
   return (
-    <div className="rounded-md bg-white pb-5 overflow-hidden">
-      <div className={`w-full overflow-y-visible overflow-x-auto ${className}`}>
-        <table className="table-collapse table-auto w-full mb-5">
+    <div className="bg-white pb-5">
+      <div
+        className={`w-full overflow-y-visible overflow-x-auto xl:overflow-visible ${className}`}
+      >
+        <table
+          className={`table-collapse table-auto w-full ${!hidePaginator ? "mb-5" : ""}`}
+        >
           <thead className="sticky top-0 z-1">
             <tr>
               {columnHeadings.map((item) => (
@@ -184,7 +188,7 @@ function Actions({ children }: ActionsProps): React.JSX.Element {
               e.stopPropagation();
               setShow(true);
             }}
-            className="z-1 absolute top-7 right-0 p-2 w-50 rounded-sm bg-white border border-gray-200 shadow-sm"
+            className="z-1 absolute top-7 right-0 p-1 w-50 rounded-sm bg-white border border-gray-200 shadow-sm"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -205,7 +209,7 @@ function Action({
 }: ActionProps): React.JSX.Element {
   return (
     <button
-      className={`flex gap-2 items-center py-1.5 px-3 w-full rounded-sm cursor-pointer ${className}`}
+      className={`flex gap-2 items-center py-1 px-2 w-full rounded-sm cursor-pointer ${className}`}
       type="button"
       onClick={onClick}
       title={title}
