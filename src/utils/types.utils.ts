@@ -132,6 +132,35 @@ export type MoneySharing = {
   supplier: Supplier;
 };
 export type PurchaseStatus = "SCHEDULE" | "ARRIVED" | "STOCK";
+export type WholesalePrice = {
+  id: number;
+  quantity: number;
+  price: number;
+};
+export type PurchaseSupply = {
+  id: number;
+  retailUnitPrice?: number;
+  totalPieces?: number;
+  numberOfBoxes: number;
+  comment?: string;
+  product: Product;
+  purchaseItemWholesalePrices: Array<WholesalePrice>;
+};
+export type PurchaseMiscPrice = {
+  id: number;
+  name: string;
+  amount: number;
+};
+export type Purchase = {
+  id: string;
+  createdAt: string;
+  amount?: number;
+  status: PurchaseStatus;
+  comment?: string;
+  supplier: Supplier;
+  supplies: Array<PurchaseSupply>;
+  purchaseMiscPrices: Array<PurchaseMiscPrice>;
+};
 
 export const StatusCodes = {
   CREATED: 201,
