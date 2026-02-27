@@ -138,7 +138,7 @@ export function DropdownWithSearch<T extends { id: number }>({
             {!items.length && value && selectedItem && (
               <p>
                 Item selected for editing, if you wish to change selected item
-                clear and search and the list will be updated
+                clear, search and the list will be updated
               </p>
             )}
             {isSearching && <p>Searching...</p>}
