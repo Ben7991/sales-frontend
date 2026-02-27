@@ -141,12 +141,12 @@ export function SideDrawer({
                         </span>
                       </NavLink>
                       <NavLink
-                        to="/dashboard/purchase/supplies"
+                        to="/dashboard/purchases"
                         className={subNavLinkClasses}
                       >
                         <span className="flex items-center gap-2">
                           <RiListSettingsLine className="text-xl" />
-                          <span>Supplies</span>
+                          <span>Purchase History</span>
                         </span>
                       </NavLink>
                     </motion.div>
