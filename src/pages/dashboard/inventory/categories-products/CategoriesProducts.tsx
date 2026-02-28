@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { GoPlus } from "react-icons/go";
 import { LiaCartPlusSolid } from "react-icons/lia";
 import { BiSolidEdit } from "react-icons/bi";
+import { CgImage } from "react-icons/cg";
 
 import { Button } from "@/components/atoms/button/Button";
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
@@ -31,7 +32,6 @@ import type {
 } from "@/utils/types.utils";
 import { useFetch } from "@/utils/hooks.utils";
 import { Pill } from "@/components/atoms/pill/Pill";
-import { CgImage } from "react-icons/cg";
 import { ProductCard } from "@/components/molecules/product-card/ProductCard";
 import { get } from "@/utils/http.utils";
 
@@ -170,7 +170,7 @@ export default function CategoriesProducts(): React.JSX.Element {
           <DataTable
             columnHeadings={["Name", ""]}
             count={categories.length}
-            className="h-[70vh]"
+            className="h-[70vh] overflow-auto!"
             hidePaginator
           >
             {categories.map((item) => (
