@@ -3,7 +3,6 @@ import type { ChangeEvent } from "react";
 import type {
   PreferredAlertPropsForForm,
   Product,
-  PurchaseStatus,
   Supplier,
 } from "@/utils/types.utils";
 
@@ -26,15 +25,6 @@ export type ProductItemListProps = {
   onRemoveItem: (id: number) => void;
   onAddSupply: (product: Product) => void;
 } & Pick<PreferredAlertPropsForForm, "onSetAlertDetails">;
-
-export type PurchaseRow = {
-  id: string;
-  createdAt: string;
-  amount?: number;
-  status: PurchaseStatus;
-  comment?: string;
-  supplier: Pick<Supplier, "name" | "companyName">;
-};
 
 export type CreateOrEditSuppliesHeaderProps = {
   title: string;
