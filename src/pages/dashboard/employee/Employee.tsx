@@ -152,6 +152,15 @@ export default function Employee(): React.JSX.Element {
             </td>
           </tr>
         ))}
+        {!employeeState.data.length && (
+          <tr>
+            <td colSpan={5}>
+              <p className="text-center">
+                No employees available at the moment
+              </p>
+            </td>
+          </tr>
+        )}
       </DataTable>
       <Modal
         title={`${makeFirstLetterUppercase(activeAction)} Employee`}

@@ -102,6 +102,13 @@ export default function Arrears(): React.JSX.Element {
             </td>
           </tr>
         ))}
+        {!arrears.data.length && (
+          <tr>
+            <td colSpan={5}>
+              <p className="text-center">No arrears available at the moment</p>
+            </td>
+          </tr>
+        )}
       </DataTable>
       <br />
       <Info>

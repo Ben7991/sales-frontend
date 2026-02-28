@@ -235,6 +235,15 @@ export default function Customer(): React.JSX.Element {
             </td>
           </tr>
         ))}
+        {!customerState.data.length && (
+          <tr>
+            <td colSpan={5}>
+              <p className="text-center">
+                No customers available at the moment
+              </p>
+            </td>
+          </tr>
+        )}
       </DataTable>
       <Modal
         title={customerModalHeading[activeAction as string]}

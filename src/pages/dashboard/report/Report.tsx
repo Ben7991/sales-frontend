@@ -108,6 +108,15 @@ export default function Report(): React.JSX.Element {
             <td>&#8373; {formatAmount(item.amount)}</td>
           </tr>
         ))}
+        {(!reportData?.data.length || !reportData) && (
+          <tr>
+            <td colSpan={4}>
+              <p className="text-center">
+                No money sharing report available at the moment
+              </p>
+            </td>
+          </tr>
+        )}
       </DataTable>
     </>
   );

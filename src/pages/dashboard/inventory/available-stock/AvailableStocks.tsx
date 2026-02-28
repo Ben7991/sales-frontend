@@ -106,6 +106,15 @@ export default function AvailableStocks(): React.JSX.Element {
             </td>
           </tr>
         ))}
+        {!availableStockState.data.length && (
+          <tr>
+            <td colSpan={7}>
+              <p className="text-center">
+                No product stocks available at the moment
+              </p>
+            </td>
+          </tr>
+        )}
       </DataTable>
     </>
   );

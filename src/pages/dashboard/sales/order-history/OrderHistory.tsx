@@ -175,6 +175,13 @@ export default function OrderHistory(): React.JSX.Element {
             </td>
           </tr>
         ))}
+        {!orderHistory.data.length && (
+          <tr>
+            <td colSpan={8}>
+              <p className="text-center">No orders available at the moment</p>
+            </td>
+          </tr>
+        )}
       </DataTable>
       {selectedOrderHistory && (
         <>

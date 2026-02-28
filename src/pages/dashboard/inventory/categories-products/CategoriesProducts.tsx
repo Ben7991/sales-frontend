@@ -189,6 +189,15 @@ export default function CategoriesProducts(): React.JSX.Element {
                 </td>
               </tr>
             ))}
+            {!categories.length && (
+              <tr>
+                <td colSpan={2}>
+                  <p className="text-center">
+                    No categories available at the moment
+                  </p>
+                </td>
+              </tr>
+            )}
           </DataTable>
         </div>
         <div className="basis-full md:basis-4/7 xl:basis-5/8">
@@ -238,6 +247,15 @@ export default function CategoriesProducts(): React.JSX.Element {
                 </td>
               </tr>
             ))}
+            {!productState.data.length && (
+              <tr>
+                <td colSpan={3}>
+                  <p className="text-center">
+                    No products available at the moment
+                  </p>
+                </td>
+              </tr>
+            )}
           </DataTable>
         </div>
       </div>
