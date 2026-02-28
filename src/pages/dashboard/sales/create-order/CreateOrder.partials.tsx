@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { FiEye, FiTrash2 } from "react-icons/fi";
-import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { LuTrash2 } from "react-icons/lu";
 
 import type {
@@ -17,6 +16,7 @@ import {
   getOrdersToCreate,
   removeFromOrdersToCreate,
 } from "./CreateOrder.util";
+import { Info } from "@/components/molecules/info/Info";
 
 export function CreateOrEditOrderHeader({
   onSelectOrderToCreate,
@@ -176,13 +176,12 @@ export function OrderItemList({
           )}
         </tbody>
       </table>
-      <div className="flex gap-2 items-center">
-        <AiOutlineExclamationCircle className="text-xl" />
+      <Info>
         <p>
           When the <strong>type of order</strong> isn't selected, the default
           unit price is a <strong>WHOLESALE</strong> price
         </p>
-      </div>
+      </Info>
     </div>
   );
 }

@@ -18,7 +18,7 @@ import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 import type { ResponseWithRecord } from "@/utils/types.utils";
 import { get } from "@/utils/http.utils";
-import { Info } from "@/components/atoms/info/Info";
+import { Info } from "@/components/molecules/info/Info";
 
 export default function Arrears(): React.JSX.Element {
   const [selectedItem, setSelectedItem] = useState<ArrearsRow>();
@@ -104,7 +104,9 @@ export default function Arrears(): React.JSX.Element {
         ))}
       </DataTable>
       <br />
-      <Info message="To view the arrears details, just click on your preferred row" />
+      <Info>
+        <p>To view the arrears details, just click on your preferred row</p>
+      </Info>
       {selectedItem && (
         <ArrearsDetail
           onHideModal={handleHideModal}

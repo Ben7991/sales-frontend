@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { OffCanvas } from "@/components/organisms/offcanvas/OffCanvas";
 import type { ArrearsDetailProps, ArrearsOrder } from "./Arrears.types";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
-import { Info } from "@/components/atoms/info/Info";
+import { Info } from "@/components/molecules/info/Info";
 import { get } from "@/utils/http.utils";
 import type { ResponseWithOnlyData } from "@/utils/types.utils";
 
@@ -74,7 +74,9 @@ export function ArrearsDetail({
           </tr>
         ))}
       </DataTable>
-      <Info message="To view the order details, just click on your preferred row" />
+      <Info>
+        <p>To view the order details, just click on your preferred row</p>
+      </Info>
     </OffCanvas>
   );
 }
