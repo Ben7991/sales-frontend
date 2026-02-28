@@ -27,8 +27,11 @@ const Report = lazy(() => import("./pages/dashboard/report/Report"));
 const AddEditSupplies = lazy(
   () => import("./pages/dashboard/purchase/add-edit-supplies/AddEditSupplies"),
 );
-const Supplies = lazy(
-  () => import("./pages/dashboard/purchase/supplies/Supplies"),
+const PurchaseHistory = lazy(
+  () => import("./pages/dashboard/purchase/history/PurchaseHistory"),
+);
+const PurchaseDetails = lazy(
+  () => import("./pages/dashboard/purchase/details/PurchaseDetails"),
 );
 const CategoriesProducts = lazy(
   () =>
@@ -101,7 +104,15 @@ export default function App(): React.JSX.Element {
               ),
             },
             {
-              path: "/dashboard/purchase/add-edit-supplies",
+              path: "/dashboard/purchases",
+              element: (
+                <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
+                  <PurchaseHistory />
+                </EnsureUserHasRole>
+              ),
+            },
+            {
+              path: "/dashboard/purchases/add-edit",
               element: (
                 <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
                   <AddEditSupplies />
@@ -109,10 +120,10 @@ export default function App(): React.JSX.Element {
               ),
             },
             {
-              path: "/dashboard/purchase/supplies",
+              path: "/dashboard/purchases/:id",
               element: (
                 <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
-                  <Supplies />
+                  <PurchaseDetails />
                 </EnsureUserHasRole>
               ),
             },
@@ -137,7 +148,7 @@ export default function App(): React.JSX.Element {
               element: <AvailableStocks />,
             },
             {
-              path: "/dashboard/sales/order",
+              path: "/dashboard/sales/add-edit",
               element: (
                 <EnsureUserHasRole roles={["ADMIN", "SALES_PERSON"]}>
                   <CreateOrder />
@@ -145,7 +156,7 @@ export default function App(): React.JSX.Element {
               ),
             },
             {
-              path: "/dashboard/sales/order-history",
+              path: "/dashboard/sales",
               element: (
                 <EnsureUserHasRole roles={["ADMIN", "SALES_PERSON"]}>
                   <OrderHistory />

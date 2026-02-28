@@ -35,6 +35,7 @@ import { getStockViaLiveSearch } from "../../inventory/categories-products/Categ
 import { get, mutate } from "@/utils/http.utils";
 import { SectionWrapper } from "@/components/molecules/section-wrapper/SectionWrapper";
 import { DropdownWithSearch } from "@/components/molecules/dropdown-with-search/DropdownWithSearch";
+import { GoBack } from "@/components/molecules/go-back/GoBack";
 
 export default function CreateOrder(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -263,6 +264,7 @@ export default function CreateOrder(): React.JSX.Element {
           onHide={hideAlert}
         />
       ) : null}
+      <GoBack path="/dashboard/sales" className="mb-4" />
       <CreateOrEditOrderHeader
         key={productStocks.length}
         onSelectOrderToCreate={loadOrderToCreate}

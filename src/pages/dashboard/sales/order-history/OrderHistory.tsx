@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { FiEye } from "react-icons/fi";
 import { GiPayMoney } from "react-icons/gi";
 import { LiaExchangeAltSolid } from "react-icons/lia";
+import { RiPencilLine } from "react-icons/ri";
 
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import { useFetch } from "@/utils/hooks.utils";
@@ -24,6 +25,7 @@ import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 import { get } from "@/utils/http.utils";
 import type { ResponseWithRecord } from "@/utils/types.utils";
+import { Button } from "@/components/atoms/button/Button";
 
 export default function OrderHistory(): React.JSX.Element {
   const [selectedOrderHistory, setSelectedOrderHistory] =
@@ -96,7 +98,17 @@ export default function OrderHistory(): React.JSX.Element {
           onHide={hideAlert}
         />
       ) : null}
-      <PageDescriptor title="Order History" spinnerState={isFetching} />
+      <PageDescriptor title="Order History" spinnerState={isFetching}>
+        <Button
+          el="link"
+          variant="primary"
+          to="/dashboard/sales/add-edit"
+          className="flex! items-center gap-1"
+        >
+          <RiPencilLine />
+          <span>Create or Edit Order</span>
+        </Button>
+      </PageDescriptor>
       <DataTable
         columnHeadings={orderHistoryColumnHeadings}
         count={orderHistory.data.length}

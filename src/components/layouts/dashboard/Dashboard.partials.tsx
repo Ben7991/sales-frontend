@@ -16,7 +16,6 @@ import {
 import {
   PiChartLineUp,
   PiClipboardText,
-  PiGearFine,
   PiHamburger,
   PiUsers,
   PiUsersThree,
@@ -30,7 +29,6 @@ import {
 import { LuCircleUserRound } from "react-icons/lu";
 import { IoSearchOutline } from "react-icons/io5";
 import { BsDashLg } from "react-icons/bs";
-import { RiListSettingsLine, RiPencilLine } from "react-icons/ri";
 import { MdOutlineFormatListBulleted } from "react-icons/md";
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 
@@ -63,7 +61,6 @@ export function SideDrawer({
 
   const [showInventoryLinks, setShowInventoryLinks] = useState(false);
   const [showSalesLinks, setShowSalesLinks] = useState(false);
-  const [showPurchaseLinks, setShowPurchaseLinks] = useState(false);
 
   const { user } = useAppSelector((state) => state.auth);
 
@@ -103,55 +100,14 @@ export function SideDrawer({
                   <span>Suppliers</span>
                 </NavLink>
 
-                <button
-                  className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
-                    isPreferredUrl(pathname, "/dashboard/purchase")
-                      ? "bg-green-700 text-white"
-                      : "hover:bg-gray-300"
-                  }`}
-                  onClick={() =>
-                    setShowPurchaseLinks((prevState) => !prevState)
-                  }
+                <NavLink
+                  to="/dashboard/purchases"
+                  className={rootNavLinkClasses}
+                  onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
                 >
-                  <span className="flex items-center gap-2">
-                    <PiClipboardText className="text-xl" />
-                    <span>Purchase</span>
-                  </span>
-                  {showPurchaseLinks ? (
-                    <RxCaretUp className="text-xl" />
-                  ) : (
-                    <RxCaretDown className="text-xl" />
-                  )}
-                </button>
-                <AnimatePresence>
-                  {showPurchaseLinks && (
-                    <motion.div
-                      className="ps-6 space-y-1 overflow-hidden"
-                      initial={{ height: 0 }}
-                      animate={{ height: "auto" }}
-                      exit={{ height: 0 }}
-                    >
-                      <NavLink
-                        to="/dashboard/purchase/add-edit-supplies"
-                        className={subNavLinkClasses}
-                      >
-                        <span className="flex items-center gap-2">
-                          <PiGearFine className="text-xl" />
-                          <span>Add or Edit Supplies</span>
-                        </span>
-                      </NavLink>
-                      <NavLink
-                        to="/dashboard/purchases"
-                        className={subNavLinkClasses}
-                      >
-                        <span className="flex items-center gap-2">
-                          <RiListSettingsLine className="text-xl" />
-                          <span>Purchase History</span>
-                        </span>
-                      </NavLink>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                  <PiClipboardText className="text-xl" />
+                  <span>Purchase</span>
+                </NavLink>
               </>
             ) : null}
 
@@ -254,17 +210,7 @@ export function SideDrawer({
                       exit={{ height: 0 }}
                     >
                       <NavLink
-                        to="/dashboard/sales/order"
-                        className={subNavLinkClasses}
-                        onClick={() =>
-                          window.innerWidth < 1024 ? onToggle() : null
-                        }
-                      >
-                        <RiPencilLine className="text-[1.15rem]" />
-                        <span>Create or Edit Order</span>
-                      </NavLink>
-                      <NavLink
-                        to="/dashboard/sales/order-history"
+                        to="/dashboard/sales"
                         className={subNavLinkClasses}
                         onClick={() =>
                           window.innerWidth < 1024 ? onToggle() : null
