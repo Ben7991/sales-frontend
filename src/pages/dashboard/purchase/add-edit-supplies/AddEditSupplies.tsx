@@ -27,6 +27,7 @@ import { Headline } from "@/components/atoms/headline/Headline";
 import { Form } from "@/components/atoms/form/Form";
 import { get, mutate } from "@/utils/http.utils";
 import { Info } from "@/components/molecules/info/Info";
+import { GoBack } from "@/components/molecules/go-back/GoBack";
 
 export default function AddEditSupplies(): React.JSX.Element {
   const navigate = useNavigate();
@@ -225,6 +226,7 @@ export default function AddEditSupplies(): React.JSX.Element {
           onHide={hideAlert}
         />
       ) : null}
+      <GoBack path="/dashboard/purchases" className="mb-4" />
       <CreateOrEditSuppliesHeader
         title={purchaseIdToEdit ? "Edit Purchase" : "Create New Purchase"}
         key={supplies.length}
