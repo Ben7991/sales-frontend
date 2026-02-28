@@ -66,7 +66,6 @@ export function SupplierForm({
   useEffect((): void => {
     if (selectedSupplier) {
       setValue("name", selectedSupplier.name);
-      setValue("email", selectedSupplier.email);
       setValue("companyName", selectedSupplier.companyName);
       setPhones(selectedSupplier.supplierPhones);
     }
@@ -93,39 +92,33 @@ export function SupplierForm({
     data,
   ): Promise<void> => {
     setIsLoading(true);
-    let result: ResponseWithDataAndMessage<Supplier> | undefined;
+
+    const method = selectedSupplier ? "PATCH" : "POST";
+    const endpoint = selectedSupplier
+      ? `suppliers/${selectedSupplier.id}`
+      : "suppliers";
+    const payload = selectedSupplier
+      ? data
+      : {
+          ...data,
+          phones: phones
+            .filter((item) => item.phone !== "")
+            .map((item) => item.phone),
+        };
 
     try {
-      if (!selectedSupplier) {
-        result = await mutate<ResponseWithDataAndMessage<Supplier>>(
-          {
-            ...data,
-            phones: phones
-              .filter((item) => item.phone !== "")
-              .map((item) => item.phone),
-          },
-          "suppliers",
-          "POST",
-        );
-        onSupplierDispatch({
-          type: "add",
-          payload: {
-            data: result.data,
-            perPage,
-          },
-        });
-        onSetAlertDetails({
-          message: result.message,
-          variant: "success",
-        });
-        reset();
-        setPhones([]);
-      } else {
-        result = await mutate<ResponseWithDataAndMessage<Supplier>>(
-          data,
-          `suppliers/${selectedSupplier.id}`,
-          "PATCH",
-        );
+      const result = await mutate<ResponseWithDataAndMessage<Supplier>>(
+        payload,
+        endpoint,
+        method,
+      );
+
+      onSetAlertDetails({
+        message: result.message,
+        variant: "success",
+      });
+
+      if (selectedSupplier) {
         onSupplierDispatch({
           type: "edit",
           payload: {
@@ -133,14 +126,20 @@ export function SupplierForm({
             id: selectedSupplier.id,
           },
         });
-        onSetAlertDetails({
-          message: result.message,
-          variant: "success",
-        });
-        reset();
         onResetSelectedSupplier();
-        onHideModal();
+      } else {
+        onSupplierDispatch({
+          type: "add",
+          payload: {
+            data: result.data,
+            perPage,
+          },
+        });
+        setPhones([]);
       }
+
+      reset();
+      onHideModal();
     } catch (error) {
       onSetAlertDetails({
         message: (error as Error).message,
@@ -166,18 +165,6 @@ export function SupplierForm({
           />
           {Boolean(errors.name) && (
             <Form.Error>{errors.name?.message}</Form.Error>
-          )}
-        </Form.Group>
-        <Form.Group className="mb-4">
-          <Form.Label htmlFor="email">Email</Form.Label>
-          <Form.Control
-            type="email"
-            id="email"
-            {...register("email")}
-            hasError={Boolean(errors.email)}
-          />
-          {Boolean(errors.email) && (
-            <Form.Error>{errors.email?.message}</Form.Error>
           )}
         </Form.Group>
         <Form.Group className={`${selectedSupplier ? "hidden" : "mb-4"}`}>
@@ -272,20 +259,25 @@ export function SupplierPhoneForm({
 
     setIsLoading(true);
 
-    let result: ResponseWithDataAndMessage<PhoneWithID> | undefined;
+    const isAddAction = activeTab === "add-phone";
+    const method = isAddAction ? "POST" : "PATCH";
+    const endpoint = isAddAction
+      ? `suppliers/${selectedSupplier.id}/phone`
+      : `suppliers/${selectedSupplier.id}/phone/${selectedSupplierPhone!.id}`;
 
     try {
-      if (activeTab === "add-phone") {
-        result = await mutate<ResponseWithDataAndMessage<PhoneWithID>>(
-          data,
-          `suppliers/${selectedSupplier.id}/phone`,
-          "POST",
-        );
-        onSetAlertDetails({
-          message: result.message,
-          variant: "success",
-        });
-        reset();
+      const result = await mutate<ResponseWithDataAndMessage<PhoneWithID>>(
+        data,
+        endpoint,
+        method,
+      );
+      onSetAlertDetails({
+        message: result.message,
+        variant: "success",
+      });
+      reset();
+
+      if (isAddAction) {
         onSupplierDispatch({
           type: "add-phone",
           payload: {
@@ -293,17 +285,7 @@ export function SupplierPhoneForm({
             supplierId: selectedSupplier.id,
           },
         });
-      } else if (activeTab === "edit-phone") {
-        result = await mutate<ResponseWithDataAndMessage<PhoneWithID>>(
-          data,
-          `suppliers/${selectedSupplier.id}/phone/${selectedSupplierPhone!.id}`,
-          "PATCH",
-        );
-        onSetAlertDetails({
-          message: result.message,
-          variant: "success",
-        });
-        reset();
+      } else {
         onSupplierDispatch({
           type: "edit-phone",
           payload: {
@@ -491,7 +473,7 @@ function DownloadCSV(): React.JSX.Element {
         <li>Download the CSV template</li>
         <li>
           Your entered data should follow the fields just as in the sample
-          file(Name, Email, Company Name & Phone)
+          file(Name, Company Name & Phone)
         </li>
         <li>
           At least the supplier name is required so please don't skip that.

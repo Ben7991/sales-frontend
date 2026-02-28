@@ -52,7 +52,6 @@ export type Supplier = {
   createdAt: string;
   name: string;
   companyName: string;
-  email: string;
   status: AvailabilityStatus;
   supplierPhones: Array<PhoneWithID>;
 };

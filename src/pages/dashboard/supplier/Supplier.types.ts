@@ -12,7 +12,6 @@ import type {
 
 export type SupplierInputs = {
   name: string;
-  email?: Maybe<string | undefined>;
   companyName?: Maybe<string | undefined>;
 };
 

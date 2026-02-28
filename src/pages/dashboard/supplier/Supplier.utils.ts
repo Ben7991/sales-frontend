@@ -8,36 +8,12 @@ import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
 export const supplierDataTableColumnHeadings = [
   "Date Added",
   "Name",
-  "Email",
   "Company Name",
   "Phones",
 ];
 
 export const supplierSchema = yup.object({
   name: yup.string().required("Name is required").trim(),
-  email: yup
-    .string()
-    .notRequired()
-    .when({
-      is: (value?: string) => Boolean(value),
-      then: (schema) =>
-        schema.matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-          message: "Invalid email address",
-        }),
-    })
-    .test({
-      test: async (value) => {
-        if (!value) return true;
-
-        try {
-          return await checkSupplierEmail(value);
-        } catch {
-          return false;
-        }
-      },
-      message: "Email address already taken",
-    })
-    .trim(),
   companyName: yup
     .string()
     .notRequired()

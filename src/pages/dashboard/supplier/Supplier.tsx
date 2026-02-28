@@ -175,7 +175,6 @@ export default function Supplier(): React.JSX.Element {
           <tr key={item.id}>
             <td>{new Date(item.createdAt).toLocaleString()}</td>
             <td>{item.name}</td>
-            <td>{item.email || "-"}</td>
             <td>{item.companyName || "-"}</td>
             <td>
               <DataTable.DataList
