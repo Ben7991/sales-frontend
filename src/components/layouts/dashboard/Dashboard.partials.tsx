@@ -7,12 +7,8 @@ import {
   useSearchParams,
 } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { RxCaretDown, RxCaretUp, RxDashboard } from "react-icons/rx";
-import {
-  LiaClipboardCheckSolid,
-  LiaUserCogSolid,
-  LiaUsersCogSolid,
-} from "react-icons/lia";
+import { RxCaretDown, RxDashboard } from "react-icons/rx";
+import { LiaUserCogSolid, LiaUsersCogSolid } from "react-icons/lia";
 import {
   PiClipboardText,
   PiHamburger,
@@ -40,12 +36,7 @@ import type {
   SideDrawerProps,
 } from "./Dashboard.types";
 import { Backdrop } from "@/components/atoms/backdrop/Backdrop";
-import {
-  isPreferredUrl,
-  logout,
-  rootNavLinkClasses,
-  subNavLinkClasses,
-} from "./Dashboard.utils";
+import { logout, rootNavLinkClasses } from "./Dashboard.utils";
 import { AppLogo } from "@/components/molecules/app-logo/AppLogo";
 import { useAppDispatch, useAppSelector } from "@/store/index.util";
 import { removeAuthUser } from "@/store/slice/auth/auth.slice";
@@ -56,10 +47,6 @@ export function SideDrawer({
   show,
   onToggle,
 }: SideDrawerProps): React.JSX.Element {
-  const { pathname } = useLocation();
-
-  const [showInventoryLinks, setShowInventoryLinks] = useState(false);
-
   const { user } = useAppSelector((state) => state.auth);
 
   return (
@@ -97,6 +84,14 @@ export function SideDrawer({
                   <PiUsers className="text-xl" />
                   <span>Suppliers</span>
                 </NavLink>
+                <NavLink
+                  to="/dashboard/categories-products"
+                  className={rootNavLinkClasses}
+                  onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
+                >
+                  <TbFilePencil className="text-[1.15rem]" />
+                  <span>Categories & Products</span>
+                </NavLink>
 
                 <NavLink
                   to="/dashboard/purchases"
@@ -108,6 +103,14 @@ export function SideDrawer({
                 </NavLink>
               </>
             ) : null}
+            <NavLink
+              to="/dashboard/inventory"
+              className={rootNavLinkClasses}
+              onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
+            >
+              <TbFileDescription className="text-[1.15rem]" />
+              <span>Inventory</span>
+            </NavLink>
 
             <p className="mt-4 ps-3 flex items-center gap-2">
               <BsDashLg className="text-xl" />
@@ -123,61 +126,6 @@ export function SideDrawer({
                 <span>Customers</span>
               </NavLink>
             ) : null}
-            <button
-              className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
-                isPreferredUrl(pathname, "/dashboard/inventory")
-                  ? "bg-green-700 text-white"
-                  : "hover:bg-gray-300"
-              }`}
-              onClick={() => setShowInventoryLinks((prevState) => !prevState)}
-            >
-              <span className="flex items-center gap-2">
-                <LiaClipboardCheckSolid className="text-xl" />
-                <span>Inventory</span>
-              </span>
-              {showInventoryLinks ? (
-                <RxCaretUp className="text-xl" />
-              ) : (
-                <RxCaretDown className="text-xl" />
-              )}
-            </button>
-            <AnimatePresence>
-              {showInventoryLinks && (
-                <motion.div
-                  className="ps-6 space-y-1 overflow-hidden"
-                  initial={{ height: 0 }}
-                  animate={{ height: "auto" }}
-                  exit={{ height: 0 }}
-                >
-                  {["ADMIN", "PROCUREMENT_OFFICER"].includes(
-                    user?.role ?? "",
-                  ) ? (
-                    <>
-                      <NavLink
-                        to="/dashboard/inventory/categories-products"
-                        className={subNavLinkClasses}
-                        onClick={() =>
-                          window.innerWidth < 1024 ? onToggle() : null
-                        }
-                      >
-                        <TbFilePencil className="text-[1.15rem]" />
-                        <span>Categories & Products</span>
-                      </NavLink>
-                    </>
-                  ) : null}
-                  <NavLink
-                    to="/dashboard/inventory/available-stocks"
-                    className={subNavLinkClasses}
-                    onClick={() =>
-                      window.innerWidth < 1024 ? onToggle() : null
-                    }
-                  >
-                    <TbFileDescription className="text-[1.15rem]" />
-                    <span>Available Stocks</span>
-                  </NavLink>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {["ADMIN", "SALES_PERSON"].includes(user?.role ?? "") && (
               <>
@@ -187,7 +135,7 @@ export function SideDrawer({
                   onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
                 >
                   <MdOutlineFormatListBulleted className="text-[1.15rem]" />
-                  <span>Order History</span>
+                  <span>Sales</span>
                 </NavLink>
                 <NavLink
                   to="/dashboard/arrears"

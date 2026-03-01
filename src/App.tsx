@@ -136,7 +136,7 @@ export default function App(): React.JSX.Element {
               ),
             },
             {
-              path: "/dashboard/inventory/categories-products",
+              path: "/dashboard/categories-products",
               element: (
                 <EnsureUserHasRole roles={["ADMIN", "PROCUREMENT_OFFICER"]}>
                   <CategoriesProducts />
@@ -144,7 +144,7 @@ export default function App(): React.JSX.Element {
               ),
             },
             {
-              path: "/dashboard/inventory/available-stocks",
+              path: "/dashboard/inventory",
               element: <AvailableStocks />,
             },
             {
