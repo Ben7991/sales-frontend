@@ -23,13 +23,15 @@ export function DataTable({
   className,
   hidePaginator,
 }: DataTableProps): React.JSX.Element {
+  const isConditionTrue = count >= 10 && !hidePaginator;
+
   return (
-    <div className={`bg-white ${!hidePaginator && "pb-5"}`}>
+    <div className={`bg-white ${isConditionTrue && "pb-5"}`}>
       <div
         className={`w-full overflow-y-visible overflow-x-auto xl:overflow-visible ${className}`}
       >
         <table
-          className={`table-collapse table-auto w-full ${!hidePaginator && "mb-5"}`}
+          className={`table-collapse table-auto w-full ${isConditionTrue && "mb-5"}`}
         >
           <thead className="sticky top-0 z-1">
             <tr>
@@ -43,7 +45,7 @@ export function DataTable({
           <tbody>{children}</tbody>
         </table>
       </div>
-      {count >= 10 && !hidePaginator && <Paginator count={count} />}
+      {isConditionTrue && <Paginator count={count} />}
     </div>
   );
 }
