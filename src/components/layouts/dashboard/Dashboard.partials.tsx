@@ -14,7 +14,6 @@ import {
   LiaUsersCogSolid,
 } from "react-icons/lia";
 import {
-  PiChartLineUp,
   PiClipboardText,
   PiHamburger,
   PiUsers,
@@ -60,7 +59,6 @@ export function SideDrawer({
   const { pathname } = useLocation();
 
   const [showInventoryLinks, setShowInventoryLinks] = useState(false);
-  const [showSalesLinks, setShowSalesLinks] = useState(false);
 
   const { user } = useAppSelector((state) => state.auth);
 
@@ -181,59 +179,26 @@ export function SideDrawer({
               )}
             </AnimatePresence>
 
-            {["ADMIN", "SALES_PERSON"].includes(user?.role ?? "") ? (
+            {["ADMIN", "SALES_PERSON"].includes(user?.role ?? "") && (
               <>
-                <button
-                  className={`flex items-center justify-between py-1.5 px-3  rounded-md ${
-                    isPreferredUrl(pathname, "/dashboard/sales")
-                      ? "bg-green-700 text-white"
-                      : "hover:bg-gray-300"
-                  }`}
-                  onClick={() => setShowSalesLinks((prevState) => !prevState)}
+                <NavLink
+                  to="/dashboard/sales"
+                  className={rootNavLinkClasses}
+                  onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
                 >
-                  <span className="flex items-center gap-2">
-                    <PiChartLineUp className="text-xl" />
-                    <span>Sales</span>
-                  </span>
-                  {showSalesLinks ? (
-                    <RxCaretUp className="text-xl" />
-                  ) : (
-                    <RxCaretDown className="text-xl" />
-                  )}
-                </button>
-                <AnimatePresence>
-                  {showSalesLinks && (
-                    <motion.div
-                      className="ps-6 space-y-1 overflow-hidden"
-                      initial={{ height: 0 }}
-                      animate={{ height: "auto" }}
-                      exit={{ height: 0 }}
-                    >
-                      <NavLink
-                        to="/dashboard/sales"
-                        className={subNavLinkClasses}
-                        onClick={() =>
-                          window.innerWidth < 1024 ? onToggle() : null
-                        }
-                      >
-                        <MdOutlineFormatListBulleted className="text-[1.15rem]" />
-                        <span>Order History</span>
-                      </NavLink>
-                      <NavLink
-                        to="/dashboard/sales/arrears"
-                        className={subNavLinkClasses}
-                        onClick={() =>
-                          window.innerWidth < 1024 ? onToggle() : null
-                        }
-                      >
-                        <FaRegMoneyBillAlt className="text-[1.15rem]" />
-                        <span>Arrears</span>
-                      </NavLink>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                  <MdOutlineFormatListBulleted className="text-[1.15rem]" />
+                  <span>Order History</span>
+                </NavLink>
+                <NavLink
+                  to="/dashboard/arrears"
+                  className={rootNavLinkClasses}
+                  onClick={() => (window.innerWidth < 1024 ? onToggle() : null)}
+                >
+                  <FaRegMoneyBillAlt className="text-[1.15rem]" />
+                  <span>Arrears</span>
+                </NavLink>
               </>
-            ) : null}
+            )}
 
             {user?.role === "ADMIN" && (
               <NavLink

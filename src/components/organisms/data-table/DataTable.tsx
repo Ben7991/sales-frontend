@@ -24,12 +24,12 @@ export function DataTable({
   hidePaginator,
 }: DataTableProps): React.JSX.Element {
   return (
-    <div className="bg-white pb-5">
+    <div className={`bg-white ${!hidePaginator && "pb-5"}`}>
       <div
         className={`w-full overflow-y-visible overflow-x-auto xl:overflow-visible ${className}`}
       >
         <table
-          className={`table-collapse table-auto w-full ${!hidePaginator ? "mb-5" : ""}`}
+          className={`table-collapse table-auto w-full ${!hidePaginator && "mb-5"}`}
         >
           <thead className="sticky top-0 z-1">
             <tr>

@@ -164,7 +164,7 @@ export default function App(): React.JSX.Element {
               ),
             },
             {
-              path: "/dashboard/sales/arrears",
+              path: "/dashboard/arrears",
               element: (
                 <EnsureUserHasRole roles={["ADMIN", "SALES_PERSON"]}>
                   <Arrears />
