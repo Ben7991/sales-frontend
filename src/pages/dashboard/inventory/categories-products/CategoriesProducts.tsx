@@ -21,14 +21,11 @@ import { Alert } from "@/components/molecules/alert/Alert";
 import { useAppDispatch, useAppSelector } from "@/store/index.util";
 import { loadCategories } from "@/store/slice/category/category.slice";
 import { loadProducts } from "@/store/slice/product/product.slice";
-import type {
-  Category,
-  Product,
-  ResponseWithRecord,
-} from "@/utils/types.utils";
+import type { Category, ResponseWithRecord } from "@/utils/types.utils";
 import { useFetch } from "@/utils/hooks.utils";
 import { get } from "@/utils/http.utils";
 import { OffCanvas } from "@/components/organisms/offcanvas/OffCanvas";
+import type { ProductRow } from "./CategoriesProducts.types";
 
 export default function CategoriesProducts(): React.JSX.Element {
   const dispatch = useAppDispatch();
@@ -43,7 +40,7 @@ export default function CategoriesProducts(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
 
   const [selectedCategory, setSelectedCategory] = useState<Category>();
-  const [selectedProduct, setSelectedProduct] = useState<Product>();
+  const [selectedProduct, setSelectedProduct] = useState<ProductRow>();
 
   const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
@@ -70,7 +67,7 @@ export default function CategoriesProducts(): React.JSX.Element {
       setIsFetching(true);
       try {
         const searchParams = getSearchParamsForPaginator(query, page, perPage);
-        const result = await get<ResponseWithRecord<Product>>(
+        const result = await get<ResponseWithRecord<ProductRow>>(
           `products?${searchParams.toString()}`,
         );
         dispatch(loadProducts(result));

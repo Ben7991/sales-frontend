@@ -29,6 +29,7 @@ import type {
   CostPriceManagerProps,
   ProductDataTableProps,
   ProductFormProps,
+  ProductRow,
 } from "./CategoriesProducts.types";
 import { IoRemoveCircleOutline } from "react-icons/io5";
 import type { ImageUploadHandle } from "@/components/atoms/form/Form.types";
@@ -40,7 +41,6 @@ import {
 import type {
   BoxCostPrice,
   Category,
-  Product,
   ProductStatus,
   ResponseWithDataAndMessage,
   ResponseWithOnlyData,
@@ -206,7 +206,7 @@ export function ProductForm({
   useEffect(() => {
     if (selectedProduct) {
       setValue("name", selectedProduct.name);
-      setCategory(selectedProduct.category.name);
+      setCategory(selectedProduct.categoryName);
       setStatus(selectedProduct.status);
     }
   }, [selectedProduct, setValue]);
@@ -224,11 +224,11 @@ export function ProductForm({
       (item) => item.name.toLowerCase() === category.toLowerCase(),
     ) as Category;
 
-    let result: ResponseWithDataAndMessage<Product>;
+    let result: ResponseWithDataAndMessage<ProductRow>;
 
     try {
       if (selectedProduct) {
-        result = await mutate<ResponseWithDataAndMessage<Product>>(
+        result = await mutate<ResponseWithDataAndMessage<ProductRow>>(
           {
             ...data,
             categoryId: selectedCategory.id,
@@ -533,7 +533,7 @@ export function ProductDataTable({
         Products
       </Headline>
       <DataTable
-        columnHeadings={["Name", "Category", "Status", ""]}
+        columnHeadings={["Name", "Category", "No. of Cost", "Status", ""]}
         count={productState.count}
         className="max-h-168.75"
       >
@@ -542,7 +542,8 @@ export function ProductDataTable({
             <td>
               <ProductCard name={item.name} imagePath={item.imagePath} />
             </td>
-            <td>{item.category.name}</td>
+            <td>{item.categoryName}</td>
+            <td>{item.totalBoxPrices}</td>
             <td>
               <Pill
                 text={item.status}

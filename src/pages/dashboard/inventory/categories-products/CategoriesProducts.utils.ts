@@ -3,13 +3,13 @@ import * as yup from "yup";
 import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
 import {
   StatusCodes,
-  type Product,
   type ProductStock,
   type ResponseWithDataAndMessage,
   type ResponseWithRecord,
 } from "@/utils/types.utils";
 import { getAccessToken, getHeaders, refreshToken } from "@/utils/auth.util";
 import { FAILED_STATUS_CODES } from "@/utils/constants.utils";
+import type { ProductRow } from "./CategoriesProducts.types";
 
 export const categoryProductModalHeading: Record<string, string> = {
   "add-category": makeFirstLetterUppercase("add-category"),
@@ -83,7 +83,7 @@ export async function getStockViaLiveSearch(
 
 export async function addProduct(
   data: FormData,
-): Promise<ResponseWithDataAndMessage<Product>> {
+): Promise<ResponseWithDataAndMessage<ProductRow>> {
   const response = await fetch(`${import.meta.env.VITE_BASE_API}/products`, {
     method: "POST",
     body: data,

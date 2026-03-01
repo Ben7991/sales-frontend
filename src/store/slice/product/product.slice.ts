@@ -1,10 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-import type { Product } from "@/utils/types.utils";
+import type { ProductRow } from "@/pages/dashboard/inventory/categories-products/CategoriesProducts.types";
 
 export type ProductState = {
   count: number;
-  data: Array<Product>;
+  data: Array<ProductRow>;
 };
 
 const initialState: ProductState = {
@@ -23,7 +23,7 @@ const productSlice = createSlice({
       state.count = action.payload.count;
       state.data = action.payload.data;
     },
-    addNewProduct: (state: ProductState, action: PayloadAction<Product>) => {
+    addNewProduct: (state: ProductState, action: PayloadAction<ProductRow>) => {
       state.count = state.count + 1;
       const updatedData = [action.payload, ...state.data];
       if (state.data.length > 10) {
@@ -32,7 +32,7 @@ const productSlice = createSlice({
       }
       state.data = [...updatedData];
     },
-    updateProduct: (state: ProductState, action: PayloadAction<Product>) => {
+    updateProduct: (state: ProductState, action: PayloadAction<ProductRow>) => {
       const updatedData = [...state.data];
       const existingProductIndex = updatedData.findIndex(
         (item) => item.id === action.payload.id,

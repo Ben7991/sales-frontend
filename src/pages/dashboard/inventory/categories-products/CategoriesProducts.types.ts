@@ -11,12 +11,17 @@ export type CategoryProductInput = {
   name: string;
 };
 
+export type ProductRow = {
+  categoryName: string;
+  totalBoxPrices: number;
+} & Pick<Product, "id" | "imagePath" | "name" | "status">;
+
 export type CategoryFormProps = {
   selectedCategory?: Category;
 } & PreferredAlertPropsForForm;
 
 export type ProductFormProps = {
-  selectedProduct?: Product;
+  selectedProduct?: ProductRow;
   categories: Array<Category>;
 } & PreferredAlertPropsForForm;
 
@@ -44,13 +49,14 @@ export type ProductDataTableProps = {
   onNavigate: NavigateFunction;
 } & Pick<CategoryDataTableProps, "onSelectItem">;
 
-export type CostPriceManagerProps = {
-  selectedProduct: Product;
-} & Pick<CostPriceFormProps, "onSetAlertDetails">;
+export type CostPriceManagerProps = Pick<
+  CostPriceFormProps,
+  "onSetAlertDetails" | "selectedProduct"
+>;
 
 export type CostPriceFormProps = {
   selectedPrice?: BoxCostPrice;
-  selectedProduct: Product;
+  selectedProduct: ProductRow;
   onResetSelectedPrice: VoidFunction;
   onUpdateCostPrices: (data: BoxCostPrice, id?: number) => void;
 } & Pick<PreferredAlertPropsForForm, "onSetAlertDetails">;
