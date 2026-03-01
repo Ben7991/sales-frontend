@@ -11,6 +11,7 @@ import {
   CategoryDataTable,
   CategoryForm,
   ChangeProductImageForm,
+  CostPriceManager,
   ProductDataTable,
   ProductForm,
 } from "./CategoriesProducts.partials";
@@ -27,6 +28,7 @@ import type {
 } from "@/utils/types.utils";
 import { useFetch } from "@/utils/hooks.utils";
 import { get } from "@/utils/http.utils";
+import { OffCanvas } from "@/components/organisms/offcanvas/OffCanvas";
 
 export default function CategoriesProducts(): React.JSX.Element {
   const dispatch = useAppDispatch();
@@ -86,7 +88,7 @@ export default function CategoriesProducts(): React.JSX.Element {
     fetchProducts();
   }, [dispatch, query, page, perPage, setIsFetching, setAlertDetails]);
 
-  const handleHideModal = (): void => {
+  const hideModal = (): void => {
     navigate(pathname);
   };
 
@@ -120,6 +122,7 @@ export default function CategoriesProducts(): React.JSX.Element {
     | "add-product"
     | "edit-product"
     | "change-product-image"
+    | "cost-prices"
     | undefined;
 
   return (
@@ -149,32 +152,45 @@ export default function CategoriesProducts(): React.JSX.Element {
           pathname={pathname}
         />
       </div>
-      <Modal
-        title={categoryProductModalHeading[activeAction as string]}
-        show={Boolean(activeAction)}
-        onHide={handleHideModal}
-      >
-        {activeAction?.includes("category") ? (
-          <CategoryForm
-            onHideModal={handleHideModal}
-            onSetAlertDetails={setAlertDetails}
-            selectedCategory={selectedCategory}
-          />
-        ) : activeAction?.includes("product-image") ? (
-          <ChangeProductImageForm
-            onHideModal={handleHideModal}
-            onSetAlertDetails={setAlertDetails}
+      {activeAction === "cost-prices" && selectedProduct ? (
+        <OffCanvas
+          title="Cost Prices"
+          show={activeAction === "cost-prices"}
+          onHide={hideModal}
+        >
+          <CostPriceManager
             selectedProduct={selectedProduct}
-          />
-        ) : (
-          <ProductForm
-            onHideModal={handleHideModal}
             onSetAlertDetails={setAlertDetails}
-            selectedProduct={selectedProduct}
-            categories={categories}
           />
-        )}
-      </Modal>
+        </OffCanvas>
+      ) : (
+        <Modal
+          title={categoryProductModalHeading[activeAction as string]}
+          show={Boolean(activeAction)}
+          onHide={hideModal}
+        >
+          {activeAction?.includes("category") ? (
+            <CategoryForm
+              onHideModal={hideModal}
+              onSetAlertDetails={setAlertDetails}
+              selectedCategory={selectedCategory}
+            />
+          ) : activeAction?.includes("product-image") ? (
+            <ChangeProductImageForm
+              onHideModal={hideModal}
+              onSetAlertDetails={setAlertDetails}
+              selectedProduct={selectedProduct}
+            />
+          ) : (
+            <ProductForm
+              onHideModal={hideModal}
+              onSetAlertDetails={setAlertDetails}
+              selectedProduct={selectedProduct}
+              categories={categories}
+            />
+          )}
+        </Modal>
+      )}
     </>
   );
 }

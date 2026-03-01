@@ -1,5 +1,6 @@
 import type { ProductState } from "@/store/slice/product/product.slice";
 import type {
+  BoxCostPrice,
   Category,
   PreferredAlertPropsForForm,
   Product,
@@ -42,3 +43,14 @@ export type ProductDataTableProps = {
   pathname: string;
   onNavigate: NavigateFunction;
 } & Pick<CategoryDataTableProps, "onSelectItem">;
+
+export type CostPriceManagerProps = {
+  selectedProduct: Product;
+} & Pick<CostPriceFormProps, "onSetAlertDetails">;
+
+export type CostPriceFormProps = {
+  selectedPrice?: BoxCostPrice;
+  selectedProduct: Product;
+  onResetSelectedPrice: VoidFunction;
+  onUpdateCostPrices: (data: BoxCostPrice, id?: number) => void;
+} & Pick<PreferredAlertPropsForForm, "onSetAlertDetails">;

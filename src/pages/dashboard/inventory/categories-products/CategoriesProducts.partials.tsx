@@ -16,6 +16,7 @@ import {
   addProduct,
   categorySchema,
   changeImage,
+  costPriceSchema,
   productSchema,
 } from "./CategoriesProducts.utils";
 import type {
@@ -24,6 +25,8 @@ import type {
   CategoryFormProps,
   CategoryProductInput,
   ChangeProductImageFormProps,
+  CostPriceFormProps,
+  CostPriceManagerProps,
   ProductDataTableProps,
   ProductFormProps,
 } from "./CategoriesProducts.types";
@@ -35,17 +38,20 @@ import {
   updateCategory,
 } from "@/store/slice/category/category.slice";
 import type {
+  BoxCostPrice,
   Category,
   Product,
   ProductStatus,
   ResponseWithDataAndMessage,
+  ResponseWithOnlyData,
+  Supplier,
 } from "@/utils/types.utils";
 import {
   addNewProduct,
   updateProduct,
   updateProductImage,
 } from "@/store/slice/product/product.slice";
-import { mutate } from "@/utils/http.utils";
+import { get, mutate } from "@/utils/http.utils";
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import { GoPlus } from "react-icons/go";
 import { LiaCartPlusSolid } from "react-icons/lia";
@@ -55,6 +61,16 @@ import { BiSolidEdit } from "react-icons/bi";
 import { ProductCard } from "@/components/molecules/product-card/ProductCard";
 import { Pill } from "@/components/atoms/pill/Pill";
 import { CgImage } from "react-icons/cg";
+import { GiTakeMyMoney } from "react-icons/gi";
+import { DropdownWithSearch } from "@/components/molecules/dropdown-with-search/DropdownWithSearch";
+import {
+  getSupplierDetails,
+  getSuppliersViaLiveSearch,
+} from "../../purchase/add-edit-supplies/AddEditSupplier.utils";
+import { useFetch } from "@/utils/hooks.utils";
+import { FaRegEdit } from "react-icons/fa";
+import { Spinner } from "@/components/atoms/spinner/Spinner";
+import { BsTrash } from "react-icons/bs";
 
 export function CategoryForm({
   selectedCategory,
@@ -439,7 +455,7 @@ export function CategoryAndProductHeader({
           el="link"
           to={`${pathname}?action=add-category`}
           variant="primary"
-          className="flex! items-center gap-2"
+          className="flex! items-center gap-1"
           onClick={onResetSelectedCategory}
         >
           <GoPlus />
@@ -449,7 +465,7 @@ export function CategoryAndProductHeader({
           el="link"
           to={`${pathname}?action=add-product`}
           variant="outline"
-          className="flex! items-center gap-2"
+          className="flex! items-center gap-1"
           onClick={onResetSelectedProduct}
         >
           <LiaCartPlusSolid />
@@ -482,9 +498,9 @@ export function CategoryDataTable({
               <DataTable.Actions>
                 <DataTable.Action
                   onClick={() => onSelectItem(item.id)}
-                  className="hover:bg-gray-100 text-gray-500 p-2!"
+                  className="hover:bg-gray-100 text-gray-500"
                 >
-                  <BiSolidEdit className="text-xl" />
+                  <BiSolidEdit />
                   <span>Edit Category</span>
                 </DataTable.Action>
               </DataTable.Actions>
@@ -538,22 +554,32 @@ export function ProductDataTable({
                 <DataTable.Action
                   onClick={() => {
                     onSelectItem(item.id);
+                    onNavigate(`${pathname}?action=change-product-image`);
+                  }}
+                  className="hover:bg-gray-100 text-gray-500"
+                >
+                  <CgImage />
+                  <span>Change image</span>
+                </DataTable.Action>
+                <DataTable.Action
+                  onClick={() => {
+                    onSelectItem(item.id);
                     onNavigate(`${pathname}?action=edit-product`);
                   }}
-                  className="hover:bg-gray-100 text-gray-500 p-2!"
+                  className="hover:bg-gray-100 text-gray-500"
                 >
-                  <BiSolidEdit className="text-xl" />
+                  <BiSolidEdit />
                   <span>Edit Product</span>
                 </DataTable.Action>
                 <DataTable.Action
                   onClick={() => {
                     onSelectItem(item.id);
-                    onNavigate(`${pathname}?action=change-product-image`);
+                    onNavigate(`${pathname}?action=cost-prices`);
                   }}
-                  className="hover:bg-gray-100 text-gray-500 p-2!"
+                  className="hover:bg-gray-100 text-gray-500"
                 >
-                  <CgImage className="text-xl" />
-                  <span>Change image</span>
+                  <GiTakeMyMoney />
+                  <span>Cost Prices</span>
                 </DataTable.Action>
               </DataTable.Actions>
             </td>
@@ -568,5 +594,257 @@ export function ProductDataTable({
         )}
       </DataTable>
     </div>
+  );
+}
+
+export function CostPriceManager({
+  selectedProduct,
+  onSetAlertDetails,
+}: CostPriceManagerProps): React.JSX.Element {
+  const { isFetching, setIsFetching } = useFetch();
+
+  const [costPrices, setCostPrices] = useState<Array<BoxCostPrice>>([]);
+  const [selectedPrice, setSelectedPrice] = useState<BoxCostPrice>();
+
+  useEffect(() => {
+    const fetchBoxPrices = async (): Promise<void> => {
+      setIsFetching(true);
+
+      try {
+        const result = await get<ResponseWithOnlyData<Array<BoxCostPrice>>>(
+          `products/box-price/${selectedProduct.id}`,
+        );
+        setCostPrices(result.data);
+      } catch (error) {
+        console.error("Failed to fetch cost prices", error);
+        onSetAlertDetails({
+          message: (error as Error).message,
+          variant: "error",
+        });
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchBoxPrices();
+  }, [selectedProduct, setIsFetching, onSetAlertDetails]);
+
+  const updateCostPrices = (data: BoxCostPrice, id?: number): void => {
+    if (id) {
+      const updatedCostPrices = [...costPrices];
+      const index = updatedCostPrices.findIndex((item) => item.id === id);
+
+      if (index === -1) return;
+
+      updatedCostPrices[index] = data;
+      setCostPrices(updatedCostPrices);
+    } else {
+      setCostPrices((prevState) => [...prevState, data]);
+    }
+  };
+
+  if (isFetching) {
+    return (
+      <div className="flex justify-center">
+        <Spinner color="black" size="md" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <p className="mb-4">
+        You can manage cost prices per box / pack for{" "}
+        <strong>{selectedProduct.name}</strong> below. You can add, update and
+        view various supplier cost prices.
+      </p>
+      <hr className="my-6 border border-gray-300" />
+      <CostPriceForm
+        onSetAlertDetails={onSetAlertDetails}
+        selectedProduct={selectedProduct}
+        selectedPrice={selectedPrice}
+        onUpdateCostPrices={updateCostPrices}
+        onResetSelectedPrice={() => setSelectedPrice(undefined)}
+      />
+      <hr className="my-6 border border-gray-300" />
+      <Headline tag="h5" className="mb-3">
+        Available cost prices
+      </Headline>
+      <DataTable
+        columnHeadings={["Supplier", "Price", ""]}
+        count={costPrices.length}
+        hidePaginator
+      >
+        {costPrices.map((item) => (
+          <tr key={item.id}>
+            <td>
+              {item.supplier.name} - ({item.supplier.companyName})
+            </td>
+            <td>&#8373; {item.price.toFixed(2)}</td>
+            <td>
+              <DataTable.Action
+                className="hover:bg-gray-100 text-gray-500 w-fit!"
+                onClick={() => setSelectedPrice(item)}
+              >
+                <FaRegEdit className="text-xl" />
+                <span>Edit</span>
+              </DataTable.Action>
+            </td>
+          </tr>
+        ))}
+        {!costPrices.length && (
+          <tr>
+            <td colSpan={3}>
+              <p className="text-center">
+                No cost price avaliable at the moment
+              </p>
+            </td>
+          </tr>
+        )}
+      </DataTable>
+    </>
+  );
+}
+
+function CostPriceForm({
+  selectedPrice,
+  selectedProduct,
+  onSetAlertDetails,
+  onUpdateCostPrices,
+  onResetSelectedPrice,
+}: CostPriceFormProps): React.JSX.Element {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm<{ price: string }>({
+    resolver: yupResolver(costPriceSchema),
+    mode: "onBlur",
+  });
+
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier>();
+  const [supplierError, setSupplierError] = useState(false);
+
+  useEffect(() => {
+    if (selectedPrice) {
+      setValue("price", selectedPrice.price.toString());
+      setSelectedSupplier(selectedPrice.supplier);
+    }
+  }, [selectedPrice, setValue]);
+
+  const onSubmit: SubmitHandler<{ price: string }> = async (
+    data,
+  ): Promise<void> => {
+    if (!selectedSupplier) {
+      setSupplierError(true);
+      return;
+    }
+
+    setIsLoading(true);
+    setSupplierError(false);
+
+    const method = selectedPrice ? "PATCH" : "POST";
+    const endpoint = selectedPrice
+      ? `products/box-price/${selectedPrice.id}`
+      : "products/box-price";
+
+    try {
+      const result = await mutate<ResponseWithDataAndMessage<BoxCostPrice>>(
+        {
+          ...data,
+          productId: selectedProduct.id,
+          supplierId: selectedSupplier.id,
+        },
+        endpoint,
+        method,
+      );
+      onSetAlertDetails({
+        message: result.message,
+        variant: "success",
+      });
+      onUpdateCostPrices(
+        {
+          id: result.data.id,
+          price: result.data.price,
+          supplier: result.data.supplier,
+        },
+        selectedPrice?.id,
+      );
+      clearInput();
+    } catch (error) {
+      console.log("Failed to add or edit cost price", error);
+      onSetAlertDetails({
+        message: (error as Error).message,
+        variant: "success",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const clearInput = (): void => {
+    reset();
+    setSelectedSupplier(undefined);
+    onResetSelectedPrice();
+  };
+
+  return (
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <Headline tag="h5" className="mb-4">
+        {selectedPrice ? "Edit" : "Add"} cost price
+      </Headline>
+      <Form.Group className="mb-4">
+        <Form.Label>Supplier</Form.Label>
+        <DropdownWithSearch
+          placeholder="Search by supplier name or company name"
+          selectedItem={selectedSupplier}
+          onSetSelectedItem={setSelectedSupplier}
+          onGetValue={getSupplierDetails}
+          onGetItems={getSuppliersViaLiveSearch}
+          onSetAlertDetails={onSetAlertDetails}
+        />
+        {supplierError && <Form.Error>{supplierError}</Form.Error>}
+      </Form.Group>
+      <Form.Group className="mb-4">
+        <Form.Label htmlFor="price">Price per box / pack</Form.Label>
+        <Form.Control
+          type="number"
+          {...register("price")}
+          hasError={Boolean(errors.price)}
+        />
+        {errors.price && <Form.Error>{errors.price.message}</Form.Error>}
+      </Form.Group>
+      <Form.Group className="flex items-center gap-2">
+        <Button
+          el="button"
+          type="submit"
+          variant="primary"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <Button.Loader />
+          ) : (
+            <span className="flex items-center gap-1">
+              <IoIosSave />
+              <span>{selectedPrice ? "Update" : "Save"}</span>
+            </span>
+          )}
+        </Button>
+        <Button
+          el="button"
+          type="button"
+          variant="outline"
+          className="flex! items-center gap-1"
+          onClick={clearInput}
+        >
+          <BsTrash />
+          <span>Clear</span>
+        </Button>
+      </Form.Group>
+    </Form>
   );
 }

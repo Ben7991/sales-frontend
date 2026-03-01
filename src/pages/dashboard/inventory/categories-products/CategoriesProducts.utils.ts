@@ -40,6 +40,18 @@ export const productSchema = yup.object({
     .trim(),
 });
 
+export const costPriceSchema = yup.object({
+  price: yup
+    .string()
+    .required("Price is required")
+    .matches(/^\d+(\.\d{1,2})?$/, "Invalid amount")
+    .test({
+      test: (value) => value !== "0",
+      message: "Zero not allowed as price",
+    })
+    .trim(),
+});
+
 export async function getStockViaLiveSearch(
   query: string,
 ): Promise<ResponseWithRecord<ProductStock>> {
