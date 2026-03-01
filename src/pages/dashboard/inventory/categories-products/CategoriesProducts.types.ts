@@ -22,3 +22,10 @@ export type ChangeProductImageFormProps = Pick<
   "selectedProduct"
 > &
   PreferredAlertPropsForForm;
+
+export type CategoryAndProductHeaderProps = {
+  pathname: string;
+  isFetching: boolean;
+  onResetSelectedCategory: VoidFunction;
+  onResetSelectedProduct: VoidFunction;
+};

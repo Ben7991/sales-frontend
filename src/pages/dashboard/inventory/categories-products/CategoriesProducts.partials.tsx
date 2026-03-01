@@ -19,6 +19,7 @@ import {
   productSchema,
 } from "./CategoriesProducts.utils";
 import type {
+  CategoryAndProductHeaderProps,
   CategoryFormProps,
   CategoryProductInput,
   ChangeProductImageFormProps,
@@ -43,6 +44,9 @@ import {
   updateProductImage,
 } from "@/store/slice/product/product.slice";
 import { mutate } from "@/utils/http.utils";
+import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
+import { GoPlus } from "react-icons/go";
+import { LiaCartPlusSolid } from "react-icons/lia";
 
 export function CategoryForm({
   selectedCategory,
@@ -411,5 +415,39 @@ export function ChangeProductImageForm({
         </Button>
       </Form.Group>
     </Form>
+  );
+}
+
+export function CategoryAndProductHeader({
+  pathname,
+  isFetching,
+  onResetSelectedCategory,
+  onResetSelectedProduct,
+}: CategoryAndProductHeaderProps): React.JSX.Element {
+  return (
+    <PageDescriptor title="Categories and Products" spinnerState={isFetching}>
+      <div className="flex items-center gap-2">
+        <Button
+          el="link"
+          to={`${pathname}?action=add-category`}
+          variant="primary"
+          className="flex! items-center gap-2"
+          onClick={onResetSelectedCategory}
+        >
+          <GoPlus />
+          <span>Add Category</span>
+        </Button>
+        <Button
+          el="link"
+          to={`${pathname}?action=add-product`}
+          variant="outline"
+          className="flex! items-center gap-2"
+          onClick={onResetSelectedProduct}
+        >
+          <LiaCartPlusSolid />
+          <span>Add Product</span>
+        </Button>
+      </div>
+    </PageDescriptor>
   );
 }

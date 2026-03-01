@@ -1,18 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
-import { GoPlus } from "react-icons/go";
-import { LiaCartPlusSolid } from "react-icons/lia";
 import { BiSolidEdit } from "react-icons/bi";
 import { CgImage } from "react-icons/cg";
 
-import { Button } from "@/components/atoms/button/Button";
-import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import {
   getPaginatedData,
   getSearchParamsForPaginator,
 } from "@/utils/helpers.utils";
 import { Modal } from "@/components/organisms/modal/Modal";
 import {
+  CategoryAndProductHeader,
   CategoryForm,
   ChangeProductImageForm,
   ProductForm,
@@ -138,30 +135,12 @@ export default function CategoriesProducts(): React.JSX.Element {
           onHide={hideAlert}
         />
       ) : null}
-      <PageDescriptor title="Categories and Products" spinnerState={isFetching}>
-        <div className="flex items-center gap-2">
-          <Button
-            el="link"
-            to={`${pathname}?action=add-category`}
-            variant="primary"
-            className="flex! items-center gap-2"
-            onClick={() => setSelectedCategory(undefined)}
-          >
-            <GoPlus />
-            <span>Add Category</span>
-          </Button>
-          <Button
-            el="link"
-            to={`${pathname}?action=add-product`}
-            variant="outline"
-            className="flex! items-center gap-2"
-            onClick={() => setSelectedProduct(undefined)}
-          >
-            <LiaCartPlusSolid />
-            <span>Add Product</span>
-          </Button>
-        </div>
-      </PageDescriptor>
+      <CategoryAndProductHeader
+        isFetching={isFetching}
+        pathname={pathname}
+        onResetSelectedCategory={() => setSelectedCategory(undefined)}
+        onResetSelectedProduct={() => setSelectedProduct(undefined)}
+      />
       <div className="flex flex-col md:flex-row justify-between gap-4">
         <div className="basis-full md:basis-3/7 xl:basis-3/8">
           <Headline tag="h5" className="mb-4">
