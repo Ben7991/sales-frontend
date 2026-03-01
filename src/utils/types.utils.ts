@@ -159,6 +159,11 @@ export type Purchase = {
   supplies: Array<PurchaseSupply>;
   purchaseMiscPrices: Array<PurchaseMiscPrice>;
 };
+export type BoxCostPrice = {
+  id: number;
+  price: number;
+  supplier: Supplier;
+};
 
 export const StatusCodes = {
   CREATED: 201,
