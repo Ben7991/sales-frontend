@@ -109,11 +109,16 @@ export function DropdownWithSearch<T extends { id: number }>({
         <div className="flex items-center gap-1">
           {isSearching && <Spinner size="sm" color="black" />}
           {selectedItem && (
-            <button className="outline-none" onClick={handleClear}>
+            <button
+              className="outline-none"
+              onClick={handleClear}
+              type="button"
+            >
               <IoMdClose />
             </button>
           )}
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               setShowList((prevState) => !prevState);
@@ -147,6 +152,7 @@ export function DropdownWithSearch<T extends { id: number }>({
                 key={item.id}
                 className={`text-left w-full py-1.5 px-2 rounded-sm ${selectedItem?.id === item.id ? "bg-gray-200" : "hover:bg-gray-100"}`}
                 onClick={() => handleItemSelection(item)}
+                type="button"
               >
                 {onGetValue(item)}
               </button>
