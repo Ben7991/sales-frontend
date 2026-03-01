@@ -20,9 +20,11 @@ import {
 } from "./CategoriesProducts.utils";
 import type {
   CategoryAndProductHeaderProps,
+  CategoryDataTableProps,
   CategoryFormProps,
   CategoryProductInput,
   ChangeProductImageFormProps,
+  ProductDataTableProps,
   ProductFormProps,
 } from "./CategoriesProducts.types";
 import { IoRemoveCircleOutline } from "react-icons/io5";
@@ -47,6 +49,12 @@ import { mutate } from "@/utils/http.utils";
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import { GoPlus } from "react-icons/go";
 import { LiaCartPlusSolid } from "react-icons/lia";
+import { Headline } from "@/components/atoms/headline/Headline";
+import { DataTable } from "@/components/organisms/data-table/DataTable";
+import { BiSolidEdit } from "react-icons/bi";
+import { ProductCard } from "@/components/molecules/product-card/ProductCard";
+import { Pill } from "@/components/atoms/pill/Pill";
+import { CgImage } from "react-icons/cg";
 
 export function CategoryForm({
   selectedCategory,
@@ -449,5 +457,116 @@ export function CategoryAndProductHeader({
         </Button>
       </div>
     </PageDescriptor>
+  );
+}
+
+export function CategoryDataTable({
+  categories,
+  onSelectItem,
+}: CategoryDataTableProps): React.JSX.Element {
+  return (
+    <div className="basis-full md:basis-3/7 xl:basis-3/8">
+      <Headline tag="h5" className="mb-4">
+        Categories
+      </Headline>
+      <DataTable
+        columnHeadings={["Name", ""]}
+        count={categories.length}
+        className="h-[70vh] overflow-auto!"
+        hidePaginator
+      >
+        {categories.map((item) => (
+          <tr key={item.id}>
+            <td>{item.name}</td>
+            <td>
+              <DataTable.Actions>
+                <DataTable.Action
+                  onClick={() => onSelectItem(item.id)}
+                  className="hover:bg-gray-100 text-gray-500 p-2!"
+                >
+                  <BiSolidEdit className="text-xl" />
+                  <span>Edit Category</span>
+                </DataTable.Action>
+              </DataTable.Actions>
+            </td>
+          </tr>
+        ))}
+        {!categories.length && (
+          <tr>
+            <td colSpan={2}>
+              <p className="text-center">
+                No categories available at the moment
+              </p>
+            </td>
+          </tr>
+        )}
+      </DataTable>
+    </div>
+  );
+}
+
+export function ProductDataTable({
+  productState,
+  pathname,
+  onNavigate,
+  onSelectItem,
+}: ProductDataTableProps): React.JSX.Element {
+  return (
+    <div className="basis-full md:basis-4/7 xl:basis-5/8">
+      <Headline tag="h5" className="mb-4">
+        Products
+      </Headline>
+      <DataTable
+        columnHeadings={["Name", "Category", "Status", ""]}
+        count={productState.count}
+        className="max-h-168.75"
+      >
+        {productState.data.map((item) => (
+          <tr key={item.id}>
+            <td>
+              <ProductCard name={item.name} imagePath={item.imagePath} />
+            </td>
+            <td>{item.category.name}</td>
+            <td>
+              <Pill
+                text={item.status}
+                variant={item.status === "IN_USE" ? "success" : "danger"}
+              />
+            </td>
+            <td>
+              <DataTable.Actions>
+                <DataTable.Action
+                  onClick={() => {
+                    onSelectItem(item.id);
+                    onNavigate(`${pathname}?action=edit-product`);
+                  }}
+                  className="hover:bg-gray-100 text-gray-500 p-2!"
+                >
+                  <BiSolidEdit className="text-xl" />
+                  <span>Edit Product</span>
+                </DataTable.Action>
+                <DataTable.Action
+                  onClick={() => {
+                    onSelectItem(item.id);
+                    onNavigate(`${pathname}?action=change-product-image`);
+                  }}
+                  className="hover:bg-gray-100 text-gray-500 p-2!"
+                >
+                  <CgImage className="text-xl" />
+                  <span>Change image</span>
+                </DataTable.Action>
+              </DataTable.Actions>
+            </td>
+          </tr>
+        ))}
+        {!productState.data.length && (
+          <tr>
+            <td colSpan={3}>
+              <p className="text-center">No products available at the moment</p>
+            </td>
+          </tr>
+        )}
+      </DataTable>
+    </div>
   );
 }
