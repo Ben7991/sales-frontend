@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import type { Product } from "@/utils/types.utils";
 
-type ProductState = {
+export type ProductState = {
   count: number;
   data: Array<Product>;
 };
