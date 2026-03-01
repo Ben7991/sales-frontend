@@ -153,7 +153,6 @@ export type PurchaseMiscPrice = {
 export type Purchase = {
   id: string;
   createdAt: string;
-  amount?: number;
   status: PurchaseStatus;
   comment?: string;
   supplier: Supplier;

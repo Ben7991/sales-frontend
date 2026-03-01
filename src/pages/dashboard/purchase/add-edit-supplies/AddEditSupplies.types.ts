@@ -34,7 +34,6 @@ export type CreateOrEditSuppliesHeaderProps = {
 export type SavePurchaseToCreateLaterType = {
   id: number;
   supplier?: Supplier;
-  amount: string;
   comment: string;
   supplies: Array<Supply>;
 };

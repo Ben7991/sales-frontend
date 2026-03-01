@@ -26,7 +26,6 @@ import { Button } from "@/components/atoms/button/Button";
 import { Headline } from "@/components/atoms/headline/Headline";
 import { Form } from "@/components/atoms/form/Form";
 import { get, mutate } from "@/utils/http.utils";
-import { Info } from "@/components/molecules/info/Info";
 import { GoBack } from "@/components/molecules/go-back/GoBack";
 
 export default function AddEditSupplies(): React.JSX.Element {
@@ -39,7 +38,6 @@ export default function AddEditSupplies(): React.JSX.Element {
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier>();
   const [supplies, setSupplies] = useState<Array<Supply>>([]);
   const [comment, setComment] = useState<string>("");
-  const [amount, setAmount] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -57,7 +55,6 @@ export default function AddEditSupplies(): React.JSX.Element {
         name: item.product.name,
       },
     }));
-    setAmount(purchase.amount?.toString() ?? "");
     setSupplies(supplies);
   }, []);
 
@@ -154,7 +151,6 @@ export default function AddEditSupplies(): React.JSX.Element {
             comment: item.comment,
           })),
           supplierId: selectedSupplier!.id,
-          amount: amount ? +amount : 0,
           comment,
         },
         endpoints,
@@ -184,7 +180,6 @@ export default function AddEditSupplies(): React.JSX.Element {
     setSelectedSupplier(undefined);
     setSupplies([]);
     setComment("");
-    setAmount("");
     setPurchaseIdToEdit(undefined);
     setPurchaseIdToEditForLater(undefined);
   };
@@ -195,7 +190,6 @@ export default function AddEditSupplies(): React.JSX.Element {
       {
         id: purchaseIdToEditForLater ?? id,
         supplier: selectedSupplier,
-        amount,
         comment,
         supplies,
       },
@@ -213,7 +207,6 @@ export default function AddEditSupplies(): React.JSX.Element {
     setSelectedSupplier(preferredPurchase.supplier);
     setSupplies(preferredPurchase.supplies);
     setComment(preferredPurchase.comment);
-    setAmount(preferredPurchase.amount);
     setPurchaseIdToEditForLater(id);
   };
 
@@ -233,14 +226,6 @@ export default function AddEditSupplies(): React.JSX.Element {
         onSelectPurchaseToCreate={selectPurchaseToCreate}
       />
       <SectionWrapper heading="Supplier and supplies amount">
-        <Info className="mb-2">
-          <p>
-            The supplies amount can be left empty for later if it's not yet
-            decided. But before the state of purchase changes to{" "}
-            <strong>ARRIVED</strong> and it's still <strong>0</strong>, the
-            system will prompt you
-          </p>
-        </Info>
         <p className="mb-2">
           Please supplier name in the input field below and the list will be
           updated with your search term
@@ -252,15 +237,7 @@ export default function AddEditSupplies(): React.JSX.Element {
           onGetValue={getSupplierDetails}
           onGetItems={getSuppliersViaLiveSearch}
           onSetAlertDetails={setAlertDetails}
-        >
-          <Form.Control
-            type="number"
-            pattern="/^\d+(\.\d{1,2})?$/"
-            placeholder="Enter supplies amount"
-            value={amount}
-            onChange={(e) => setAmount(e.currentTarget.value)}
-          />
-        </DropdownWithSearch>
+        />
       </SectionWrapper>
       <ProductItemList
         supplies={supplies}

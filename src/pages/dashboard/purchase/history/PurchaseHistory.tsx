@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { FiEye } from "react-icons/fi";
+import { PiGearFine } from "react-icons/pi";
 
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
@@ -17,7 +18,6 @@ import { Pill } from "@/components/atoms/pill/Pill";
 import { Alert } from "@/components/molecules/alert/Alert";
 import type { PurchaseRow } from "./PurchaseHistory.types";
 import { Button } from "@/components/atoms/button/Button";
-import { PiGearFine } from "react-icons/pi";
 
 export default function PurchaseHistory(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
@@ -100,7 +100,7 @@ export default function PurchaseHistory(): React.JSX.Element {
             <td>
               {item.supplier.name} - Company({item.supplier.companyName})
             </td>
-            <td>&#8373; {item.amount ? formatAmount(item.amount) : "0"}</td>
+            <td>&#8373; 0</td>
             <td>&#8373; {formatAmount(item.miscCosts)}</td>
             <td>
               <Pill
