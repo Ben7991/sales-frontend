@@ -211,7 +211,7 @@ function Action({
 }: ActionProps): React.JSX.Element {
   return (
     <button
-      className={`flex gap-2 items-center py-1 px-2 w-full rounded-sm cursor-pointer ${className}`}
+      className={`flex gap-1 items-center py-1 px-2 w-full rounded-sm cursor-pointer ${className}`}
       type="button"
       onClick={onClick}
       title={title}
