@@ -125,6 +125,15 @@ export default function PurchaseHistory(): React.JSX.Element {
             </td>
           </tr>
         ))}
+        {!purchaseHistories.data.length && (
+          <tr>
+            <td colSpan={7}>
+              <p className="text-center">
+                No purchases available at the moment
+              </p>
+            </td>
+          </tr>
+        )}
       </DataTable>
     </>
   );
