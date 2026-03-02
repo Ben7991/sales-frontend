@@ -62,20 +62,22 @@ export default function CreateOrder(): React.JSX.Element {
 
         if (data.orderStatus !== "OPEN") return;
 
+        console.log(">>>> data", data.orderItems);
+
         setOrderSale(data.orderSale);
         setComment(data.comment);
-        setProductStocks(
-          data.orderItems
-            .map((item) => ({
-              comment: item.comment,
-              id: item.id,
-              price: item.amount / item.quantity,
-              quantity: item.quantity.toString(),
-              total: item.amount,
-              productStock: item.productStock,
-            }))
-            .reverse(),
-        );
+        // setProductStocks(
+        //   data.orderItems
+        //     .map((item) => ({
+        //       comment: item.comment,
+        //       id: item.id,
+        //       price: item.amount / item.quantity,
+        //       quantity: item.quantity.toString(),
+        //       total: item.amount,
+        //       productStock: item.productStock,
+        //     }))
+        //     .reverse(),
+        // );
         setSelectedCustomer(data.customer);
       } catch (error) {
         setAlertDetails({
