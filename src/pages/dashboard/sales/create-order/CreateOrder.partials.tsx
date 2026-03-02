@@ -263,6 +263,7 @@ function WholesaleTable({
             onHandleMultiplierChange={onHandleMultiplierChange}
             onSelectWholePrice={onSelectWholePrice}
             data={data}
+            key={data.id}
           />
         ))}
         {productStocks.length ? (
@@ -310,9 +311,7 @@ function WholesaleTableRow({
   const setSelectedItem = (value: string): void => {
     const quantity = value.substring(4, value.lastIndexOf(")"));
 
-    if (!quantity) {
-      return;
-    }
+    if (!quantity) return;
 
     const wholePrice = data.productStock.wholesalePrices.find(
       (item) => item.quantity === +quantity,
@@ -346,6 +345,11 @@ function WholesaleTableRow({
           placeholder="Wholesale price"
           list={getWholesaleList(data.productStock)}
           onGetSelectedItem={setSelectedItem}
+          preSelectedItem={
+            data.wholesalePrice
+              ? `QTY(${data.wholesalePrice.quantity}) - ₵${formatAmount(data.wholesalePrice.price)}`
+              : undefined
+          }
         />
       </td>
       <td>

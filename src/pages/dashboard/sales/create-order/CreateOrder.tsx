@@ -15,6 +15,7 @@ import {
   getIdForNextOrderToCreate,
   getProductDetails,
   getUnitPrice,
+  getWholesalePriceAndMultiplier,
   removeFromOrdersToCreate,
   saveOrderToCreate,
 } from "./CreateOrder.util";
@@ -62,22 +63,30 @@ export default function CreateOrder(): React.JSX.Element {
 
         if (data.orderStatus !== "OPEN") return;
 
-        console.log(">>>> data", data.orderItems);
-
-        setOrderSale(data.orderSale);
+        setOrderSale(makeFirstLetterUppercase(data.orderSale.toLowerCase()));
         setComment(data.comment);
-        // setProductStocks(
-        //   data.orderItems
-        //     .map((item) => ({
-        //       comment: item.comment,
-        //       id: item.id,
-        //       price: item.amount / item.quantity,
-        //       quantity: item.quantity.toString(),
-        //       total: item.amount,
-        //       productStock: item.productStock,
-        //     }))
-        //     .reverse(),
-        // );
+        setProductStocks(
+          data.orderItems
+            .map((item) => {
+              const { wholesalePrice, multiplier } =
+                getWholesalePriceAndMultiplier(
+                  data.orderSale,
+                  item.productStock,
+                  item.quantity,
+                );
+              return {
+                comment: item.comment || "",
+                id: item.id,
+                price: item.amount / item.quantity,
+                quantity: item.quantity.toString(),
+                total: item.amount,
+                productStock: item.productStock,
+                multiplier: multiplier ? multiplier?.toString() : undefined,
+                wholesalePrice,
+              };
+            })
+            .reverse(),
+        );
         setSelectedCustomer(data.customer);
       } catch (error) {
         setAlertDetails({

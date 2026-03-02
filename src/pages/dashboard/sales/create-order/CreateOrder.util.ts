@@ -80,3 +80,31 @@ export function getWholesaleList(stock: ProductStock): Array<string> {
     (item) => `QTY(${item.quantity}) - ₵${formatAmount(item.price)}`,
   );
 }
+
+export function getWholesalePriceAndMultiplier(
+  orderSale: OrderSale,
+  stock: ProductStock,
+  quantity: number,
+): { wholesalePrice?: WholesalePrice; multiplier?: number } {
+  if (orderSale === "RETAIL")
+    return { wholesalePrice: undefined, multiplier: undefined };
+
+  const wholesalePrices = [...stock.wholesalePrices];
+
+  let multiplier: number | undefined,
+    wholesalePrice: WholesalePrice | undefined;
+
+  for (const item of wholesalePrices) {
+    if (quantity % item.quantity === 0) {
+      multiplier = quantity / item.quantity;
+      wholesalePrice = item;
+      break;
+    }
+  }
+
+  if (multiplier && wholesalePrice) return { wholesalePrice, multiplier };
+
+  wholesalePrices.sort((a, b) => a.quantity - b.quantity);
+
+  return { wholesalePrice: wholesalePrices[0], multiplier: quantity };
+}

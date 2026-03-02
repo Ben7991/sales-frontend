@@ -10,6 +10,7 @@ import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescr
 import type { OrderHistoryItem, OrderHistoryState } from "./OrderHistory.types";
 import { orderHistoryColumnHeadings } from "./OrderHistory.utils";
 import {
+  formatAmount,
   getPaginatedData,
   getSearchParamsForPaginator,
 } from "@/utils/helpers.utils";
@@ -124,8 +125,8 @@ export default function OrderHistory(): React.JSX.Element {
             <td>{item.id}</td>
             <td>{new Date(item.createdAt).toLocaleString()}</td>
             <td>{item.customer}</td>
-            <td>&#8373; {item.orderTotal.toFixed(2)}</td>
-            <td>&#8373; {item.amountPaid.toFixed(2)}</td>
+            <td>&#8373; {formatAmount(item.orderTotal)}</td>
+            <td>&#8373; {formatAmount(item.amountPaid)}</td>
             <td>
               <Pill
                 text={item.orderStatus.split("_").join(" ")}
