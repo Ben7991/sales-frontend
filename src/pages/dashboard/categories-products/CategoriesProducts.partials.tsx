@@ -136,7 +136,7 @@ export function CategoryForm({
         message: (error as Error).message,
         variant: "success",
       });
-      console.log("Failed to add or edit category", error);
+      console.error("Failed to add or edit category", error);
     } finally {
       setIsLoading(false);
     }
@@ -777,7 +777,7 @@ function CostPriceForm({
       );
       clearInput();
     } catch (error) {
-      console.log("Failed to add or edit cost price", error);
+      console.error("Failed to add or edit cost price", error);
       onSetAlertDetails({
         message: (error as Error).message,
         variant: "success",

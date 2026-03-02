@@ -67,8 +67,6 @@ export default function Inventory(): React.JSX.Element {
 
   const activeAction = searchParams.get("action");
 
-  console.log(">>>> selectedItem", { selectedItem });
-
   return (
     <>
       {alertDetails ? (

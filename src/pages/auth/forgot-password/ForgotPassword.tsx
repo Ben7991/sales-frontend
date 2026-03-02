@@ -45,7 +45,7 @@ export default function ForgotPassword(): React.JSX.Element {
         message: (error as Error).message,
         variant: "error",
       });
-      console.log("Failed to request password reset", error);
+      console.error("Failed to request password reset", error);
     } finally {
       setIsLoading(false);
     }

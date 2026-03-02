@@ -351,7 +351,7 @@ function PurchaseWholesaleDetails({
         message: (error as Error).message,
         variant: "error",
       });
-      console.log("Failed to delete purchase whole price details", error);
+      console.error("Failed to delete purchase whole price details", error);
     } finally {
       setIsLoading(false);
     }
