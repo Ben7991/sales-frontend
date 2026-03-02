@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 
 import { useFetch } from "@/utils/hooks.utils";
@@ -12,7 +12,12 @@ import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Alert } from "@/components/molecules/alert/Alert";
 import { get } from "@/utils/http.utils";
 import type { ProductStock, ResponseWithRecord } from "@/utils/types.utils";
-import { InventoryDataTable } from "./Inventory.partials";
+import {
+  ChangeThresholdForm,
+  InventoryDataTable,
+  StockDetails,
+} from "./Inventory.partials";
+import { Modal } from "@/components/organisms/modal/Modal";
 
 export default function Inventory(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
@@ -20,11 +25,13 @@ export default function Inventory(): React.JSX.Element {
     inventoryReducer,
     initialStockState,
   );
+  const [selectedItem, setSelectedItem] = useState<ProductStock>();
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { page, perPage, query } = getPaginatedData(searchParams);
+
   const { alertDetails, hideAlert, setAlertDetails } = useAlert();
 
   useEffect(() => {
@@ -53,6 +60,15 @@ export default function Inventory(): React.JSX.Element {
     fetchStocks();
   }, [page, perPage, query, setIsFetching, setAlertDetails]);
 
+  const hidePanel = (): void => {
+    navigate(pathname);
+    setSelectedItem(undefined);
+  };
+
+  const activeAction = searchParams.get("action");
+
+  console.log(">>>> selectedItem", { selectedItem });
+
   return (
     <>
       {alertDetails ? (
@@ -67,7 +83,21 @@ export default function Inventory(): React.JSX.Element {
         pathname={pathname}
         stockState={stockState}
         onNavigate={navigate}
+        onSelectItem={setSelectedItem}
       />
+      {activeAction === "view-details" && selectedItem && (
+        <StockDetails onHidePanel={hidePanel} selectedItem={selectedItem} />
+      )}
+      {activeAction === "change-threshold" && selectedItem && (
+        <Modal show onHide={hidePanel} title="Change Threshold">
+          <ChangeThresholdForm
+            selectedItem={selectedItem}
+            onHidePanel={hidePanel}
+            onSetAlertDetails={setAlertDetails}
+            onStockDispatch={stockDispatch}
+          />
+        </Modal>
+      )}
     </>
   );
 }
