@@ -31,7 +31,7 @@ import { Alert } from "@/components/molecules/alert/Alert";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import { Form } from "@/components/atoms/form/Form";
 import { makeFirstLetterUppercase } from "@/utils/helpers.utils";
-import { getStockViaLiveSearch } from "../../inventory/categories-products/CategoriesProducts.utils";
+import { getStockViaLiveSearch } from "../../categories-products/CategoriesProducts.utils";
 import { get, mutate } from "@/utils/http.utils";
 import { SectionWrapper } from "@/components/molecules/section-wrapper/SectionWrapper";
 import { DropdownWithSearch } from "@/components/molecules/dropdown-with-search/DropdownWithSearch";
