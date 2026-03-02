@@ -78,10 +78,8 @@ export type Product = {
 export type ProductStockStatus = "IN_STOCK" | "OUT_OF_STOCK" | "LOW_STOCK";
 export type ProductStock = {
   id: number;
-  retailUnitPrice: string;
-  wholesaleUnitPrice: string;
+  retailUnitPrice: number;
   specialPrice: string;
-  wholesalePrice: string;
   totalPieces: number;
   numberOfBoxes: number;
   minimumThreshold: number;
@@ -89,6 +87,7 @@ export type ProductStock = {
   status: ProductStockStatus;
   product: Product;
   supplier: Supplier;
+  wholesalePrices: Array<WholesalePrice>;
 };
 export type OrderStatus =
   | "OPEN"
