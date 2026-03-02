@@ -105,7 +105,7 @@ export function SalesDetailsForm({
         )}
       </Form.Group>
       <Form.Group className="mb-4">
-        <Form.Label htmlFor="retail">Packs / Total Pieces</Form.Label>
+        <Form.Label htmlFor="retail">Total Pieces</Form.Label>
         <Form.Control
           type="number"
           hasError={Boolean(errors.totalPieces)}
@@ -116,7 +116,7 @@ export function SalesDetailsForm({
         )}
       </Form.Group>
       <Form.Group className="mb-4">
-        <Form.Label htmlFor="retail">Number of Boxes</Form.Label>
+        <Form.Label htmlFor="retail">No. of Boxes / Packs</Form.Label>
         <Form.Control
           type="number"
           hasError={Boolean(errors.numberOfBoxes)}
@@ -309,7 +309,14 @@ export function PurchaseMiscPriceForm({
       const result = await mutate<
         ResponseWithDataAndMessage<PurchaseMiscPrice>
       >(data, endpoint, method);
-      onUpdateMiscPriceDetails(result.data ?? selectedItem, selectedItem?.id);
+      onUpdateMiscPriceDetails(
+        result.data ?? {
+          id: selectedItem?.id,
+          amount: +data.amount,
+          name: data.name,
+        },
+        selectedItem?.id,
+      );
       onSetAlertDetails({
         message: result.message,
         variant: "success",
@@ -544,7 +551,7 @@ export function StockProductForm({
         message: result.message,
         variant: "success",
       });
-      onChangeStatus(status as PurchaseStatus);
+      onChangeStatus("STOCK");
     } catch (error) {
       onSetAlertDetails({
         message: (error as Error).message,

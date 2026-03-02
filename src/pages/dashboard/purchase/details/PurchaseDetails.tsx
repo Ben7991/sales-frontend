@@ -9,7 +9,6 @@ import {
 import { get } from "@/utils/http.utils";
 import type {
   Purchase,
-  PurchaseMiscPrice,
   PurchaseStatus,
   ResponseWithOnlyData,
 } from "@/utils/types.utils";
@@ -91,34 +90,6 @@ export default function PurchaseDetails(): React.JSX.Element {
     setPurchaseDetails(updatedPurchaseDetails);
   };
 
-  const updateMiscPriceDetails = (
-    data?: PurchaseMiscPrice,
-    id?: number,
-  ): void => {
-    if (!purchaseDetails) return;
-
-    const updatedPurchaseDetails = { ...purchaseDetails };
-    if (id && data) {
-      // update
-      const miscIndex = updatedPurchaseDetails.purchaseMiscPrices.findIndex(
-        (item) => item.id === id,
-      );
-      if (miscIndex !== -1) {
-        updatedPurchaseDetails.purchaseMiscPrices[miscIndex] = data;
-      }
-    } else if (id && !data) {
-      // delete
-      updatedPurchaseDetails.purchaseMiscPrices =
-        updatedPurchaseDetails.purchaseMiscPrices.filter(
-          (item) => item.id !== id,
-        );
-    } else if (data) {
-      // add
-      updatedPurchaseDetails.purchaseMiscPrices.push(data);
-    }
-    setPurchaseDetails(updatedPurchaseDetails);
-  };
-
   const changeStatus = (status: PurchaseStatus): void => {
     if (!purchaseDetails) return;
 
@@ -176,7 +147,7 @@ export default function PurchaseDetails(): React.JSX.Element {
         onNavigate={navigate}
         onSetAlertDetails={setAlertDetails}
         pathname={pathname}
-        onUpdateMiscPriceDetails={updateMiscPriceDetails}
+        onSetPurchaseDetails={setPurchaseDetails}
       />
       <Modal
         title="Change status"

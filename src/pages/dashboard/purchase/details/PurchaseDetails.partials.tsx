@@ -55,27 +55,29 @@ export function PurchaseDetailsHeader({
           <Headline tag="h4">Go back</Headline>
         </div>
         <div className="flex flex-col gap-2 md:flex-row">
-          <Button
-            el="button"
-            variant="outline"
-            className="hover:bg-gray-100 flex! items-center gap-1"
-            onClick={() => {
-              onNavigate(`${pathname}?action=change-status`);
-            }}
-          >
-            <LiaExchangeAltSolid />
-            <span>Change status</span>
-          </Button>
           {purchaseDetails?.status === "SCHEDULE" && (
-            <Button
-              el="link"
-              to={`/dashboard/purchase/add-edit-supplies?id=${purchaseDetails.id}`}
-              variant="outline"
-              className="flex! items-center gap-1"
-            >
-              <BiSolidEdit />
-              <span>Edit Purchase</span>
-            </Button>
+            <>
+              <Button
+                el="button"
+                variant="outline"
+                className="hover:bg-gray-100 flex! items-center gap-1"
+                onClick={() => {
+                  onNavigate(`${pathname}?action=change-status`);
+                }}
+              >
+                <LiaExchangeAltSolid />
+                <span>Change status</span>
+              </Button>
+              <Button
+                el="link"
+                to={`/dashboard/purchase/add-edit-supplies?id=${purchaseDetails.id}`}
+                variant="outline"
+                className="flex! items-center gap-1"
+              >
+                <BiSolidEdit />
+                <span>Edit Purchase</span>
+              </Button>
+            </>
           )}
           {purchaseDetails?.status === "ARRIVED" && (
             <Button
@@ -208,9 +210,10 @@ export function PurchaseDetailsSupplies({
       <DataTable
         columnHeadings={[
           "Product",
+          "Cost",
+          "Boxes / Packs",
           "Unit Price(retail)",
-          "Pieces / Packs",
-          "No. of Boxes",
+          "Total Pieces",
           "Wholesale Prices",
           "Comment",
           "",
@@ -221,12 +224,13 @@ export function PurchaseDetailsSupplies({
         {purchaseDetails?.supplies.map((item) => (
           <tr key={item.id}>
             <td>{item.product.name}</td>
+            <td>&#8373; {formatAmount(item.cost)}</td>
+            <td>{item.numberOfBoxes}</td>
             <td>
               &#8373;{" "}
               {item.retailUnitPrice ? formatAmount(item.retailUnitPrice) : 0}
             </td>
             <td>{item.totalPieces ?? "0"}</td>
-            <td>{item.numberOfBoxes}</td>
             <td>{item.purchaseItemWholesalePrices.length}</td>
             <td>{item.comment}</td>
             {purchaseDetails.status === "ARRIVED" && (
@@ -441,9 +445,37 @@ export function PurchaseDetailsMiscs({
   onNavigate,
   onHideModal,
   onSetAlertDetails,
-  onUpdateMiscPriceDetails,
+  onSetPurchaseDetails,
 }: PurchaseDetailsMiscsProps): React.JSX.Element {
   const [selectedItem, setSelectedItem] = useState<PurchaseMiscPrice>();
+
+  const updateMiscPriceDetails = (
+    data?: PurchaseMiscPrice,
+    id?: number,
+  ): void => {
+    const updatedPurchaseDetails = { ...purchaseDetails };
+
+    if (id && data) {
+      // update
+      const miscIndex = updatedPurchaseDetails.purchaseMiscPrices.findIndex(
+        (item) => item.id === id,
+      );
+      if (miscIndex !== -1) {
+        updatedPurchaseDetails.purchaseMiscPrices[miscIndex] = data;
+      }
+    } else if (id && !data) {
+      // delete
+      updatedPurchaseDetails.purchaseMiscPrices =
+        updatedPurchaseDetails.purchaseMiscPrices.filter(
+          (item) => item.id !== id,
+        );
+    } else if (data) {
+      // add
+      updatedPurchaseDetails.purchaseMiscPrices.push(data);
+    }
+    onSetPurchaseDetails(updatedPurchaseDetails);
+    setSelectedItem(undefined);
+  };
 
   return (
     <>
@@ -451,21 +483,23 @@ export function PurchaseDetailsMiscs({
         <Headline tag="h4" className="mb-4">
           Miscellaneous Cost
         </Headline>
-        <Button
-          el="link"
-          variant="outline"
-          to={`${pathname}?action=add-misc-details`}
-          className="flex! items-center gap-1"
-        >
-          <PiPlus /> <span>Add Cost</span>
-        </Button>
+        {purchaseDetails.status === "ARRIVED" && (
+          <Button
+            el="link"
+            variant="outline"
+            to={`${pathname}?action=add-misc-details`}
+            className="flex! items-center gap-1"
+          >
+            <PiPlus /> <span>Add Cost</span>
+          </Button>
+        )}
       </div>
       <DataTable
         columnHeadings={["Date", "Amount", ""]}
-        count={purchaseDetails?.purchaseMiscPrices?.length ?? 0}
+        count={purchaseDetails.purchaseMiscPrices.length ?? 0}
         hidePaginator
       >
-        {purchaseDetails?.purchaseMiscPrices.map((item) => (
+        {purchaseDetails.purchaseMiscPrices.map((item) => (
           <tr key={item.id}>
             <td>{item.name}</td>
             <td>&#8373; {formatAmount(item.amount)}</td>
@@ -541,7 +575,7 @@ export function PurchaseDetailsMiscs({
           <PurchaseMiscPriceForm
             purchase={purchaseDetails}
             onSetAlertDetails={onSetAlertDetails}
-            onUpdateMiscPriceDetails={onUpdateMiscPriceDetails}
+            onUpdateMiscPriceDetails={updateMiscPriceDetails}
             selectedItem={selectedItem}
             onHideModal={onHideModal}
             activeAction={activeAction}

@@ -84,17 +84,18 @@ export type PurchaseMiscPriceFormInputs = {
 export type PurchaseMiscPriceFormProps = {
   purchase: Purchase;
   selectedItem?: PurchaseMiscPrice;
-} & PreferredAlertPropsForForm &
-  Pick<PurchaseDetailsMiscsProps, "onUpdateMiscPriceDetails" | "activeAction">;
-
-export type PurchaseDetailsMiscsProps = {
   onUpdateMiscPriceDetails: (data?: PurchaseMiscPrice, id?: number) => void;
-} & Required<PurchaseDetailsDescriptorProps> &
-  Pick<
-    PurchaseDetailsSuppliesProps,
-    "pathname" | "activeAction" | "onNavigate"
-  > &
-  PreferredAlertPropsForForm;
+} & PreferredAlertPropsForForm &
+  Pick<PurchaseDetailsMiscsProps, "activeAction">;
+
+export type PurchaseDetailsMiscsProps =
+  Required<PurchaseDetailsDescriptorProps> &
+    Pick<
+      PurchaseDetailsSuppliesProps,
+      "pathname" | "activeAction" | "onNavigate"
+    > &
+    Pick<PurchaseDetailsSuppliesProps, "onSetPurchaseDetails"> &
+    PreferredAlertPropsForForm;
 
 export type PurchaseStatusFormProps = {
   purchaseId: string;
