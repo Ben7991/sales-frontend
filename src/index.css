@@ -160,3 +160,11 @@ td {
     @apply bg-background text-foreground;
   }
 }
+
+.tooltip-content {
+  display: none;
+}
+
+.tooltip:hover .tooltip-content {
+  display: block;
+}
