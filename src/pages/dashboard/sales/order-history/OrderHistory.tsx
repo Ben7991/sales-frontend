@@ -3,10 +3,10 @@ import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { FiEye } from "react-icons/fi";
 import { GiPayMoney } from "react-icons/gi";
 import { LiaExchangeAltSolid } from "react-icons/lia";
-import { RiPencilLine } from "react-icons/ri";
+import { PiPlus } from "react-icons/pi";
 
-import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import { useFetch } from "@/utils/hooks.utils";
+import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import type { OrderHistoryItem, OrderHistoryState } from "./OrderHistory.types";
 import { orderHistoryColumnHeadings } from "./OrderHistory.utils";
 import {
@@ -105,8 +105,8 @@ export default function OrderHistory(): React.JSX.Element {
           to="/dashboard/sales/add-edit"
           className="flex! items-center gap-1"
         >
-          <RiPencilLine />
-          <span>Create or Edit Order</span>
+          <PiPlus />
+          <span>Add Sale</span>
         </Button>
       </PageDescriptor>
       <DataTable
