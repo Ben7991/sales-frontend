@@ -73,6 +73,7 @@ export type Product = {
   imagePath?: string;
   status: ProductStatus;
   category: Category;
+  boxPrices: Array<BoxCostPrice>;
 };
 export type ProductStockStatus = "IN_STOCK" | "OUT_OF_STOCK" | "LOW_STOCK";
 export type ProductStock = {
@@ -142,6 +143,7 @@ export type PurchaseSupply = {
   totalPieces?: number;
   numberOfBoxes: number;
   comment?: string;
+  cost: number;
   product: Product;
   purchaseItemWholesalePrices: Array<WholesalePrice>;
 };
