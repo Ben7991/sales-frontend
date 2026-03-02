@@ -74,7 +74,7 @@ export function ArrearsDetail({
           </tr>
         ))}
       </DataTable>
-      <Info>
+      <Info className="mt-4">
         <p>To view the order details, just click on your preferred row</p>
       </Info>
     </OffCanvas>
