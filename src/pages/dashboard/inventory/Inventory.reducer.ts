@@ -1,13 +1,13 @@
 import type { ProductStock } from "@/utils/types.utils";
 
-type StockState = {
+export type StockState = {
   count: number;
   data: Array<ProductStock>;
 };
 
 type StockActionType = { type: "load"; payload: StockState };
 
-export const initialAvailableStockState = {
+export const initialStockState = {
   count: 0,
   data: [],
 } satisfies StockState;
