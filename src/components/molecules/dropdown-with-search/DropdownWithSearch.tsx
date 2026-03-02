@@ -84,6 +84,7 @@ export function DropdownWithSearch<T extends { id: number }>({
   const handleItemSelection = (item: T): void => {
     onSetSelectedItem(item);
     setValue(onGetValue(item));
+    setItems([]);
   };
 
   const handleClear = (): void => {
@@ -142,8 +143,8 @@ export function DropdownWithSearch<T extends { id: number }>({
             )}
             {!items.length && value && selectedItem && (
               <p>
-                Item selected for editing, if you wish to change selected item
-                clear, search and the list will be updated
+                Item already selected, if you wish to change selected item clear
+                or use the remove button, search and the list will be updated
               </p>
             )}
             {isSearching && <p>Searching...</p>}
