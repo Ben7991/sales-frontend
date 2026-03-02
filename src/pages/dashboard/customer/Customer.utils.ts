@@ -49,7 +49,7 @@ export async function getCustomerViaLiveSearch(
   query: string,
 ): Promise<ResponseWithRecord<Customer>> {
   return get<ResponseWithRecord<Customer>>(
-    `customer/live-search?${getSearchParamsWithQuery(query).toString()}`,
+    `customers/live-search?${getSearchParamsWithQuery(query).toString()}`,
   );
 }
 
