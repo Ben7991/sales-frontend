@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
 import {
@@ -9,6 +9,7 @@ import { SectionWrapper } from "@/components/molecules/section-wrapper/SectionWr
 import { DropdownWithSearch } from "@/components/molecules/dropdown-with-search/DropdownWithSearch";
 import { useAlert } from "@/components/molecules/alert/Alert.hooks";
 import type {
+  BoxCostPrice,
   Product,
   Purchase,
   ResponseWithOnlyData,
@@ -54,6 +55,9 @@ export default function AddEditSupplies(): React.JSX.Element {
         id: item.product.id,
         name: item.product.name,
       },
+      boxPrice: item.product.boxPrices.find(
+        (item) => item.supplier.id === purchase.supplier.id,
+      ) as BoxCostPrice,
     }));
     setSupplies(supplies);
   }, []);
@@ -86,12 +90,13 @@ export default function AddEditSupplies(): React.JSX.Element {
     }
   }, [searchParams, setAlertDetails, updateFieldsForEditing]);
 
-  const addSupply = (product: Product): void => {
+  const addSupply = (product: Product, boxPrice: BoxCostPrice): void => {
     setSupplies((prevState) => [
       {
         product,
         comment: "",
         numberOfBoxes: "",
+        boxPrice,
       },
       ...prevState,
     ]);
@@ -105,32 +110,6 @@ export default function AddEditSupplies(): React.JSX.Element {
     const updatedSupplies = [...supplies];
     const deleteCount = 1;
     updatedSupplies.splice(supplyIndex, deleteCount);
-    setSupplies(updatedSupplies);
-  };
-
-  const handleBoxNumberChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    id: number,
-  ): void => {
-    const supplyIndex = supplies.findIndex((item) => item.product.id === id);
-
-    if (supplyIndex === -1) return;
-
-    const updatedSupplies = [...supplies];
-    updatedSupplies[supplyIndex].numberOfBoxes = e.target.value;
-    setSupplies(updatedSupplies);
-  };
-
-  const handleCommentChange = (
-    e: ChangeEvent<HTMLTextAreaElement>,
-    id: number,
-  ): void => {
-    const supplyIndex = supplies.findIndex((item) => item.product.id === id);
-
-    if (supplyIndex === -1) return;
-
-    const updatedSupplies = [...supplies];
-    updatedSupplies[supplyIndex].comment = e.target.value;
     setSupplies(updatedSupplies);
   };
 
@@ -149,6 +128,7 @@ export default function AddEditSupplies(): React.JSX.Element {
             productId: item.product.id,
             numberOfBoxes: +item.numberOfBoxes,
             comment: item.comment,
+            cost: item.boxPrice.price * +item.numberOfBoxes,
           })),
           supplierId: selectedSupplier!.id,
           comment,
@@ -241,11 +221,11 @@ export default function AddEditSupplies(): React.JSX.Element {
       </SectionWrapper>
       <ProductItemList
         supplies={supplies}
+        selectedSupplier={selectedSupplier}
         onSetAlertDetails={setAlertDetails}
         onRemoveItem={removeItem}
         onAddSupply={addSupply}
-        onHandleBoxNumberChange={handleBoxNumberChange}
-        onHandleCommentChange={handleCommentChange}
+        onSetSupplies={setSupplies}
       />
       <div className="bg-white p-3 xl:p-4 border border-gray-200 rounded-md mb-4">
         <Headline tag="h5" className="mb-3">

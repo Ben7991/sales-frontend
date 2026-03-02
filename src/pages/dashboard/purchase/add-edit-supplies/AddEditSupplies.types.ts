@@ -1,29 +1,24 @@
-import type { ChangeEvent } from "react";
-
 import type {
+  BoxCostPrice,
   PreferredAlertPropsForForm,
   Product,
   Supplier,
 } from "@/utils/types.utils";
+import type { SetStateAction } from "react";
 
 export type Supply = {
   product: Pick<Product, "id" | "name">;
   numberOfBoxes: string;
   comment: string;
+  boxPrice: BoxCostPrice;
 };
 
 export type ProductItemListProps = {
   supplies: Array<Supply>;
-  onHandleCommentChange: (
-    e: ChangeEvent<HTMLTextAreaElement>,
-    id: number,
-  ) => void;
-  onHandleBoxNumberChange: (
-    e: ChangeEvent<HTMLInputElement>,
-    id: number,
-  ) => void;
+  selectedSupplier?: Supplier;
   onRemoveItem: (id: number) => void;
-  onAddSupply: (product: Product) => void;
+  onSetSupplies: (value: SetStateAction<Supply[]>) => void;
+  onAddSupply: (product: Product, boxPrice: BoxCostPrice) => void;
 } & Pick<PreferredAlertPropsForForm, "onSetAlertDetails">;
 
 export type CreateOrEditSuppliesHeaderProps = {

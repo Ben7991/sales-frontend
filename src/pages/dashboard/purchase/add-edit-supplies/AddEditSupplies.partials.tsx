@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { FiEye, FiTrash2 } from "react-icons/fi";
 import { LuTrash2 } from "react-icons/lu";
 
 import { Button } from "@/components/atoms/button/Button";
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import { useOutsideClick } from "@/utils/hooks.utils";
-import type { Product } from "@/utils/types.utils";
+import type { BoxCostPrice, Product } from "@/utils/types.utils";
 import { SectionWrapper } from "@/components/molecules/section-wrapper/SectionWrapper";
 import { DropdownWithSearch } from "@/components/molecules/dropdown-with-search/DropdownWithSearch";
 import {
@@ -19,6 +19,8 @@ import type {
   ProductItemListProps,
 } from "./AddEditSupplies.types";
 import { Form } from "@/components/atoms/form/Form";
+import { Info } from "@/components/molecules/info/Info";
+import { formatAmount } from "@/utils/helpers.utils";
 
 export function CreateOrEditSuppliesHeader({
   title,
@@ -91,11 +93,11 @@ export function CreateOrEditSuppliesHeader({
 
 export function ProductItemList({
   supplies,
+  selectedSupplier,
   onAddSupply,
   onRemoveItem,
+  onSetSupplies,
   onSetAlertDetails,
-  onHandleCommentChange,
-  onHandleBoxNumberChange,
 }: ProductItemListProps): React.JSX.Element {
   const [selectedProduct, setSelectedProduct] = useState<Product>();
 
@@ -108,12 +110,54 @@ export function ProductItemList({
       return;
     }
 
-    onAddSupply(selectedProduct);
+    const boxPrice = selectedProduct?.boxPrices.find(
+      (item) => item.supplier.id === selectedSupplier?.id,
+    ) as BoxCostPrice;
+    onAddSupply(selectedProduct, boxPrice);
     setSelectedProduct(undefined);
   };
 
+  const handleBoxNumberChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    id: number,
+  ): void => {
+    const supplyIndex = supplies.findIndex((item) => item.product.id === id);
+
+    if (supplyIndex === -1) return;
+
+    const updatedSupplies = [...supplies];
+    updatedSupplies[supplyIndex].numberOfBoxes = e.target.value;
+    onSetSupplies(updatedSupplies);
+  };
+
+  const handleCommentChange = (
+    e: ChangeEvent<HTMLTextAreaElement>,
+    id: number,
+  ): void => {
+    const supplyIndex = supplies.findIndex((item) => item.product.id === id);
+
+    if (supplyIndex === -1) return;
+
+    const updatedSupplies = [...supplies];
+    updatedSupplies[supplyIndex].comment = e.target.value;
+    onSetSupplies(updatedSupplies);
+  };
+
+  const hasBoxPrice = !selectedProduct
+    ? true
+    : selectedProduct.boxPrices.some(
+        (item) => item.supplier.id === selectedSupplier?.id,
+      );
+
   return (
     <SectionWrapper heading="Supplies">
+      <Info className="mb-2">
+        <p>
+          If you fail to select a supplier, the <strong>Add Product</strong>{" "}
+          button won't be activated. Also note that the box prices configured
+          for the selected supplier and products will be used below
+        </p>
+      </Info>
       <p className="mb-2">
         Please the product name name in the input field below to update the
         search term
@@ -126,16 +170,29 @@ export function ProductItemList({
         onGetItems={getProductsViaLiveSearch}
         onSetAlertDetails={onSetAlertDetails}
       >
-        <Button el="button" variant="primary" onClick={addSelectedProduct}>
+        <Button
+          el="button"
+          variant="primary"
+          onClick={addSelectedProduct}
+          disabled={Boolean(!selectedSupplier) || !hasBoxPrice}
+        >
           Add Product
         </Button>
       </DropdownWithSearch>
+      {!hasBoxPrice && (
+        <p className="text-red-700 mt-1">
+          No available supplier cost price per box or pack configured for
+          selected product
+        </p>
+      )}
       <div className="overflow-auto mt-4 mb-2">
         <table className="table-collapse table-auto w-full">
           <thead>
             <tr>
               <th>Product</th>
-              <th>No. of Boxes</th>
+              <th>Boxes / Packs</th>
+              <th>Price Per Box</th>
+              <th>Amount</th>
               <th>Comment</th>
               <th></th>
             </tr>
@@ -151,17 +208,20 @@ export function ProductItemList({
                     min={1}
                     className="w-20 border border-gray-200 py-1.5 px-2 rounded-sm bg-white"
                     placeholder="0"
-                    onChange={(e) =>
-                      onHandleBoxNumberChange(e, data.product.id)
-                    }
+                    onChange={(e) => handleBoxNumberChange(e, data.product.id)}
                   />
+                </td>
+                <td>&#8373; {formatAmount(data.boxPrice.price)}</td>
+                <td>
+                  &#8373;{" "}
+                  {formatAmount(data.boxPrice.price * +data.numberOfBoxes)}
                 </td>
                 <td>
                   <Form.TextArea
                     placeholder="Add comment, it's not necessary though"
                     value={data.comment}
                     rows={2}
-                    onChange={(e) => onHandleCommentChange(e, data.product.id)}
+                    onChange={(e) => handleCommentChange(e, data.product.id)}
                   />
                 </td>
                 <td>
