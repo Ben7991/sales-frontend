@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useState,
-  type ChangeEvent,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { useSearchParams } from "react-router";
 
 import { Headline } from "@/components/atoms/headline/Headline";
@@ -44,7 +38,7 @@ export default function CreateOrder(): React.JSX.Element {
     useState<ProductStock>();
 
   const [dropdownError, setDropdownError] = useState(false);
-  const [orderSale, setOrderSale] = useState<string>();
+  const [orderSale, setOrderSale] = useState<string>("Wholesale");
   const [comment, setComment] = useState<string>("");
   const [savedOrderToCreateId, setSavedOrderToCreateId] = useState<number>();
   const [productStocks, setProductStocks] = useState<Array<OrderItemToCreate>>(
@@ -103,8 +97,18 @@ export default function CreateOrder(): React.JSX.Element {
     setProductStocks((prevState) =>
       prevState.map((item) => ({
         ...item,
-        price: getUnitPrice(item.productStock, orderSale),
-        total: +item.quantity * getUnitPrice(item.productStock, orderSale),
+        price: getUnitPrice(
+          item.productStock,
+          orderSale as OrderSale,
+          item.wholesalePrice,
+        ),
+        total:
+          +item.quantity *
+          getUnitPrice(
+            item.productStock,
+            orderSale as OrderSale,
+            item.wholesalePrice,
+          ),
       })),
     );
   }, [orderSale]);
@@ -125,44 +129,15 @@ export default function CreateOrder(): React.JSX.Element {
           id: selectedProductStock.id,
           productStock: selectedProductStock,
           comment: "",
-          price: getUnitPrice(selectedProductStock, orderSale ?? "Wholesale"),
-          total: getUnitPrice(selectedProductStock, orderSale ?? "Wholesale"),
-          quantity: "1",
+          price: getUnitPrice(selectedProductStock, orderSale as OrderSale),
+          total: 0,
+          quantity: "0",
         },
         ...prevState,
       ];
       setSelectedProductStock(undefined);
       return updatedProductStock;
     });
-  };
-
-  const handleCommentChange = (
-    event: ChangeEvent<HTMLTextAreaElement>,
-    id: number,
-  ): void => {
-    const preferredIndex = productStocks.findIndex((item) => item.id === id);
-
-    if (preferredIndex === -1) return;
-
-    const updatedProductStocks = [...productStocks];
-    updatedProductStocks[preferredIndex].comment = event.target.value;
-    setProductStocks(updatedProductStocks);
-  };
-
-  const handleQuantityChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    id: number,
-  ): void => {
-    const preferredIndex = productStocks.findIndex((item) => item.id === id);
-
-    if (preferredIndex === -1) return;
-
-    const updatedProductStocks = [...productStocks];
-    updatedProductStocks[preferredIndex].quantity = event.target.value;
-    updatedProductStocks[preferredIndex].total =
-      updatedProductStocks[preferredIndex].price *
-      +updatedProductStocks[preferredIndex].quantity;
-    setProductStocks(updatedProductStocks);
   };
 
   const removeItem = (id: number): void => {
@@ -173,7 +148,7 @@ export default function CreateOrder(): React.JSX.Element {
     saveOrderToCreate({
       customer: selectedCustomer,
       productStocks,
-      orderSale: orderSale ? (orderSale.toLowerCase() as OrderSale) : undefined,
+      orderSale: orderSale.toLowerCase() as OrderSale,
       id: savedOrderToCreateId ?? getIdForNextOrderToCreate(),
     });
     clearOrderDetails();
@@ -182,18 +157,14 @@ export default function CreateOrder(): React.JSX.Element {
   const loadOrderToCreate = (item: OrderToCreate): void => {
     setSelectedCustomer(item.customer);
     setProductStocks(item.productStocks);
-    setOrderSale(
-      item.orderSale
-        ? makeFirstLetterUppercase(item.orderSale.toLowerCase())
-        : undefined,
-    );
+    setOrderSale(makeFirstLetterUppercase(item.orderSale.toLowerCase()));
     setSavedOrderToCreateId(item.id);
   };
 
   const clearOrderDetails = (): void => {
     setProductStocks([]);
     setSelectedCustomer(undefined);
-    setOrderSale(undefined);
+    setOrderSale("Wholesale");
     setSelectedProductStock(undefined);
     setSavedOrderToCreateId(undefined);
     setComment("");
@@ -202,40 +173,21 @@ export default function CreateOrder(): React.JSX.Element {
   const createOrEditOrder = async (): Promise<void> => {
     setIsLoading(true);
 
-    let result: { message: string } | undefined;
+    const endpoint = orderIdToEdit ? `sales/${orderIdToEdit}` : "sales";
+    const method = orderIdToEdit ? "PUT" : "POST";
+    const data = {
+      comment,
+      customer: selectedCustomer!.name,
+      orderSale: orderSale.toUpperCase(),
+      orderItems: productStocks.map((item) => ({
+        stockId: item.id,
+        quantity: +item.quantity,
+        comment: item.comment,
+      })),
+    };
 
     try {
-      if (orderIdToEdit) {
-        result = await mutate<{ message: string }>(
-          {
-            comment,
-            customer: selectedCustomer!.name,
-            orderSale: orderSale!.toUpperCase(),
-            orderItems: productStocks.map((item) => ({
-              stockId: item.id,
-              quantity: +item.quantity,
-              comment: item.comment,
-            })),
-          },
-          `sales/${orderIdToEdit}`,
-          "PUT",
-        );
-      } else {
-        result = await mutate<{ message: string }>(
-          {
-            comment,
-            customer: selectedCustomer!.name,
-            orderSale: orderSale!.toUpperCase(),
-            orderItems: productStocks.map((item) => ({
-              stockId: item.id,
-              quantity: +item.quantity,
-              comment: item.comment,
-            })),
-          },
-          "sales",
-          "POST",
-        );
-      }
+      const result = await mutate<{ message: string }>(data, endpoint, method);
       setAlertDetails({
         message: result.message,
         variant: "success",
@@ -310,8 +262,8 @@ export default function CreateOrder(): React.JSX.Element {
           </Button>
         </DropdownWithSearch>
         <OrderItemList
-          onHandleQuantityChange={handleQuantityChange}
-          onHandleCommentChange={handleCommentChange}
+          onSetProductStocks={setProductStocks}
+          orderSale={orderSale === "Wholesale" ? "WHOLESALE" : "RETAIL"}
           onRemoveItem={removeItem}
           productStocks={productStocks}
         />

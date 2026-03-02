@@ -1,5 +1,11 @@
-import { type Customer, type ProductStock } from "@/utils/types.utils";
+import {
+  type Customer,
+  type OrderSale,
+  type ProductStock,
+  type WholesalePrice,
+} from "@/utils/types.utils";
 import type { OrderToCreate } from "./CreateOrder.types";
+import { formatAmount } from "@/utils/helpers.utils";
 
 export function getCustomerDetails(customer?: Customer): string {
   if (!customer) return "";
@@ -59,11 +65,18 @@ export function removeFromOrdersToCreate(id: number): Array<OrderToCreate> {
 
 export function getUnitPrice(
   productStock: ProductStock,
-  orderSale: string,
+  orderSale: OrderSale,
+  wholesalePrice?: WholesalePrice,
 ): number {
-  if (orderSale === "Wholesale") {
-    return +productStock.wholesaleUnitPrice;
-  }
+  if (wholesalePrice && orderSale === "WHOLESALE") return wholesalePrice.price;
+
+  if (orderSale === "WHOLESALE") return 0;
 
   return +productStock.retailUnitPrice;
+}
+
+export function getWholesaleList(stock: ProductStock): Array<string> {
+  return stock.wholesalePrices.map(
+    (item) => `QTY(${item.quantity}) - ₵${formatAmount(item.price)}`,
+  );
 }
