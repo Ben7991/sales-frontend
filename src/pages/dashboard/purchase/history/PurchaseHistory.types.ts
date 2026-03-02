@@ -6,5 +6,6 @@ export type PurchaseRow = {
   status: PurchaseStatus;
   comment?: string;
   miscCosts: number;
+  suppliesAmount: number;
   supplier: Pick<Supplier, "name" | "companyName">;
 };

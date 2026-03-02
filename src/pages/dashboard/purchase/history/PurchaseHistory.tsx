@@ -76,8 +76,8 @@ export default function PurchaseHistory(): React.JSX.Element {
           variant="primary"
           className="flex! items-center gap-1"
         >
-          <PiGearFine />
-          <span>Add or Edit Purchase</span>
+          <PiGearFine className="text-xl" />
+          <span>Create Purchase</span>
         </Button>
       </PageDescriptor>
       <DataTable
@@ -100,7 +100,7 @@ export default function PurchaseHistory(): React.JSX.Element {
             <td>
               {item.supplier.name} - Company({item.supplier.companyName})
             </td>
-            <td>&#8373; 0</td>
+            <td>&#8373; {formatAmount(item.suppliesAmount)}</td>
             <td>&#8373; {formatAmount(item.miscCosts)}</td>
             <td>
               <Pill
