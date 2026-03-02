@@ -34,15 +34,12 @@ const PurchaseDetails = lazy(
   () => import("./pages/dashboard/purchase/details/PurchaseDetails"),
 );
 const CategoriesProducts = lazy(
-  () =>
-    import("./pages/dashboard/inventory/categories-products/CategoriesProducts"),
+  () => import("./pages/dashboard/categories-products/CategoriesProducts"),
 );
 const CreateOrder = lazy(
   () => import("./pages/dashboard/sales/create-order/CreateOrder"),
 );
-const AvailableStocks = lazy(
-  () => import("./pages/dashboard/inventory/available-stock/AvailableStocks"),
-);
+const Inventory = lazy(() => import("./pages/dashboard/inventory/Inventory"));
 const OrderHistory = lazy(
   () => import("./pages/dashboard/sales/order-history/OrderHistory"),
 );
@@ -145,7 +142,7 @@ export default function App(): React.JSX.Element {
             },
             {
               path: "/dashboard/inventory",
-              element: <AvailableStocks />,
+              element: <Inventory />,
             },
             {
               path: "/dashboard/sales/add-edit",

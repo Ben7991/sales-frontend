@@ -66,7 +66,7 @@ import { DropdownWithSearch } from "@/components/molecules/dropdown-with-search/
 import {
   getSupplierDetails,
   getSuppliersViaLiveSearch,
-} from "../../purchase/add-edit-supplies/AddEditSupplier.utils";
+} from "../purchase/add-edit-supplies/AddEditSupplier.utils";
 import { useFetch } from "@/utils/hooks.utils";
 import { FaRegEdit } from "react-icons/fa";
 import { Spinner } from "@/components/atoms/spinner/Spinner";

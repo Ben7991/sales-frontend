@@ -4,9 +4,9 @@ import { useSearchParams } from "react-router";
 import { useFetch } from "@/utils/hooks.utils";
 import { PageDescriptor } from "@/components/molecules/page-descriptor/PageDescriptor";
 import {
-  availableStockReducer,
+  inventoryReducer,
   initialAvailableStockState,
-} from "./AvailableStocks.reducer";
+} from "./Inventory.reducer";
 import {
   formatAmount,
   getPaginatedData,
@@ -20,10 +20,10 @@ import { get } from "@/utils/http.utils";
 import type { ProductStock, ResponseWithRecord } from "@/utils/types.utils";
 import { ProductCard } from "@/components/molecules/product-card/ProductCard";
 
-export default function AvailableStocks(): React.JSX.Element {
+export default function Inventory(): React.JSX.Element {
   const { isFetching, setIsFetching } = useFetch();
   const [availableStockState, availableStockDispatch] = useReducer(
-    availableStockReducer,
+    inventoryReducer,
     initialAvailableStockState,
   );
 

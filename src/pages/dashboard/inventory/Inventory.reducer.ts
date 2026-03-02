@@ -12,7 +12,7 @@ export const initialAvailableStockState = {
   data: [],
 } satisfies StockState;
 
-export function availableStockReducer(
+export function inventoryReducer(
   state: StockState,
   action: StockActionType,
 ): StockState {
