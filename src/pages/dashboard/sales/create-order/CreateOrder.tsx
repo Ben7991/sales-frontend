@@ -177,11 +177,13 @@ export default function CreateOrder(): React.JSX.Element {
     const method = orderIdToEdit ? "PUT" : "POST";
     const data = {
       comment,
-      customer: selectedCustomer!.name,
+      customerId: selectedCustomer!.id,
       orderSale: orderSale.toUpperCase(),
       orderItems: productStocks.map((item) => ({
         stockId: item.id,
         quantity: +item.quantity,
+        multiplier: +(item.multiplier ?? 0),
+        wholesaleId: item.wholesalePrice?.id ?? 0,
         comment: item.comment,
       })),
     };
@@ -219,6 +221,7 @@ export default function CreateOrder(): React.JSX.Element {
       <GoBack path="/dashboard/sales" className="mb-4" />
       <CreateOrEditOrderHeader
         key={productStocks.length}
+        title={orderIdToEdit ? "Edit Order" : "Create Order"}
         onSelectOrderToCreate={loadOrderToCreate}
       />
       <SectionWrapper heading="Customer and Order Type">

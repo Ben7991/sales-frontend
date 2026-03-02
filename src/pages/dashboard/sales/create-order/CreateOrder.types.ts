@@ -57,5 +57,6 @@ export type OrderToCreate = {
 };
 
 export type CreateOrEditOrderHeaderProps = {
+  title: string;
   onSelectOrderToCreate: (item: OrderToCreate) => void;
 };

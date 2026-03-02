@@ -186,7 +186,7 @@ export function OrderDetails({
             {orderDetails.orderStatus === "OPEN" && (
               <Button
                 el="link"
-                to={`/dashboard/sales/order?id=${orderDetails.id}`}
+                to={`/dashboard/sales/add-edit?id=${orderDetails.id}`}
                 variant="outline"
                 className="flex! items-center gap-1"
               >
@@ -225,7 +225,7 @@ export function OrderDetails({
               <td></td>
             </tr>
           </DataTable>
-          <div className="flex items-center gap-2 -mt-3">
+          <div className="flex items-center gap-2 mt-4">
             <Button
               el="button"
               type="button"

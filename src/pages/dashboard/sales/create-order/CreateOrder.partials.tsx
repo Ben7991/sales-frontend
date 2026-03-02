@@ -26,6 +26,7 @@ import { Dropdown } from "@/components/molecules/dropdown/Dropdown";
 import type { WholesalePrice } from "@/utils/types.utils";
 
 export function CreateOrEditOrderHeader({
+  title,
   onSelectOrderToCreate,
 }: CreateOrEditOrderHeaderProps): React.JSX.Element {
   const [showList, setShowList] = useState(false);
@@ -46,7 +47,7 @@ export function CreateOrEditOrderHeader({
   };
 
   return (
-    <PageDescriptor title="Create or Edit Order">
+    <PageDescriptor title={title}>
       <div className="relative">
         <Button
           el="button"
