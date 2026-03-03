@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-import type { ProductRow } from "@/pages/dashboard/inventory/categories-products/CategoriesProducts.types";
+import type { ProductRow } from "@/pages/dashboard/categories-products/CategoriesProducts.types";
 
 export type ProductState = {
   count: number;
