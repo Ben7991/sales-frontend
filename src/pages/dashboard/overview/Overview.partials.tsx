@@ -55,13 +55,13 @@ export function EntitySummaryUI({
         title="Total Products"
         count={totalProducts}
         icon={<TbBowlChopsticks className="text-4xl" />}
-        path="/dashboard/inventory/categories-products"
+        path="/dashboard/categories-products"
       />
       <EntityCard
         title="Total Categories"
         count={totalCategories}
         icon={<PiStack className="text-4xl" />}
-        path="/dashboard/inventory/categories-products"
+        path="/dashboard/categories-products"
       />
     </div>
   );
