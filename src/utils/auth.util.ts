@@ -15,7 +15,7 @@ export function getAccessToken(): string {
     return "";
   }
 
-  return accessTokenCookie.split("=")[1];
+  return decodeURIComponent(accessTokenCookie.split("=")[1]);
 }
 
 export function getHeaders(withAuth?: boolean): Headers {
