@@ -20,6 +20,7 @@ import { Form } from "@/components/atoms/form/Form";
 import { Button } from "@/components/atoms/button/Button";
 import { changeThresholdSchema } from "./Inventory.utils";
 import { mutate } from "@/utils/http.utils";
+import { Headline } from "@/components/atoms/headline/Headline";
 
 export function InventoryDataTable({
   stockState,
@@ -34,8 +35,7 @@ export function InventoryDataTable({
         "Product",
         "Supplier",
         "Unit Price(retail)",
-        "Threshold",
-        "Box No.",
+        "Box/Pack No.",
         "Total Pieces",
         "Status",
         "",
@@ -51,7 +51,6 @@ export function InventoryDataTable({
           </td>
           <td>{item.supplier.name}</td>
           <td>&#8373; {formatAmount(+item.retailUnitPrice)}</td>
-          <td>{item.minimumThreshold}</td>
           <td>{item.numberOfBoxes}</td>
           <td>{item.totalPieces}</td>
           <td>
@@ -111,7 +110,84 @@ export function StockDetails({
 }: StockDetailsProps): React.JSX.Element {
   return (
     <OffCanvas title="Stock Details" onHide={onHideOffCanvas} show>
-      <p>Testing</p>
+      <div>
+        <ProductCard
+          name={selectedItem.product.name}
+          imagePath={selectedItem.product.imagePath}
+        />
+        <p className="my-2">
+          Supplier:{" "}
+          <strong className="font-semibold">
+            {selectedItem.supplier.name}, Company(
+            {selectedItem.supplier.companyName})
+          </strong>
+        </p>
+        <p className="mb-2">
+          Box/Pack No.:{" "}
+          <strong className="font-semibold">
+            {selectedItem.numberOfBoxes} boxes/packs{" "}
+            {selectedItem.remainingBoxPieces
+              ? `and ${selectedItem.remainingBoxPieces} more pieces quantities`
+              : ""}
+          </strong>
+        </p>
+        <p className="mb-2">
+          Total Pieces:{" "}
+          <strong className="font-semibold">{selectedItem.totalPieces}</strong>
+        </p>
+        <p className="mb-2">
+          Minimum Threshold:{" "}
+          <strong className="font-semibold">
+            {selectedItem.minimumThreshold}
+          </strong>
+        </p>
+        <p className="mb-2">
+          Retail unit price:{" "}
+          <strong className="font-semibold">
+            &#8373; {formatAmount(selectedItem.retailUnitPrice)}
+          </strong>
+        </p>
+        <p className="mb-2">
+          Status:{" "}
+          <Pill
+            text={selectedItem.status}
+            variant={
+              selectedItem.status === "IN_STOCK"
+                ? "success"
+                : selectedItem.status === "LOW_STOCK"
+                  ? "secondary"
+                  : "danger"
+            }
+          />
+        </p>
+      </div>
+
+      <hr className="my-6 border border-gray-300" />
+      <Headline tag="h5" className="mb-3">
+        Configured wholesale prices
+      </Headline>
+      <DataTable
+        count={selectedItem.wholesalePrices.length}
+        hidePaginator
+        columnHeadings={["Quantity", "Price"]}
+      >
+        {selectedItem.wholesalePrices.map((item) => (
+          <tr key={item.id}>
+            <td>{item.quantity}</td>
+            <td>&#8373; {formatAmount(item.price)}</td>
+          </tr>
+        ))}
+      </DataTable>
+
+      <hr className="my-6 border border-gray-300" />
+      <Headline tag="h5" className="mb-3">
+        Comment
+      </Headline>
+      {selectedItem.comment ? (
+        <p>{selectedItem.comment}</p>
+      ) : (
+        <p>No comment available on this product stock</p>
+      )}
     </OffCanvas>
   );
 }

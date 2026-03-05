@@ -82,8 +82,9 @@ export type ProductStock = {
   specialPrice: string;
   totalPieces: number;
   numberOfBoxes: number;
+  remainingBoxPieces: number;
   minimumThreshold: number;
-  description: string;
+  comment: string;
   status: ProductStockStatus;
   product: Product;
   supplier: Supplier;
