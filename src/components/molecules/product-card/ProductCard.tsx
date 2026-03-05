@@ -1,3 +1,5 @@
+import { LuImageOff } from "react-icons/lu";
+
 type ProductCardProps = {
   imagePath?: string;
   name: string;
@@ -16,7 +18,7 @@ export function ProductCard({
         />
       ) : (
         <span className="w-10 h-10 rounded-lg flex items-center justify-center border border-gray-200 overflow-hidden">
-          ?
+          <LuImageOff className="text-2xl" />
         </span>
       )}
       <span>{name}</span>
